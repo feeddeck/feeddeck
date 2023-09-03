@@ -1,0 +1,8 @@
+# Visual Studio Code Launch Configurations
+.vscode/launch.json
+
+# Environment Variables
+/supabase/.env.local
+/supabase/.env.dev
+/supabase/.env.stage
+/supabase/.env.prod

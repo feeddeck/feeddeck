@@ -1,0 +1,17 @@
+{
+  "deno.enable": true,
+  "deno.unstable": true,
+  "deno.lint": true,
+  "deno.enablePaths": [
+    "./supabase/functions"
+  ],
+  "deno.importMap": "./supabase/functions/import_map.json",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  }
+}

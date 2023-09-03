@@ -1,0 +1,42 @@
+version: '3'
+services:
+  redis:
+    container_name: redis
+    networks:
+      - supabase_network_feeddeck
+    image: redis:7.0.11
+    ports:
+      - 6379:6379
+
+  feeddeck-scheduler:
+    container_name: feeddeck-scheduler
+    depends_on:
+      - redis
+    build:
+      context: ../
+      dockerfile: ./_cmd/Dockerfile
+    networks:
+      - supabase_network_feeddeck
+    image: feeddeck:dev
+    command:
+      - scheduler
+    env_file:
+      - ../../.env.local
+
+  feeddeck-worker:
+    container_name: feeddeck-worker
+    depends_on:
+      - redis
+      - feeddeck-scheduler
+    networks:
+      - supabase_network_feeddeck
+    image: feeddeck:dev
+    command:
+      - worker
+    env_file:
+      - ../../.env.local
+
+networks:
+  supabase_network_feeddeck:
+    name: supabase_network_feeddeck
+    external: true

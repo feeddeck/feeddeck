@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "std/server": "https://deno.land/std@0.177.0/http/server.ts",
+    "std/md5": "https://deno.land/std@0.119.0/hash/md5.ts",
+    "std/hex": "https://deno.land/std@0.177.0/encoding/hex.ts",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.7.1",
+    "rss": "https://deno.land/x/rss@0.5.8/mod.ts",
+    "rss/types": "https://deno.land/x/rss@0.5.8/src/types/mod.ts",
+    "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
+    "lodash": "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js",
+    "redis": "https://deno.land/x/redis@v0.29.4/mod.ts",
+    "stripe": "https://esm.sh/stripe@12.9.0?target=deno"
+  }
+}
