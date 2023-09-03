@@ -1,7 +1,5 @@
 <div align="center">
-
 <img src=".github/assets/icon.png" width="200" />
-
 <br><br>
 
 **FeedDeck** is an open source RSS and social media feed reader, inspired by
@@ -15,7 +13,7 @@ platforms.
 </p>
 
 <img src=".github/assets/screenshot.png" width="100%" />
-
+<br><br>
 </div>
 
 **FeedDeck** is an open source RSS and social media feed reader, inspired by
