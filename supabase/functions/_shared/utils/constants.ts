@@ -64,9 +64,12 @@ export const FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET =
 /**
  * Source Configuration
  * - FEEDDECK_SOURCE_NITTER_INSTANCE is the url of the Nitter instance used by FeedDeck.
+ * - FEEDDECK_SOURCE_NITTER_BASIC_AUTH is the basic auth header used to scrape the Nitter instance.
  * - FEEDDECK_SOURCE_YOUTUBE_API_KEY is the API key used to access the YouTube API.
  */
 export const FEEDDECK_SOURCE_NITTER_INSTANCE =
   Deno.env.get("FEEDDECK_SOURCE_NITTER_INSTANCE") ?? "";
+export const FEEDDECK_SOURCE_NITTER_BASIC_AUTH =
+  Deno.env.get("FEEDDECK_SOURCE_NITTER_BASIC_AUTH") ?? "";
 export const FEEDDECK_SOURCE_YOUTUBE_API_KEY =
   Deno.env.get("FEEDDECK_SOURCE_YOUTUBE_API_KEY") ?? "";
