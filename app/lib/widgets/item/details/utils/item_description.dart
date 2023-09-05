@@ -27,11 +27,13 @@ class ItemDescription extends StatelessWidget {
     required this.itemDescription,
     required this.sourceFormat,
     required this.tagetFormat,
+    this.disableImages,
   });
 
   final String? itemDescription;
   final DescriptionFormat sourceFormat;
   final DescriptionFormat tagetFormat;
+  final bool? disableImages;
 
   /// [_openUrl] opens the item url in the default browser of the current
   /// device.
@@ -61,6 +63,10 @@ class ItemDescription extends StatelessWidget {
         }
       },
       imageBuilder: (uri, title, alt) {
+        if (disableImages == true) {
+          return Container();
+        }
+
         String imageUrl = uri.toString();
         if (kIsWeb) {
           imageUrl =
