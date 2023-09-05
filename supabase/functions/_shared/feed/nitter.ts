@@ -10,7 +10,10 @@ import { ISource } from "../models/source.ts";
 import { uploadSourceIcon } from "./utils/uploadFile.ts";
 import { IProfile } from "../models/profile.ts";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
-import { FEEDDECK_SOURCE_NITTER_INSTANCE } from "../utils/constants.ts";
+import {
+  FEEDDECK_SOURCE_NITTER_BASIC_AUTH,
+  FEEDDECK_SOURCE_NITTER_INSTANCE,
+} from "../utils/constants.ts";
 import { log } from "../utils/log.ts";
 
 export const getNitterFeed = async (
@@ -30,7 +33,12 @@ export const getNitterFeed = async (
   const feedUrl = generateFeedUrl(source.options.nitter);
   const response = await fetchWithTimeout(
     feedUrl,
-    { method: "get" },
+    {
+      headers: {
+        "Authorization": `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
+      },
+      method: "get",
+    },
     5000,
   );
   const xml = await response.text();
@@ -191,8 +199,14 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
 
     do {
       matches = re.exec(entry.description?.value);
-      if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
-        images.push(matches[1]);
+      if (
+        matches && matches.length == 2
+      ) {
+        if (matches[1].startsWith("http://")) {
+          images.push(matches[1].replace("http://", "https://"));
+        } else if (matches[1].startsWith("https://")) {
+          images.push(matches[1]);
+        }
       }
     } while (matches);
   }
