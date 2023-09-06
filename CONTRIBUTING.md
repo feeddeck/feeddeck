@@ -314,7 +314,7 @@ supabase link --project-ref <PROJECT-ID>
 supabase db push
 
 # Push all the secrets from the .env file to our remote project and list all secrets afterwards
-supabase secrets set --env-file supabase/.env.dev
+supabase secrets set --env-file supabase/.env
 supabase secrets list
 
 # Deploy all functions
