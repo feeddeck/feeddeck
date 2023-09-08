@@ -1,31 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:feeddeck/models/source.dart';
-import 'package:feeddeck/repositories/settings_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/fd_icons.dart';
-
-/// The [SourceIconType] enum is used to dertime the type of the [sourceIcon].
-/// This is required to build the path to the icon when it is saved in the
-/// Supabase storage.
-enum SourceIconType {
-  sources,
-  items,
-}
-
-/// [SourceIconTypeExtension] defines all extensions which are available for
-/// the [SourceIconType] enum type.
-extension SourceIconTypeExtension on SourceIconType {
-  /// [toShortString] returns a short string of the source type which can be
-  /// used to construct the path for the Supabase storage.
-  String toShortString() {
-    return toString().split('.').last;
-  }
-}
+import 'package:feeddeck/utils/image_url.dart';
 
 /// [SourceIcon] can be used to show the image for a source. For that the [icon]
 /// of the source must be provided. The size of the image can be adjusted via
@@ -38,14 +18,14 @@ class SourceIcon extends StatelessWidget {
     super.key,
     required this.type,
     required this.icon,
-    this.iconType = SourceIconType.sources,
+    this.iconType = FDImageType.source,
     required this.size,
   });
 
   final FDSourceType type;
   final String? icon;
   final double size;
-  final SourceIconType iconType;
+  final FDImageType iconType;
 
   /// buildIcon returns the provided [icon] with the provided [backgroundColor].
   Widget buildIcon(
@@ -168,19 +148,6 @@ class SourceIcon extends StatelessWidget {
       return buildDefaultIcon(size);
     }
 
-    /// [icon] is the url to the icon of a source. If the url does not start
-    /// with `https://` it is assumed that the image is stored in the Supabase
-    /// storage and the url is generated accordingly. If the app is
-    /// running in the web, the url is proxied through the Supabase functions.
-    String imageUrl = icon!;
-    if (!imageUrl.startsWith('https://')) {
-      imageUrl =
-          '${SettingsRepository().supabaseUrl}/storage/v1/object/public/${iconType.toShortString()}/$imageUrl';
-    } else if (kIsWeb) {
-      imageUrl =
-          '${Supabase.instance.client.functionsUrl}/image-proxy-v1?media=${Uri.encodeQueryComponent(imageUrl)}';
-    }
-
     return ClipOval(
       child: SizedBox.fromSize(
         size: Size.fromRadius(size / 2),
@@ -188,7 +155,7 @@ class SourceIcon extends StatelessWidget {
           height: size,
           width: size,
           fit: BoxFit.cover,
-          imageUrl: imageUrl,
+          imageUrl: getImageUrl(iconType, icon!),
           placeholder: (context, url) => buildDefaultIcon(size),
           errorWidget: (context, url, error) => buildDefaultIcon(size),
         ),

@@ -40,7 +40,6 @@ export const getStackoverflowFeed = async (
     sourceType: "stackoverflow",
     requestUrl: source.options.stackoverflow.url,
     responseStatus: response.status,
-    responseBody: xml,
   });
   const feed = await parseFeed(xml);
 
@@ -91,7 +90,7 @@ export const getStackoverflowFeed = async (
     /**
      * Create the item object and add it to the `items` array.
      */
-    const item = {
+    items.push({
       id: generateItemId(source.id, entry.id),
       userId: source.userId,
       columnId: source.columnId,
@@ -104,9 +103,7 @@ export const getStackoverflowFeed = async (
         : undefined,
       author: undefined,
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    items.push(item);
+    });
   }
 
   return { source, items };

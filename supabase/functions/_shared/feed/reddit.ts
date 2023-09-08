@@ -7,7 +7,6 @@ import { unescape } from "lodash";
 
 import { IItem } from "../models/item.ts";
 import { ISource } from "../models/source.ts";
-import { uploadItemMedia } from "./utils/uploadFile.ts";
 import { IProfile } from "../models/profile.ts";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
 import { log } from "../utils/log.ts";
@@ -22,7 +21,7 @@ export const isRedditUrl = (url: string): boolean => {
 };
 
 export const getRedditFeed = async (
-  supabaseClient: SupabaseClient,
+  _supabaseClient: SupabaseClient,
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
@@ -54,7 +53,6 @@ export const getRedditFeed = async (
     sourceType: "reddit",
     requestUrl: source.options.reddit,
     responseStatus: response.status,
-    responseBody: xml,
   });
   const feed = await parseFeed(xml);
 
@@ -116,10 +114,9 @@ export const getRedditFeed = async (
     }
 
     /**
-     * Create the item object and add it to the `items` array. Before the item is added we also try to upload the media
-     * of the item to our CDN and set the `item.media` to the URL of the uploaded media.
+     * Create the item object and add it to the `items` array.
      */
-    const item = {
+    items.push({
       id: itemId,
       userId: source.userId,
       columnId: source.columnId,
@@ -132,14 +129,7 @@ export const getRedditFeed = async (
         : undefined,
       author: entry.author?.name,
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    const cdnItemMedia = await uploadItemMedia(supabaseClient, item);
-    if (cdnItemMedia) {
-      item.media = cdnItemMedia;
-    }
-
-    items.push(item);
+    });
   }
 
   return { source, items };

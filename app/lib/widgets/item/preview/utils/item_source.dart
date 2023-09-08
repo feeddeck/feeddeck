@@ -4,6 +4,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/constants.dart';
+import 'package:feeddeck/utils/image_url.dart';
 import 'package:feeddeck/widgets/source/source_icon.dart';
 
 /// The [ItemSource] widget is used to display the source of an item above the
@@ -15,7 +16,7 @@ class ItemSource extends StatelessWidget {
     required this.sourceSubtitle,
     required this.sourceType,
     required this.sourceIcon,
-    this.sourceIconType = SourceIconType.sources,
+    this.sourceIconType = FDImageType.source,
     required this.itemPublishedAt,
     required this.itemIsRead,
   });
@@ -24,7 +25,7 @@ class ItemSource extends StatelessWidget {
   final String sourceSubtitle;
   final FDSourceType sourceType;
   final String? sourceIcon;
-  final SourceIconType sourceIconType;
+  final FDImageType sourceIconType;
   final int itemPublishedAt;
   final bool itemIsRead;
 

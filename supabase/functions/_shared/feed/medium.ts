@@ -8,7 +8,7 @@ import { unescape } from "lodash";
 import { IItem } from "../models/item.ts";
 import { ISource } from "../models/source.ts";
 import { Favicon, getFavicon } from "./utils/getFavicon.ts";
-import { uploadItemMedia, uploadSourceIcon } from "./utils/uploadFile.ts";
+import { uploadSourceIcon } from "./utils/uploadFile.ts";
 import { IProfile } from "../models/profile.ts";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
 import { log } from "../utils/log.ts";
@@ -72,7 +72,6 @@ export const getMediumFeed = async (
     sourceType: "medium",
     requestUrl: source.options.medium,
     responseStatus: response.status,
-    responseBody: xml,
   });
   const feed = await parseFeed(xml);
 
@@ -93,13 +92,10 @@ export const getMediumFeed = async (
         });
       },
     );
+
     if (favicon && favicon.url.startsWith("https://")) {
       source.icon = favicon.url;
-    }
-
-    const cdnSourceIcon = await uploadSourceIcon(supabaseClient, source);
-    if (cdnSourceIcon) {
-      source.icon = cdnSourceIcon;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
     }
   }
 
@@ -157,10 +153,9 @@ export const getMediumFeed = async (
     }
 
     /**
-     * Create the item object and add it to the `items` array. Before the item is added we also try to upload the media
-     * of the item to our CDN and set the `item.media` to the URL of the uploaded media.
+     * Create the item object and add it to the `items` array.
      */
-    const item = {
+    items.push({
       id: itemId,
       userId: source.userId,
       columnId: source.columnId,
@@ -171,14 +166,7 @@ export const getMediumFeed = async (
       description: getItemDescription(entry),
       author: entry["dc:creator"]?.join(", "),
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    const cdnItemMedia = await uploadItemMedia(supabaseClient, item);
-    if (cdnItemMedia) {
-      item.media = cdnItemMedia;
-    }
-
-    items.push(item);
+    });
   }
 
   return { source, items };

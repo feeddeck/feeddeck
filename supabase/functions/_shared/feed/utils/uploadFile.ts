@@ -1,7 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 
 import { ISource } from "../../models/source.ts";
-import { IItem } from "../../models/item.ts";
 import { fetchWithTimeout } from "../../utils/fetchWithTimeout.ts";
 import { log } from "../../utils/log.ts";
 
@@ -23,27 +22,6 @@ export const uploadSourceIcon = async (
     "sources",
     source.icon,
     `${source.userId}/${source.id}.${source.icon.split(".").pop()}`,
-  );
-};
-
-/**
- * `uploadItemMedia` uploads the `media` of the provided `item` to the Supabase storage, to avoid CORS issues within our
- * web app and to make use of the built-in CDN. If the upload was successfull the path of the uploaded media is
- * returned. If the upload failed `undefined` is returned.
- */
-export const uploadItemMedia = async (
-  supabaseClient: SupabaseClient,
-  item: IItem,
-): Promise<string | undefined> => {
-  if (!item.media || item.media === "") {
-    return undefined;
-  }
-
-  return await uploadFile(
-    supabaseClient,
-    "items",
-    item.media,
-    `${item.userId}/${item.sourceId}/${item.id}.${item.media.split(".").pop()}`,
   );
 };
 

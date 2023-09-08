@@ -46,7 +46,6 @@ export const getNitterFeed = async (
     sourceType: "nitter",
     requestUrl: feedUrl,
     responseStatus: response.status,
-    responseBody: xml,
   });
   const feed = await parseFeed(xml);
 
@@ -78,11 +77,7 @@ export const getNitterFeed = async (
    */
   if (!source.icon && source.options.nitter[0] === "@" && feed.image?.url) {
     source.icon = feed.image.url;
-
-    const cdnSourceIcon = await uploadSourceIcon(supabaseClient, source);
-    if (cdnSourceIcon) {
-      source.icon = cdnSourceIcon;
-    }
+    source.icon = await uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -128,7 +123,7 @@ export const getNitterFeed = async (
      */
     const media = getMedia(entry);
 
-    const item = {
+    items.push({
       id: itemId,
       userId: source.userId,
       columnId: source.columnId,
@@ -141,9 +136,7 @@ export const getNitterFeed = async (
         : undefined,
       author: entry["dc:creator"]?.join(", "),
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    items.push(item);
+    });
   }
 
   return { source, items };

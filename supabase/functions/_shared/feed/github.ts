@@ -7,9 +7,10 @@ import { IItem } from "../models/item.ts";
 import { IProfile } from "../models/profile.ts";
 import { decrypt } from "../utils/encrypt.ts";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
+import { uploadSourceIcon } from "./utils/uploadFile.ts";
 
 export const getGithubFeed = async (
-  _supabaseClient: SupabaseClient,
+  supabaseClient: SupabaseClient,
   _redisClient: Redis | undefined,
   profile: IProfile,
   source: ISource,
@@ -57,6 +58,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.participating}`;
       source.title = user.login;
       source.icon = user.avatar_url;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
       notifications.push(...tmpNotifications);
     } else if (
       source.options.github.type === "repositorynotifications" &&
@@ -86,8 +88,10 @@ export const getGithubFeed = async (
         tmpNotifications[0].repository?.owner?.avatar_url
       ) {
         source.icon = tmpNotifications[0].repository.owner.avatar_url;
+        source.icon = await uploadSourceIcon(supabaseClient, source);
       } else {
         source.icon = `https://github.com/${owner}.png`;
+        source.icon = await uploadSourceIcon(supabaseClient, source);
       }
       notifications.push(...tmpNotifications);
     } else {
@@ -107,12 +111,10 @@ export const getGithubFeed = async (
         sourceId: source.id,
         title: notification.subject?.title ?? "Notification",
         link: notification.subject?.url
-          ? `https://github.com/${
-            notification.subject?.url.replace(
-              "https://api.github.com/repos/",
-              "",
-            )
-          }`
+          ? `https://github.com/${notification.subject?.url.replace(
+            "https://api.github.com/repos/",
+            "",
+          )}`
           : "",
         media: notification.repository.owner.avatar_url,
         description: formatDescription(notification),
@@ -168,6 +170,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.user}`;
       source.title = source.options.github.user;
       source.icon = user.avatar_url;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${source.options.github.user}`;
 
       events.push(...tmpEvents);
@@ -195,6 +198,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${owner}-${repo}`;
       source.title = `${owner}/${repo}`;
       source.icon = user.avatar_url;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${owner}/${repo}`;
 
       events.push(...tmpEvents);
@@ -224,6 +228,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.organization}`;
       source.title = source.options.github.organization;
       source.icon = user.avatar_url;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${source.options.github.organization}`;
 
       events.push(...tmpEvents);
@@ -257,6 +262,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.organization}`;
       source.title = source.options.github.organization;
       source.icon = org.avatar_url;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${source.options.github.organization}`;
 
       events.push(...tmpEvents);
