@@ -99,7 +99,6 @@ Route onGenerateRoute(RouteSettings settings) {
 /// The [FeedDeckApp] is the root widget of the app. The widget is used to
 /// initialize some of our providers via the [MultiProvider] widget and to set
 /// the theme for the app.
-
 class FeedDeckApp extends StatelessWidget {
   const FeedDeckApp({super.key});
 

@@ -40,7 +40,11 @@ export const getPodcastFeed = async (
     method: "get",
   }, 5000);
   const xml = await response.text();
-  log("debug", "Podcast Response", { status: response.status, xml: xml });
+  log("debug", "Add source", {
+    sourceType: "podcast",
+    requestUrl: source.options.podcast,
+    responseStatus: response.status,
+  });
   const feed = await parseFeed(xml);
 
   if (!feed.title.value) {
