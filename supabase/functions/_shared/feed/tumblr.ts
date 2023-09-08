@@ -7,7 +7,6 @@ import { Redis } from "redis";
 
 import { ISource } from "../models/source.ts";
 import { IItem } from "../models/item.ts";
-import { uploadItemMedia } from "./utils/uploadFile.ts";
 import { IProfile } from "../models/profile.ts";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
 import { log } from "../utils/log.ts";
@@ -22,7 +21,7 @@ export const isTumblrUrl = (url: string): boolean => {
 };
 
 export const getTumblrFeed = async (
-  supabaseClient: SupabaseClient,
+  _supabaseClient: SupabaseClient,
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
@@ -58,7 +57,6 @@ export const getTumblrFeed = async (
     sourceType: "tumblr",
     requestUrl: source.options.tumblr,
     responseStatus: response.status,
-    responseBody: xml,
   });
   const feed = await parseFeed(xml);
 
@@ -107,10 +105,9 @@ export const getTumblrFeed = async (
     }
 
     /**
-     * Create the item object and add it to the `items` array. Before the item is added we also try to upload the media
-     * of the item to our CDN and set the `item.media` to the URL of the uploaded media.
+     * Create the item object and add it to the `items` array.
      */
-    const item = {
+    items.push({
       id: generateItemId(source.id, entry.id),
       userId: source.userId,
       columnId: source.columnId,
@@ -123,14 +120,7 @@ export const getTumblrFeed = async (
         : undefined,
       author: undefined,
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    const cdnItemMedia = await uploadItemMedia(supabaseClient, item);
-    if (cdnItemMedia) {
-      item.media = cdnItemMedia;
-    }
-
-    items.push(item);
+    });
   }
 
   return { source, items };

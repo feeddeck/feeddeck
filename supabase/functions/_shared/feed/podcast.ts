@@ -66,10 +66,7 @@ export const getPodcastFeed = async (
   }
   if (feed.image?.url) {
     source.icon = feed.image?.url;
-    const cdnSourceIcon = await uploadSourceIcon(supabaseClient, source);
-    if (cdnSourceIcon) {
-      source.icon = cdnSourceIcon;
-    }
+    source.icon = await uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -108,7 +105,7 @@ export const getPodcastFeed = async (
       continue;
     }
 
-    const item = {
+    items.push({
       id: itemId,
       userId: source.userId,
       columnId: source.columnId,
@@ -121,9 +118,7 @@ export const getPodcastFeed = async (
         : undefined,
       author: entry["dc:creator"]?.join(", "),
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    items.push(item);
+    });
   }
 
   return { source, items };

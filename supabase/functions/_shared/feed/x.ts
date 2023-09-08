@@ -71,11 +71,7 @@ export const getXFeed = async (
   ) {
     source.icon = feed.props.pageProps.timeline.entries[0].content.tweet.user
       .profile_image_url_https;
-
-    const cdnSourceIcon = await uploadSourceIcon(supabaseClient, source);
-    if (cdnSourceIcon) {
-      source.icon = cdnSourceIcon;
-    }
+    source.icon = await uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -94,7 +90,7 @@ export const getXFeed = async (
 
     const media = getMedia(entry);
 
-    const item = {
+    items.push({
       id: generateItemId(source.id, entry.content.tweet.id_str),
       userId: source.userId,
       columnId: source.columnId,
@@ -107,9 +103,7 @@ export const getXFeed = async (
       publishedAt: Math.floor(
         new Date(entry.content.tweet.created_at).getTime() / 1000,
       ),
-    };
-
-    items.push(item);
+    });
   }
 
   return { source, items };

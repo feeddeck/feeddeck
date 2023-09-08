@@ -7,7 +7,7 @@ import { unescape } from "lodash";
 
 import { IItem } from "../models/item.ts";
 import { ISource } from "../models/source.ts";
-import { uploadItemMedia, uploadSourceIcon } from "./utils/uploadFile.ts";
+import { uploadSourceIcon } from "./utils/uploadFile.ts";
 import { IProfile } from "../models/profile.ts";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
 import { FEEDDECK_SOURCE_YOUTUBE_API_KEY } from "../utils/constants.ts";
@@ -81,7 +81,6 @@ export const getYoutubeFeed = async (
     sourceType: "youtube",
     requestUrl: source.options.youtube,
     responseStatus: response.status,
-    responseBody: xml,
   });
   const feed = await parseFeed(xml);
 
@@ -100,11 +99,7 @@ export const getYoutubeFeed = async (
         "",
       ),
     );
-
-    const cdnSourceIcon = await uploadSourceIcon(supabaseClient, source);
-    if (cdnSourceIcon) {
-      source.icon = cdnSourceIcon;
-    }
+    source.icon = await uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -164,7 +159,7 @@ export const getYoutubeFeed = async (
      * Create the item object and add it to the `items` array. Before the item is added we also try to upload the media
      * of the item to our CDN and set the `item.media` to the URL of the uploaded media.
      */
-    const item = {
+    items.push({
       id: itemId,
       userId: source.userId,
       columnId: source.columnId,
@@ -175,14 +170,7 @@ export const getYoutubeFeed = async (
       description: getDescription(entry),
       author: feed.author?.name,
       publishedAt: Math.floor(entry.published.getTime() / 1000),
-    };
-
-    const cdnItemMedia = await uploadItemMedia(supabaseClient, item);
-    if (cdnItemMedia) {
-      item.media = cdnItemMedia;
-    }
-
-    items.push(item);
+    });
   }
 
   return { source, items };

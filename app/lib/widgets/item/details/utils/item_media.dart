@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:feeddeck/repositories/settings_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
+import 'package:feeddeck/utils/image_url.dart';
 
 /// The [ItemMedia] widget displays the media of an item. Based on the provided
 /// [itemMedia] value the media is displayed from the Supabase storage or
@@ -24,18 +22,7 @@ class ItemMedia extends StatelessWidget {
       return Container();
     }
 
-    /// [itemMedia] is the url to the image of the an item. If the url does not
-    /// start with `https://` it is assumed that the image is stored in the
-    /// Supabase storage and the url is generated accordingly. If the app is
-    /// running in the web, the url is proxied through the Supabase functions.
-    String imageUrl = itemMedia!;
-    if (!imageUrl.startsWith('https://')) {
-      imageUrl =
-          '${SettingsRepository().supabaseUrl}/storage/v1/object/public/items/$imageUrl';
-    } else if (kIsWeb) {
-      imageUrl =
-          '${Supabase.instance.client.functionsUrl}/image-proxy-v1?media=${Uri.encodeQueryComponent(imageUrl)}';
-    }
+    final imageUrl = getImageUrl(FDImageType.item, itemMedia!);
 
     return Container(
       padding: const EdgeInsets.only(

@@ -51,6 +51,10 @@ serve(async (req) => {
       "Access-Control-Allow-Origin",
       FEEDDECK_SUPABASE_SITE_URL,
     );
+    response.headers.set(
+      "Cache-Control",
+      "public, max-age=31536000",
+    );
     return response;
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), {
