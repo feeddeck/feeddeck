@@ -6,11 +6,18 @@ on:
       - main
     tags:
       - v*
+  pull_request:
+  release:
+    types:
+      - published
 
 jobs:
+  # The "Docker" job builds the Docker image and pushes it to the GitHub Container Registry. The job only runs when a
+  # commit is pushed to the main branch or a new tag is created.
   docker:
     name: Docker
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
       packages: write
@@ -53,14 +60,17 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           tags: ghcr.io/${{ github.repository_owner }}/feeddeck:${{ env.TAG }}
 
+  # The "Web" job builds the Flutter web app and publishes it to Cloudflare Pages. The job only runs when a commit is
+  # pushed to the main branch or a new tag is created.
   web:
     name: Web
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: "app"
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout
@@ -119,3 +129,172 @@ jobs:
           projectName: ${{ env.CLOUDFLARE_PROJECT_NAME }}
           directory: ./app/build/web
           branch: main
+
+  # The "macOS" job builds the Flutter macOS app and uploads it to the GitHub release or the pull request. The job only
+  # runs for pull requests and when a new release is published.
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: "app"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.12'
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+
+      - name: Install Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build
+        run: |
+          flutter config --enable-macos-desktop
+          flutter build macos --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
+
+      - name: Package
+        run: |
+          ditto -c -k --keepParent "build/macos/Build/Products/Release/FeedDeck.app" "build/macos/Build/Products/Release/feeddeck-macos-universal.zip"
+
+      - name: Upload Artifacts (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: feeddeck-macos-universal.zip
+          path: app/build/macos/Build/Products/Release/feeddeck-macos-universal.zip
+          if-no-files-found: error
+
+      - name: Upload Artifacts (Release)
+        uses: shogo82148/actions-upload-release-asset@v1
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: app/build/macos/Build/Products/Release/feeddeck-macos-universal.zip
+
+  # The "Linux" job builds the Flutter Linux app and uploads it to the GitHub release or the pull request. The job only
+  # runs for pull requests and when a new release is published.
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: "app"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Packages
+        run: |
+          # Required for Flutter
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.12'
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+
+      - name: Install Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build
+        run: |
+          flutter config --enable-linux-desktop
+          flutter build linux --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
+
+      - name: Package
+        run: |
+          cd build
+          cp -r linux/x64/release/bundle/ feeddeck-linux-x86_64
+          tar -czf feeddeck-linux-x86_64.tar.gz feeddeck-linux-x86_64
+
+      - name: Upload Artifacts (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: feeddeck-linux-x86_64.tar.gz
+          path: app/build/feeddeck-linux-x86_64.tar.gz
+          if-no-files-found: error
+
+      - name: Upload Artifacts (Release)
+        uses: shogo82148/actions-upload-release-asset@v1
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: app/build/feeddeck-linux-x86_64.tar.gz
+
+  # The "Windows" job builds the Flutter Windows app and uploads it to the GitHub release or the pull request. The job
+  # only runs for pull requests and when a new release is published.
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: "app"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.12'
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+
+      - name: Install Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build
+        run: |
+          flutter config --enable-windows-desktop
+          flutter build windows --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
+
+      - name: Package
+        run: |
+          flutter pub run msix:create --output-path build --output-name feeddeck
+          cd build
+          7z a -tzip feeddeck-windows-x86_64.zip feeddeck.msix
+
+      - name: Upload Artifacts (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: feeddeck-windows-x86_64.zip
+          path: app/build/feeddeck-windows-x86_64.zip
+          if-no-files-found: error
+
+      - name: Upload Artifacts (Release)
+        uses: shogo82148/actions-upload-release-asset@v1
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: app/build/feeddeck-windows-x86_64.zip

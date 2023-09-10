@@ -1,5 +1,5 @@
 name: feeddeck
-description: A new Flutter project.
+description: Follow your RSS and Social Media Feeds
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 0.1.0+1
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -72,6 +72,7 @@ dev_dependencies:
 
   flutter_launcher_icons: ^0.13.1
   import_sorter: ^4.6.0
+  msix: ^3.16.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -148,3 +149,22 @@ flutter_native_splash:
     color: "#49d3b4"
     icon_background_color: "#49d3b4"
   fullscreen: true
+
+# The following section specifies the settings for the "msix" package, to build
+# an MSIX package for Windows which can be distributed via the Windows app
+# store, see https://pub.dev/packages/msix
+msix_config:
+  # MSIX Configuration
+  display_name: FeedDeck
+  publisher_display_name: Rico Berger
+  identity_name: 26077RicoBerger.FeedDeck
+  publisher: CN=7740451A-C179-450A-B346-7231CA231332
+  msix_version: 0.1.0.1
+  languages: en-us
+  capabilities: internetClient
+  protocol_activation: http,https
+  execution_alias: feeddeck
+  store: true
+  install_certificate: false
+  # Build Configuration
+  build_windows: false
