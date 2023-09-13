@@ -37,10 +37,10 @@ jobs:
             echo TAG=main >> $GITHUB_ENV
           fi
 
-      - name: Set up QEMU
+      - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
@@ -59,6 +59,64 @@ jobs:
           file: ./supabase/functions/_cmd/Dockerfile
           platforms: linux/amd64,linux/arm64/v8
           tags: ghcr.io/${{ github.repository_owner }}/feeddeck:${{ env.TAG }}
+
+  # The "Supabase" job runs the database migrations and deploys all Supabase functions. The job only runs when a commit
+  # is pushed to the main branch or a new tag is created.
+  supabase:
+    name: Supabase
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Supabase
+        uses: supabase/setup-cli@v1
+
+      - name: Push Database Migration and Deploy Functions
+        if: github.ref == 'refs/heads/main'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_STAGE_DB_PASSWORD }}
+          PROJECT_ID: ${{ secrets.SUPABASE_STAGE_PROJECT_ID }}
+        run: |
+          supabase link --project-ref $PROJECT_ID
+
+          supabase db push
+
+          supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy profile-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+
+      - name: Push Database Migration and Deploy Functions
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PROD_DB_PASSWORD }}
+          PROJECT_ID: ${{ secrets.SUPABASE_PROD_PROJECT_ID }}
+        run: |
+          supabase link --project-ref $PROJECT_ID
+
+          supabase db push
+
+          supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy profile-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
   # The "Web" job builds the Flutter web app and publishes it to Cloudflare Pages. The job only runs when a commit is
   # pushed to the main branch or a new tag is created.
