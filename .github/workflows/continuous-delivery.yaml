@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*
   pull_request:
   release:
     types:
@@ -17,7 +15,7 @@ jobs:
   docker:
     name: Docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: read
       packages: write
@@ -65,7 +63,7 @@ jobs:
   supabase:
     name: Supabase
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: read
 
@@ -99,7 +97,7 @@ jobs:
           supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
       - name: Push Database Migration and Deploy Functions
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PROD_DB_PASSWORD }}
@@ -123,7 +121,7 @@ jobs:
   web:
     name: Web
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: read
     defaults:
@@ -195,7 +193,7 @@ jobs:
     runs-on: macos-latest
     if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
-      contents: read
+      contents: write
     defaults:
       run:
         working-directory: "app"
@@ -248,7 +246,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
-      contents: read
+      contents: write
     defaults:
       run:
         working-directory: "app"
@@ -309,7 +307,7 @@ jobs:
     runs-on: windows-latest
     if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
-      contents: read
+      contents: write
     defaults:
       run:
         working-directory: "app"
