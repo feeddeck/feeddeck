@@ -397,11 +397,17 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
 
 ## Release
 
+```sh
+supabase link --project-ref <PROJECT-ID>
+supabase secrets set --env-file supabase/.env.prod
+supabase secrets list
+```
+
 ### Web
 
 To create a new release for the web version, the following workflow can be used:
 
-1. Delete the build/ and .dart_tool/ directories: `flutter clean`
+1. Delete the `build/` and `.dart_tool/` directories: `flutter clean`
 
 2. Build a web application bundle:
    `flutter build web --dart-define SUPABASE_URL=<SUPABASE_URL> --dart-define SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY> --dart-define SUPABASE_SITE_URL=<SUPABASE_SITE_URL> --dart-define GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>`

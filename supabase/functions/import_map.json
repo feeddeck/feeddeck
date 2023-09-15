@@ -9,6 +9,6 @@
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
     "lodash": "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js",
     "redis": "https://deno.land/x/redis@v0.29.4/mod.ts",
-    "stripe": "https://esm.sh/stripe@12.9.0?target=deno"
+    "stripe": "https://esm.sh/stripe@12.9.0?target=deno&no-check"
   }
 }
