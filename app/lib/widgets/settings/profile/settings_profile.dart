@@ -44,6 +44,9 @@ class _SettingsProfileState extends State<SettingsProfile> {
         SettingsProfileOpenWebApp(),
         SettingsProfileSignOut(),
         SettingsProfileDeleteAccount(),
+        SizedBox(
+          height: Constants.spacingMiddle,
+        ),
       ],
     );
   }

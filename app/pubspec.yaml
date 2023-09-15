@@ -49,6 +49,7 @@ dependencies:
   just_audio_background: ^0.0.1-beta.10
   just_audio_windows: ^0.2.0
   just_audio_mpv: ^0.1.6
+  package_info_plus: ^4.1.0
   provider: ^6.0.4
   rxdart: ^0.27.7
   scroll_to_index: ^3.0.1

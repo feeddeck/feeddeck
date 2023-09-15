@@ -95,7 +95,7 @@ class SettingsPaymentBanner extends StatelessWidget {
                           height: Constants.spacingSmall,
                         ),
                         Text(
-                          'FeedDeck Premium',
+                          'Subscribe to FeedDeck Premium',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
@@ -177,7 +177,7 @@ class _SettingsPaymentBannerModalState
             width: 1,
           ),
         ),
-        title: const Text('FeedDeck Premium'),
+        title: const Text('Subscribe to FeedDeck Premium'),
         actions: [
           IconButton(
             icon: const Icon(

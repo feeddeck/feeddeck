@@ -7,6 +7,7 @@ import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/settings/accounts/settings_accounts.dart';
 import 'package:feeddeck/widgets/settings/decks/settings_decks.dart';
 import 'package:feeddeck/widgets/settings/profile/settings_profile.dart';
+import 'package:feeddeck/widgets/settings/settings_info.dart';
 import 'package:feeddeck/widgets/settings/settings_payment_banner.dart';
 
 /// The [Settings] widget implements the settings page for the FeedDeck app. The
@@ -73,6 +74,10 @@ class _SettingsState extends State<Settings> {
                     /// user can update his email address and password or delete
                     /// his account.
                     SettingsProfile(),
+
+                    /// Display some general information about the app, like the
+                    /// version and the link to our website.
+                    SettingsInfo(),
                   ],
                 ),
               ),
