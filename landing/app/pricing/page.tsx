@@ -49,7 +49,7 @@ export default function Pricing() {
               <Feature>No credit card required</Feature>
             </ul>
             <a
-              href="https://app.feeddeck.com"
+              href="https://app.feeddeck.app"
               className="text-onprimary bg-primary font-medium rounded-full text-sm px-5 py-2.5 text-center"
             >
               Get Started
@@ -85,7 +85,7 @@ export default function Pricing() {
               </Feature>
             </ul>
             <a
-              href="https://app.feeddeck.com"
+              href="https://app.feeddeck.app"
               className="text-onprimary bg-primary font-medium rounded-full text-sm px-5 py-2.5 text-center"
             >
               Get Started
