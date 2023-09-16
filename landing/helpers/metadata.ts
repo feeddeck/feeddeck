@@ -95,8 +95,8 @@ export const generalMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: "@feeddeck",
-    creator: "@feeddeck",
+    site: "@feeddeckapp",
+    creator: "@feeddeckapp",
     title: "FeedDeck",
     description: "Follow your RSS and Social Media Feeds",
     images: {
