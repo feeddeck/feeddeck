@@ -15,7 +15,6 @@ import 'package:feeddeck/widgets/item/details/item_details_reddit.dart';
 import 'package:feeddeck/widgets/item/details/item_details_rss.dart';
 import 'package:feeddeck/widgets/item/details/item_details_stackoverflow.dart';
 import 'package:feeddeck/widgets/item/details/item_details_tumblr.dart';
-import 'package:feeddeck/widgets/item/details/item_details_x.dart';
 import 'package:feeddeck/widgets/item/details/item_details_youtube.dart';
 
 class ItemDetails extends StatelessWidget {
@@ -111,11 +110,11 @@ class ItemDetails extends StatelessWidget {
           item: item,
           source: source,
         );
-      case FDSourceType.x:
-        return ItemDetailsX(
-          item: item,
-          source: source,
-        );
+      // case FDSourceType.x:
+      //   return ItemDetailsX(
+      //     item: item,
+      //     source: source,
+      //   );
       case FDSourceType.youtube:
         return ItemDetailsYoutube(
           item: item,

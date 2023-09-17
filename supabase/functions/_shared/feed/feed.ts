@@ -97,8 +97,8 @@ export const getFeed = async (
       );
     case "tumblr":
       return await getTumblrFeed(supabaseClient, redisClient, profile, source);
-    case "x":
-      return await getXFeed(supabaseClient, redisClient, profile, source);
+    // case "x":
+    //   return await getXFeed(supabaseClient, redisClient, profile, source);
     case "youtube":
       return await getYoutubeFeed(supabaseClient, redisClient, profile, source);
     default:

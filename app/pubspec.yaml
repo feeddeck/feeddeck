@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.1.0+1
+version: 1.0.0+2
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -160,7 +160,8 @@ msix_config:
   publisher_display_name: Rico Berger
   identity_name: 26077RicoBerger.FeedDeck
   publisher: CN=7740451A-C179-450A-B346-7231CA231332
-  msix_version: 0.1.0.1
+  msix_version: 1.0.0.0
+  logo_path: templates/app-icon/windows.png
   languages: en-us
   capabilities: internetClient
   protocol_activation: http,https

@@ -10,6 +10,7 @@
     - [Run Release Build on a Device](#run-release-build-on-a-device)
   - [Working with Supabase](#working-with-supabase)
   - [Working with Deno](#working-with-deno)
+- [Hosting](#hosting)
 - [Release](#release)
 
 Every contribution to FeedDeck is welcome, whether it is reporting a bug,
@@ -63,9 +64,9 @@ Tools • Dart 2.19.6 • DevTools 2.20.1
 
 
 $ deno --version
-deno 1.33.1 (release, aarch64-apple-darwin)
-v8 11.4.183.1
-typescript 5.0.3
+deno 1.36.4 (release, aarch64-apple-darwin)
+v8 11.6.189.12
+typescript 5.1.6
 ```
 
 ### Working with Flutter
@@ -301,7 +302,7 @@ docker-compose up --build
 
 ## Hosting
 
-FeedDeck uses Supabase as it backend. For Supabase we can use
+FeedDeck uses Supabase as backend. For Supabase we can use
 [Supabase Cloud](https://supabase.com/dashboard) or their
 [Self-Hosting](https://supabase.com/docs/guides/self-hosting) offer.
 
@@ -399,33 +400,37 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
 
 ## Release
 
-```sh
-supabase link --project-ref <PROJECT-ID>
-supabase secrets set --env-file supabase/.env.prod
-supabase secrets list
-```
+1. Ensure that all secrets are updated in the Supabase project:
 
-### Web
+   ```sh
+   supabase link --project-ref <PROJECT-ID>
+   supabase secrets set --env-file supabase/.env.prod
+   supabase secrets list
+   ```
 
-To create a new release for the web version, the following workflow can be used:
+2. Update the `version` key and the `msix_config.msix_version` key in the
+   `pubspec.yaml` file.
 
-1. Delete the `build/` and `.dart_tool/` directories: `flutter clean`
+3. Delete the `build/` and `.dart_tool/` directories via the `flutter clean`
+   command.
 
-2. Build a web application bundle:
-   `flutter build web --dart-define SUPABASE_URL=<SUPABASE_URL> --dart-define SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY> --dart-define SUPABASE_SITE_URL=<SUPABASE_SITE_URL> --dart-define GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>`
+4. Build the app for Web by running `flutter build web`. The build can be found
+   at `app/build/web` and must be uploaded to your hosting provider.
 
-3. Upload the `app/build/web` folder to your CDN.
+5. Build the app for Linux by running `flutter build linux --release`.
 
-### macOS, Windows and Linux
+6. Build the app for macOS by running `flutter build macos --release`. Open
+   Xcode and select **Product** > **Archive** to create and open the archive.
+   After that the **Validate App** and **Distribute App** options can be used to
+   upload the build to
+   [https://appstoreconnect.apple.com](https://appstoreconnect.apple.com).
 
-### iOS and Android
+7. Build the app for Windows by running `flutter build windows --release`. and
+   `flutter pub run msix:create --output-path build --output-name feeddeck`. The
+   build can be found at `app/build/feeddeck.msix` and must be uploaded to
+   [https://partner.microsoft.com/en-us/dashboard/products/9NPHPGRRCT5H/overview](https://partner.microsoft.com/en-us/dashboard/products/9NPHPGRRCT5H/overview).
 
-To create a new release for Android and iOS which can be published in
-[Google Play](https://play.google.com/store/apps/details?id=app.feeddeck.feeddeck)
-and the [App Store](https://apps.apple.com/us/app/FeedDeck/TODO) the following
-workflow can be used:
-
-1. Create a file `app/android/key.properties` with the following content:
+8. Create a file `app/android/key.properties` with the following content:
 
    ```plain
    storePassword=
@@ -434,20 +439,13 @@ workflow can be used:
    storeFile=
    ```
 
-2. Update the `version` key in the `pubspec.yaml` file
-
-3. Delete all old builds by running `rm -rf build`
-
-4. Build the app for Android by running
-   `flutter build appbundle --dart-define SUPABASE_URL=<SUPABASE_URL> --dart-define SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY> --dart-define SUPABASE_SITE_URL=<SUPABASE_SITE_URL> --dart-define GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>`.
-   The build can be found at
-   `app/build/app/outputs/bundle/release/app-release.aab` and must be uploaded
-   to
+9. Build the app for Android by running `flutter build appbundle`. The build can
+   be found at `app/build/app/outputs/bundle/release/app-release.aab` and must
+   be uploaded to
    [https://play.google.com/apps/publish](https://play.google.com/apps/publish).
 
-5. Build the app for iOS by running
-   `flutter build ipa --dart-define SUPABASE_URL=<SUPABASE_URL> --dart-define SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY> --dart-define SUPABASE_SITE_URL=<SUPABASE_SITE_URL> --dart-define GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>`.
-   The build can be found at `app/build/ios/archive/Runner.xcarchive` and must
-   be opened in Xcode. In Xcode **Validate App** and **Distribute App** can be
-   used to upload the build to
-   [https://appstoreconnect.apple.com](https://appstoreconnect.apple.com).
+10. Build the app for iOS by running `flutter build ipa`. The build can be found
+    at `app/build/ios/archive/Runner.xcarchive` and must be opened in Xcode. In
+    Xcode the **Validate App** and **Distribute App** options can be used to
+    upload the build to
+    [https://appstoreconnect.apple.com](https://appstoreconnect.apple.com).

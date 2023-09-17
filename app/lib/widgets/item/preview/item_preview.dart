@@ -15,7 +15,6 @@ import 'package:feeddeck/widgets/item/preview/item_preview_reddit.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_rss.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_stackoverflow.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_tumblr.dart';
-import 'package:feeddeck/widgets/item/preview/item_preview_x.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_youtube.dart';
 
 /// The [ItemPreview] widget displays a preview for an item in a column based on
@@ -93,11 +92,11 @@ class ItemPreview extends StatelessWidget {
           item: item,
           source: source,
         );
-      case FDSourceType.x:
-        return ItemPreviewX(
-          item: item,
-          source: source,
-        );
+      // case FDSourceType.x:
+      //   return ItemPreviewX(
+      //     item: item,
+      //     source: source,
+      //   );
       case FDSourceType.youtube:
         return ItemPreviewYoutube(
           item: item,

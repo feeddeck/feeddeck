@@ -13,7 +13,6 @@ import 'package:feeddeck/widgets/source/add/add_source_reddit.dart';
 import 'package:feeddeck/widgets/source/add/add_source_rss.dart';
 import 'package:feeddeck/widgets/source/add/add_source_stackoverflow.dart';
 import 'package:feeddeck/widgets/source/add/add_source_tumblr.dart';
-import 'package:feeddeck/widgets/source/add/add_source_x.dart';
 import 'package:feeddeck/widgets/source/add/add_source_youtube.dart';
 import 'package:feeddeck/widgets/source/source_icon.dart';
 
@@ -80,9 +79,9 @@ class _AddSourceState extends State<AddSource> {
       return AddSourceTumblr(column: widget.column);
     }
 
-    if (_sourceType == FDSourceType.x) {
-      return AddSourceX(column: widget.column);
-    }
+    // if (_sourceType == FDSourceType.x) {
+    //   return AddSourceX(column: widget.column);
+    // }
 
     if (_sourceType == FDSourceType.stackoverflow) {
       return AddSourceStackOverflow(column: widget.column);

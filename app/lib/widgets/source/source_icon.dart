@@ -118,13 +118,13 @@ class SourceIcon extends StatelessWidget {
           type.color,
           const Color(0xffffffff),
         );
-      case FDSourceType.x:
-        return buildIcon(
-          FDIcons.x,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
+      // case FDSourceType.x:
+      //   return buildIcon(
+      //     FDIcons.x,
+      //     iconSize,
+      //     type.color,
+      //     const Color(0xffffffff),
+      //   );
       case FDSourceType.youtube:
         return buildIcon(
           FDIcons.youtube,
