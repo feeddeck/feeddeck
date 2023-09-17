@@ -35,7 +35,7 @@ enum FDSourceType {
   rss,
   stackoverflow,
   tumblr,
-  x,
+  // x,
   youtube,
   none,
 }
@@ -72,8 +72,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return 'StackOverflow';
       case FDSourceType.tumblr:
         return 'Tumblr';
-      case FDSourceType.x:
-        return 'X';
+      // case FDSourceType.x:
+      //   return 'X';
       case FDSourceType.youtube:
         return 'YouTube';
       default:
@@ -105,8 +105,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return const Color(0xffef8236);
       case FDSourceType.tumblr:
         return const Color(0xff34526f);
-      case FDSourceType.x:
-        return const Color(0xff000000);
+      // case FDSourceType.x:
+      //   return const Color(0xff000000);
       case FDSourceType.youtube:
         return const Color(0xffff0000);
       default:

@@ -15,7 +15,7 @@ const _helpText = '''
 The Reddit source can be used to follow your favorite subreddits or users:
 
 - **Subreddit**: Provide the name of the subreddit (e.g. `/r/kubernetes`)
-- **User**: Provide the name of the user (e.g. `/u/feeddeck`)
+- **User**: Provide the name of the user (e.g. `/u/reddit`)
 - **Url**: Provide the url for a user or subbreddit (e.g.
   `https://www.reddit.com/r/kubernetes/` or `https://www.reddit.com/r/kubernetes.rss`)
 ''';

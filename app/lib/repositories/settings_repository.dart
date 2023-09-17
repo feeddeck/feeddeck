@@ -3,16 +3,21 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 /// The [SettingsRepository] is a singleton class that is used to store the
-/// settings of the app. This includes the url and anon key of the Supabase. The
-/// [SettingsRepository] must be initialized in our main function by calling the
-/// [init] method.
+/// settings of the app and to initialize the `timeago` package and the Supabase
+/// client. The [SettingsRepository] must be initialized in our main function by
+/// calling the [init] method.
 class SettingsRepository {
   static final SettingsRepository _instance = SettingsRepository._internal();
 
-  String supabaseUrl = '';
-  String supabaseAnonKey = '';
-  String supabaseSiteUrl = '';
-  String googleClientId = '';
+  /// The [supabaseUrl], [supabaseAnonKey], [supabaseSiteUrl] and
+  /// [googleClientId] can be adjusted during build time or by a user during
+  /// runtime. By default the values of our production instance will be used.
+  String supabaseUrl = 'https://ityjucpsrasavriepscr.supabase.co';
+  String supabaseAnonKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0eWp1Y3BzcmFzYXZyaWVwc2NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQwMjY0NjIsImV4cCI6MjAwOTYwMjQ2Mn0.IDo7j9Kh8-5kHLtrZtHTvLf8lUkj7jiLynpIXSZbRFs';
+  String supabaseSiteUrl = 'https://app.feeddeck.app';
+  String googleClientId =
+      '420185423235-9ehth1eodl4lt3cdns7kaf2e89eo6rkq.apps.googleusercontent.com';
 
   factory SettingsRepository() {
     return _instance;
@@ -21,9 +26,10 @@ class SettingsRepository {
   SettingsRepository._internal();
 
   /// The [init] method initializes the [SettingsRepository] by reading the
-  /// Supabase url and anon key from the shared preferences. If the Supabase url
-  /// and anon key are not stored in the shared preferences, the values from the
-  /// environment variables are used.
+  /// the values which can be configured by the user from the shared preferences
+  /// and by reading the values from the environment variables. When all values
+  /// were set by a user they will be used. If not we check if all environment
+  /// variables are set and use them. If not we use the default values.
   Future<void> init() async {
     try {
       timeago.setLocaleMessages('en', timeago.EnShortMessages());
@@ -35,10 +41,17 @@ class SettingsRepository {
       final String? supabaseSiteUrlPrefs = prefs.getString('supabaseSiteUrl');
       final String? googleClientIdPrefs = prefs.getString('googleClientId');
 
+      const supabaseUrlEnv = String.fromEnvironment('SUPABASE_URL');
+      const supabaseAnonKeyEnv = String.fromEnvironment('SUPABASE_ANON_KEY');
+      const supabaseSiteUrlEnv = String.fromEnvironment('SUPABASE_SITE_URL');
+      const googleClientIdEnv = String.fromEnvironment('GOOGLE_CLIENT_ID');
+
       if (supabaseUrlPrefs != null &&
           supabaseAnonKeyPrefs != null &&
           supabaseSiteUrlPrefs != null &&
           googleClientIdPrefs != null) {
+        /// Store the user provided values within the [SettingsRepository] and
+        /// use them to initialize the Supabase client.
         supabaseUrl = supabaseUrlPrefs;
         supabaseAnonKey = supabaseAnonKeyPrefs;
         supabaseSiteUrl = supabaseSiteUrlPrefs;
@@ -48,12 +61,12 @@ class SettingsRepository {
           url: supabaseUrlPrefs,
           anonKey: supabaseAnonKeyPrefs,
         );
-      } else {
-        const supabaseUrlEnv = String.fromEnvironment('SUPABASE_URL');
-        const supabaseAnonKeyEnv = String.fromEnvironment('SUPABASE_ANON_KEY');
-        const supabaseSiteUrlEnv = String.fromEnvironment('SUPABASE_SITE_URL');
-        const googleClientIdEnv = String.fromEnvironment('GOOGLE_CLIENT_ID');
-
+      } else if (supabaseUrlEnv != '' &&
+          supabaseAnonKeyEnv != '' &&
+          supabaseSiteUrlEnv != '' &&
+          googleClientIdEnv != '') {
+        /// Store the values provided during the build time within the
+        /// [SettingsRepository] and use them to initialize the Supabase client.
         supabaseUrl = supabaseUrlEnv;
         supabaseAnonKey = supabaseAnonKeyEnv;
         supabaseSiteUrl = supabaseSiteUrlEnv;
@@ -63,10 +76,19 @@ class SettingsRepository {
           url: supabaseUrlEnv,
           anonKey: supabaseAnonKeyEnv,
         );
+      } else {
+        /// Use the default values to initialize the Supabase client.
+        await Supabase.initialize(
+          url: supabaseUrl,
+          anonKey: supabaseAnonKey,
+        );
       }
     } catch (_) {}
   }
 
+  /// [save] can be used to store the user provided values within the shared
+  /// preferences. This will not automatically use the provided values for the
+  /// Supabase client and a user must restart the app first.
   Future<void> save(
     String newSupabaseUrl,
     String newSupabaseAnonKey,
@@ -80,6 +102,9 @@ class SettingsRepository {
     await prefs.setString('googleClientId', newGoogleClientId);
   }
 
+  /// [delete] can be used to delete all values from the shared preferences.
+  /// This will not automatically use the default values for the Supabase client
+  /// and a user must restart the app first.
   Future<void> delete() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('supabaseUrl');
