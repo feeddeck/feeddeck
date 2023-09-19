@@ -218,7 +218,7 @@ jobs:
       - name: Build
         run: |
           flutter config --enable-macos-desktop
-          flutter build macos --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
+          FLUTTER_XCODE_CODE_SIGN_IDENTITY="" FLUTTER_XCODE_CODE_SIGNING_REQUIRED=NO flutter build macos --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
 
       - name: Package
         run: |

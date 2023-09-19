@@ -112,6 +112,64 @@ class _CreateDeckState extends State<CreateDeck> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: Constants.spacingMiddle,
+                    ),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        style: TextStyle(
+                          color: Constants.onSurface,
+                          fontSize: 14.0,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'We\'re excited to have you onboard at ',
+                          ),
+                          TextSpan(
+                            text: 'FeedDeck',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                '. We hope you enjoy your journey with us. If you have any questions or need assistance, feel free to reach out.',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: Constants.spacingMiddle,
+                    ),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        style: TextStyle(
+                          color: Constants.onSurface,
+                          fontSize: 14.0,
+                        ),
+                        children: [
+                          TextSpan(
+                            text:
+                                'Now it\'s time to create your first deck. A deck is a collection of columns and sources. Provide the name for your first deck and click on the ',
+                          ),
+                          TextSpan(
+                            text: '"Create Deck"',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' button.',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   TextFormField(
                     controller: _nameController,
                     keyboardType: TextInputType.text,

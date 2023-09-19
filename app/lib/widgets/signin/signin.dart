@@ -154,12 +154,12 @@ class _SignInState extends State<SignIn> {
   /// [_signInWithApple] handles the sign in of a user via his Apple account.
   Future<void> _signInWithApple() async {
     try {
-      if (!kIsWeb && Platform.isIOS) {
-        /// On iOS we are using the `signInWithApple` method of the Supabase
-        /// client instead of the `signInWithOAuth` method, so that the user is
-        /// not redirected for the sign in. Since the sign in is completly
-        /// handled within the app we have to call the `init` method of the
-        /// [AppRepository] to load the user data from Supabase.
+      if (!kIsWeb && (Platform.isIOS || Platform.isMacOS)) {
+        /// On iOS and macOS we are using the `signInWithApple` method of the
+        /// Supabase client instead of the `signInWithOAuth` method, so that the
+        /// user is not redirected for the sign in. Since the sign in is
+        /// completly handled within the app we have to call the `init` method
+        /// of the [AppRepository] to load the user data from Supabase.
         setState(() {
           _isLoading = true;
           _error = '';
@@ -186,10 +186,9 @@ class _SignInState extends State<SignIn> {
           ),
           (route) => false,
         );
-      } else if (!kIsWeb &&
-          (Platform.isLinux || Platform.isMacOS || Platform.isWindows)) {
-        /// On Linux, macOS and Windows we have to use the [DesktopLoginManager]
-        /// to handle the login via the users Apple account. Once the sing in
+      } else if (!kIsWeb && (Platform.isLinux || Platform.isWindows)) {
+        /// On Linux and Windows we have to use the [DesktopLoginManager] to
+        /// handle the login via the users Apple account. Once the sing in
         /// process is finished we have to call the init method of the
         /// [AppRepository] to load the users data.
         setState(() {
@@ -349,8 +348,8 @@ class _SignInState extends State<SignIn> {
                   /// his Apple account.
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff000000),
-                      foregroundColor: const Color(0xffffffff),
+                      backgroundColor: const Color(0xffffffff),
+                      foregroundColor: const Color(0xff000000),
                       maximumSize: const Size.fromHeight(
                         Constants.elevatedButtonSize,
                       ),
