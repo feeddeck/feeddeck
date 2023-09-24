@@ -19,6 +19,18 @@ class SettingsRepository {
   String googleClientId =
       '420185423235-9ehth1eodl4lt3cdns7kaf2e89eo6rkq.apps.googleusercontent.com';
 
+  /// By default the [subscriptionEnabled] variable is set to `true`, so that a
+  /// user can subscribe to FeedDeck Premium. If the variable is set to `false`
+  /// the user can not subscribe to FeedDeck Premium.
+  bool subscriptionEnabled = true;
+
+  /// The [revenueCatAppStoreKey] and [revenueCatGooglePlayKey] are used for the
+  /// in-app purchases. The [revenueCatAppStoreKey] is used for the Apple App
+  /// Store on iOS and macOS. The [revenueCatGooglePlayKey] is used for the
+  /// Google Play Store on Android.
+  final String revenueCatAppStoreKey = 'appl_kThbIaMkylDBtCEmsfczvgCBram';
+  final String revenueCatGooglePlayKey = 'goog_tBFPbLbygjioviXRIlGlmUOKZYA';
+
   factory SettingsRepository() {
     return _instance;
   }
@@ -52,10 +64,15 @@ class SettingsRepository {
           googleClientIdPrefs != null) {
         /// Store the user provided values within the [SettingsRepository] and
         /// use them to initialize the Supabase client.
+        ///
+        /// Also set the [subscriptionEnabled] variabel to `false`, so that the
+        /// user can not subscribe to FeedDeck Premium.
         supabaseUrl = supabaseUrlPrefs;
         supabaseAnonKey = supabaseAnonKeyPrefs;
         supabaseSiteUrl = supabaseSiteUrlPrefs;
         googleClientId = googleClientIdPrefs;
+
+        subscriptionEnabled = false;
 
         await Supabase.initialize(
           url: supabaseUrlPrefs,

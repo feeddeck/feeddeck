@@ -95,6 +95,7 @@ jobs:
           supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
       - name: Push Database Migration and Deploy Functions
         if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
@@ -115,6 +116,7 @@ jobs:
           supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
   # The "Web" job builds the Flutter web app and publishes it to Cloudflare Pages. The job only runs when a commit is
   # pushed to the main branch or a new tag is created.

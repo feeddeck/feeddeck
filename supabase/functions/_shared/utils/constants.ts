@@ -53,6 +53,8 @@ export const FEEDDECK_REDIS_PASSWORD =
  * - FEEDDECK_STRIPE_API_KEY is the API key to access the Stripe API.
  * - FEEDDECK_STRIPE_PRICE_ID is the id of the price used for the subscription.
  * - FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET is the signing secret used to verify the Stripe webhook calls.
+ * - FEEDDECK_REVENUECAT_ENVIRONMENT is the Store environment, this could be "SANDBOX" or "PRODUCTION".
+ * - FEEDDECK_REVENUECAT_WEBHOOK_HEADER is the value of the authorization header send by RevenueCat.
  */
 export const FEEDDECK_STRIPE_API_KEY =
   Deno.env.get("FEEDDECK_STRIPE_API_KEY") ?? "";
@@ -60,6 +62,8 @@ export const FEEDDECK_STRIPE_PRICE_ID =
   Deno.env.get("FEEDDECK_STRIPE_PRICE_ID") ?? "";
 export const FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET =
   Deno.env.get("FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET") ?? "";
+export const FEEDDECK_REVENUECAT_WEBHOOK_HEADER =
+  Deno.env.get("FEEDDECK_REVENUECAT_WEBHOOK_HEADER") ?? "";
 
 /**
  * Source Configuration

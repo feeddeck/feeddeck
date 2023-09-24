@@ -1,9 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+import 'package:feeddeck/models/profile.dart';
+import 'package:feeddeck/repositories/profile_repository.dart';
 import 'package:feeddeck/utils/api_exception.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/openurl.dart';
@@ -22,80 +24,86 @@ class SettingsProfileCustomerPortal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb) {
-      return Container();
-    }
+    ProfileRepository profile = Provider.of<ProfileRepository>(
+      context,
+      listen: true,
+    );
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            isDismissible: true,
-            useSafeArea: true,
-            backgroundColor: Colors.transparent,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(Constants.spacingMiddle),
-              ),
-            ),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            constraints: const BoxConstraints(
-              maxWidth: Constants.centeredFormMaxWidth,
-            ),
-            builder: (BuildContext context) {
-              return const SettingsProfileCustomerPortalModal();
-            },
-          );
-        },
-        child: Card(
-          color: Constants.secondary,
-          margin: const EdgeInsets.only(
-            bottom: Constants.spacingSmall,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(
-                  Constants.spacingMiddle,
+    if (profile.tier == FDProfileTier.premium &&
+        profile.subscriptionProvider == FDProfileSubscriptionProvider.stripe) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              isDismissible: true,
+              useSafeArea: true,
+              backgroundColor: Colors.transparent,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constants.spacingMiddle),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            Characters('Customer Portal')
-                                .replaceAll(
-                                  Characters(''),
-                                  Characters('\u{200B}'),
-                                )
-                                .toString(),
-                            maxLines: 1,
-                            style: const TextStyle(
-                              overflow: TextOverflow.ellipsis,
+              ),
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              constraints: const BoxConstraints(
+                maxWidth: Constants.centeredFormMaxWidth,
+              ),
+              builder: (BuildContext context) {
+                return const SettingsProfileCustomerPortalModal();
+              },
+            );
+          },
+          child: Card(
+            color: Constants.secondary,
+            margin: const EdgeInsets.only(
+              bottom: Constants.spacingSmall,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(
+                    Constants.spacingMiddle,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              Characters('Customer Portal')
+                                  .replaceAll(
+                                    Characters(''),
+                                    Characters('\u{200B}'),
+                                  )
+                                  .toString(),
+                              maxLines: 1,
+                              style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const Icon(Icons.receipt),
-                  ],
+                      const Icon(Icons.receipt),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
+
+    return Container();
   }
 }
 
@@ -119,9 +127,9 @@ class _SettingsProfileCustomerPortalModalState
   /// Supabase edge function. If the link is generated successfully, the
   /// function returns the url, which can then be opened by the user.
   Future<String> _fetchCustomerPortalLink() async {
-    final result = await Supabase.instance.client.functions.invoke(
+    final result = await supabase.Supabase.instance.client.functions.invoke(
       'stripe-create-billing-portal-link-v1',
-      method: HttpMethod.get,
+      method: supabase.HttpMethod.get,
     );
 
     if (result.status != 200) {
