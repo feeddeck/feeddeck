@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=FeedDeck
+Comment=Follow your RSS and Social Media Feeds
+Categories=Utility
+Icon=app.feeddeck.feeddeck
+Terminal=false
+Exec=feeddeck

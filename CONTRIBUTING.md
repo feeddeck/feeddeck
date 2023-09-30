@@ -417,7 +417,16 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
 4. Build the app for Web by running `flutter build web`. The build can be found
    at `app/build/web` and must be uploaded to your hosting provider.
 
-5. Build the app for Linux by running `flutter build linux --release`.
+5. Build the app for Linux by running `flutter build linux --release`. To build
+   the `arm64` version the following commands can be run on a Raspberry Pi. Once
+   the `feeddeck-linux-arm64.tar.gz` archive was created it can be uploaded to
+   the GitHub release.
+
+   ```sh
+   cd build
+   cp -r linux/arm64/release/bundle/ feeddeck-linux-arm64
+   tar -czf feeddeck-linux-arm64.tar.gz feeddeck-linux-arm64
+   ```
 
 6. Build the app for macOS by running `flutter build macos --release`. Open
    Xcode and select **Product** > **Archive** to create and open the archive.
