@@ -14,8 +14,11 @@ import 'package:feeddeck/widgets/source/add/add_source_form.dart';
 const _helpText = '''
 The Nitter source can be used to add an RSS feed for Nitter:
 
+- **RSS Feed**: `https://nitter.net/rico_berger/rss` or `https://nitter.net/search/rss?f=tweets&q=FeedDeck`
 - **Username**: `@rico_berger`
 - **Search Term**: `FeedDeck`
+
+**Note:** We recommend that you use your own Nitter instance to avoid rate limiting.
 ''';
 
 /// The [AddSourceNitter] widget is used to display the form to add a new Nitter
