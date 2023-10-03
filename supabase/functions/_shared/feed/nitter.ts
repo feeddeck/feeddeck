@@ -26,15 +26,16 @@ export const getNitterFeed = async (
     throw new Error("Invalid source options");
   }
 
+  const nitterOptions = parseNitterOptions(source.options.nitter);
+
   /**
    * Get the RSS for the provided `nitter` username or search term. If a feed doesn't contains an item we return an
    * error.
    */
-  const feedUrl = generateFeedUrl(source.options.nitter);
   const response = await fetchWithTimeout(
-    feedUrl,
+    nitterOptions.feedUrl,
     {
-      headers: {
+      headers: nitterOptions.isCustomInstance ? undefined : {
         "Authorization": `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
       },
       method: "get",
@@ -44,7 +45,7 @@ export const getNitterFeed = async (
   const xml = await response.text();
   log("debug", "Add source", {
     sourceType: "nitter",
-    requestUrl: feedUrl,
+    requestUrl: nitterOptions.feedUrl,
     responseStatus: response.status,
   });
   const feed = await parseFeed(xml);
@@ -66,7 +67,7 @@ export const getNitterFeed = async (
     );
   }
   source.type = "nitter";
-  source.title = source.options.nitter;
+  source.title = nitterOptions.sourceTitle;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }
@@ -75,7 +76,7 @@ export const getNitterFeed = async (
    * When the source doesn't has an icon yet and the user requested the feed of a user (string starts with `@`) we try
    * to get an icon for the source.
    */
-  if (!source.icon && source.options.nitter[0] === "@" && feed.image?.url) {
+  if (!source.icon && nitterOptions.isUsername && feed.image?.url) {
     source.icon = feed.image.url;
     source.icon = await uploadSourceIcon(supabaseClient, source);
   }
@@ -143,20 +144,61 @@ export const getNitterFeed = async (
 };
 
 /**
- * `generateFeedUrl` returns the url to the RSS feed for the provided user input. By default we are using nitter.net,
- * but we can also use our own instance via the `FEEDDECK_SOURCE_NITTER_INSTANCE` environment variable.
+ * `parseNitterOptions` parsed the Nitter options and returns an object with all the required data to get the feed and
+ * to create the database entry for the source.
+ *
+ * This is required, because a user can provide the RSS feed of his own Nitter instance or a username or search term,
+ * where we have to use our own Nitter instance.
  */
-const generateFeedUrl = (input: string): string => {
-  let instance = FEEDDECK_SOURCE_NITTER_INSTANCE;
-  if (!instance) {
-    instance = "https://nitter.net";
+const parseNitterOptions = (
+  options: string,
+): {
+  feedUrl: string;
+  sourceTitle: string;
+  isUsername: boolean;
+  isCustomInstance: boolean;
+} => {
+  if (options.startsWith("http://") || options.startsWith("https://")) {
+    if (options.endsWith("/rss")) {
+      return {
+        feedUrl: options,
+        sourceTitle: `@${
+          options.slice(
+            options.replace("/rss", "").lastIndexOf("/") + 1,
+            options.replace("/rss", "").length,
+          )
+        }`,
+        isUsername: true,
+        isCustomInstance: true,
+      };
+    }
+
+    const url = new URL(options);
+    return {
+      feedUrl: options,
+      sourceTitle: url.searchParams.get("q") || options,
+      isUsername: false,
+      isCustomInstance: true,
+    };
   }
 
-  if (input[0] === "@") {
-    return `${instance}/${input.slice(1)}/rss`;
+  if (options[0] === "@") {
+    return {
+      feedUrl: `${FEEDDECK_SOURCE_NITTER_INSTANCE}/${options.slice(1)}/rss`,
+      sourceTitle: options,
+      isUsername: true,
+      isCustomInstance: false,
+    };
   }
 
-  return `${instance}/search/rss?f=tweets&q=${encodeURIComponent(input)}`;
+  return {
+    feedUrl: `${FEEDDECK_SOURCE_NITTER_INSTANCE}/search/rss?f=tweets&q=${
+      encodeURIComponent(options)
+    }`,
+    sourceTitle: options,
+    isUsername: false,
+    isCustomInstance: false,
+  };
 };
 
 /**
