@@ -113,7 +113,8 @@ export const getRSSFeed = async (
      */
     if (
       !entry.title?.value ||
-      (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+      (entry.links.length === 0 || !entry.links[0].href) ||
+      (!entry.published && !entry.updated)
     ) {
       continue;
     }
@@ -143,7 +144,11 @@ export const getRSSFeed = async (
       media: getMedia(entry),
       description: getItemDescription(entry),
       author: entry.author?.name,
-      publishedAt: Math.floor(entry.published.getTime() / 1000),
+      publishedAt: entry.published
+        ? Math.floor(entry.published.getTime() / 1000)
+        : entry.updated
+        ? Math.floor(entry.updated.getTime() / 1000)
+        : Math.floor(new Date().getTime() / 1000),
     });
   }
 
