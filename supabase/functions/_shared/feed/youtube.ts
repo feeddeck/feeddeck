@@ -19,7 +19,8 @@ import { log } from "../utils/log.ts";
  */
 export const isYoutubeUrl = (url: string): boolean => {
   return url.startsWith("https://www.youtube.com/") ||
-    url.startsWith("https://m.youtube.com/");
+    url.startsWith("https://m.youtube.com/") ||
+    url.startsWith("https://youtube.com/");
 };
 
 export const getYoutubeFeed = async (
