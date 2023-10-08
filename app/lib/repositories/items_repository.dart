@@ -288,14 +288,23 @@ class ItemsRepository with ChangeNotifier {
   /// [updateReadStates] can be used to mark a list of items provided via their
   /// [itemIds] as read / unread. When the [read] value is `true` items are
   /// marked as read and when it is `false` as unread.
+  ///
+  /// We have to split the provided list of [itemIds] into chunks of 25 items,
+  /// to avoid the request uri to long error from Supabase. We decided to use 25
+  /// items per chunk, because we think that this is a good tradeoff between the
+  /// number of requests and the number of items we can update at once.
   Future<void> updateReadStates(List<String> itemIds, bool read) async {
     try {
-      await Supabase.instance.client
-          .from('items')
-          .update({'isRead': read}).in_('id', itemIds);
-      for (var i = 0; i < _items.length; i++) {
-        if (itemIds.contains(_items[i].id)) {
-          _items[i].isRead = read;
+      final chunks = itemIds.slices(25).toList();
+
+      for (var i = 0; i < chunks.length; i++) {
+        await Supabase.instance.client
+            .from('items')
+            .update({'isRead': read}).in_('id', chunks[i]);
+        for (var j = 0; j < _items.length; j++) {
+          if (chunks[i].contains(_items[j].id)) {
+            _items[j].isRead = read;
+          }
         }
       }
 
