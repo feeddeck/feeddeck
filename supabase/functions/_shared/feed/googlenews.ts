@@ -95,23 +95,12 @@ export const getGooglenewsFeed = async (
 
   /**
    * Now that the source does contain all the required information we can start to generate the items for the source, by
-   * looping over all the feed entries. We only add the first 50 items from the feed, because we only keep the latest 50
-   * items for each source in our deletion logic.
+   * looping over all the feed entries.
    */
   const items: IItem[] = [];
 
   for (const [index, entry] of feed.entries.entries()) {
-    if (index === 50) {
-      break;
-    }
-
-    /**
-     * If the entry does not contain a id, title, a link or a published date we skip it.
-     */
-    if (
-      !entry.id || !entry.title?.value ||
-      (entry.links.length === 0 || !entry.links[0].href) || !entry.published
-    ) {
+    if (skipEntry(index, entry, source.updatedAt || 0)) {
       continue;
     }
 
@@ -135,18 +124,49 @@ export const getGooglenewsFeed = async (
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
-      title: entry.title.value,
-      link: entry.links[0].href,
+      title: entry.title!.value!,
+      link: entry.links[0].href!,
       media: media,
       description: entry.description?.value
         ? unescape(entry.description.value)
         : undefined,
       author: author,
-      publishedAt: Math.floor(entry.published.getTime() / 1000),
+      publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
   }
 
   return { source, items };
+};
+
+/**
+ * `skipEntry` is used to determin if an entry should be skipped or not. When a entry in the RSS feed is skipped it will
+ * not be added to the database. An entry will be skipped when
+ * - it is not within the first 50 entries of the feed, because we only keep the last 50 items of each source in our
+ *   delete logic.
+ * - the entry does not contain a title, a link or a published date.
+ * - the published date of the entry is older than the last update date of the source minus 10 seconds.
+ */
+const skipEntry = (
+  index: number,
+  entry: FeedEntry,
+  sourceUpdatedAt: number,
+): boolean => {
+  if (index === 50) {
+    return true;
+  }
+
+  if (
+    !entry.title?.value ||
+    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+  ) {
+    return true;
+  }
+
+  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+    return true;
+  }
+
+  return false;
 };
 
 /**
