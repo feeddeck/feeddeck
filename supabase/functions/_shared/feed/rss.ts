@@ -98,24 +98,11 @@ export const getRSSFeed = async (
 
   /**
    * Now that the source contains all the required fields we can loop through all the items and add them for the source.
-   * We only add the first 50 items from the feed, because we only keep the latest 50 items for each source in our
-   * deletion logic.
    */
   const items: IItem[] = [];
 
   for (const [index, entry] of feed.entries.entries()) {
-    if (index === 50) {
-      break;
-    }
-
-    /**
-     * If the entry does not contain a title, a link or a published date we skip it.
-     */
-    if (
-      !entry.title?.value ||
-      (entry.links.length === 0 || !entry.links[0].href) ||
-      (!entry.published && !entry.updated)
-    ) {
+    if (skipEntry(index, entry, source.updatedAt || 0)) {
       continue;
     }
 
@@ -128,7 +115,7 @@ export const getRSSFeed = async (
     if (entry.id) {
       itemId = generateItemId(source.id, entry.id);
     } else {
-      itemId = generateItemId(source.id, entry.links[0].href);
+      itemId = generateItemId(source.id, entry.links[0].href!);
     }
 
     /**
@@ -139,8 +126,8 @@ export const getRSSFeed = async (
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
-      title: entry.title.value,
-      link: entry.links[0].href,
+      title: entry.title!.value!,
+      link: entry.links[0].href!,
       media: getMedia(entry),
       description: getItemDescription(entry),
       author: entry.author?.name,
@@ -153,6 +140,46 @@ export const getRSSFeed = async (
   }
 
   return { source, items };
+};
+
+/**
+ * `skipEntry` is used to determin if an entry should be skipped or not. When a entry in the RSS feed is skipped it will
+ * not be added to the database. An entry will be skipped when
+ * - it is not within the first 50 entries of the feed, because we only keep the last 50 items of each source in our
+ *   delete logic.
+ * - the entry does not contain a title, a link or a published / updated date.
+ * - the published / updated date of the entry is older than the last update date of the source minus 10 seconds.
+ */
+const skipEntry = (
+  index: number,
+  entry: FeedEntry,
+  sourceUpdatedAt: number,
+): boolean => {
+  if (index === 50) {
+    return true;
+  }
+
+  if (
+    !entry.title?.value ||
+    (entry.links.length === 0 || !entry.links[0].href) ||
+    (!entry.published && !entry.updated)
+  ) {
+    return true;
+  }
+
+  if (
+    entry.published &&
+    Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)
+  ) {
+    return true;
+  } else if (
+    entry.updated &&
+    Math.floor(entry.updated.getTime() / 1000) <= (sourceUpdatedAt - 10)
+  ) {
+    return true;
+  }
+
+  return false;
 };
 
 /**
