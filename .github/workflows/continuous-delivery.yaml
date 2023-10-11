@@ -281,6 +281,9 @@ jobs:
 
       - name: Package
         run: |
+          cp linux/flatpak/app.feeddeck.feeddeck.desktop build/linux/x64/release/bundle/
+          cp linux/flatpak/app.feeddeck.feeddeck.metainfo.xml build/linux/x64/release/bundle/
+          cp linux/flatpak/app.feeddeck.feeddeck.svg build/linux/x64/release/bundle/
           cd build
           cp -r linux/x64/release/bundle/ feeddeck-linux-x86_64
           tar -czf feeddeck-linux-x86_64.tar.gz feeddeck-linux-x86_64
