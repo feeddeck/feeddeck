@@ -68,8 +68,12 @@ export const getPodcastFeed = async (
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }
-  if (feed.image?.url) {
-    source.icon = feed.image?.url;
+  if (
+    // deno-lint-ignore no-explicit-any
+    !source.icon && (feed.image?.url || (feed as any)["itunes:image"]?.href)
+  ) {
+    // deno-lint-ignore no-explicit-any
+    source.icon = feed.image?.url || (feed as any)["itunes:image"]?.href;
     source.icon = await uploadSourceIcon(supabaseClient, source);
   }
 
@@ -81,17 +85,12 @@ export const getPodcastFeed = async (
   const items: IItem[] = [];
 
   for (const [index, entry] of feed.entries.entries()) {
-    if (index === 50) {
-      break;
+    if (skipEntry(index, entry, source.updatedAt || 0)) {
+      continue;
     }
 
-    /**
-     * If the entry does not contain a title, a link or a published date we skip it.
-     */
-    if (
-      !entry.title?.value ||
-      (entry.links.length === 0 || !entry.links[0].href) || !entry.published
-    ) {
+    const media = getMedia(entry);
+    if (!media) {
       continue;
     }
 
@@ -103,7 +102,7 @@ export const getPodcastFeed = async (
     let itemId = "";
     if (entry.id != "") {
       itemId = generateItemId(source.id, entry.id);
-    } else if (entry.links.length > 0 && entry.links[0].href) {
+    } else if (entry.links && entry.links.length > 0 && entry.links[0].href) {
       itemId = generateItemId(source.id, entry.links[0].href);
     } else {
       continue;
@@ -114,18 +113,48 @@ export const getPodcastFeed = async (
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
-      title: entry.title.value,
-      link: entry.links[0].href,
-      media: getMedia(entry),
+      title: entry.title!.value!,
+      link: entry.links && entry.links.length > 0 && entry.links[0].href
+        ? entry.links[0].href
+        : media,
+      media: media,
       description: entry.description?.value
         ? unescape(entry.description.value)
         : undefined,
       author: entry["dc:creator"]?.join(", "),
-      publishedAt: Math.floor(entry.published.getTime() / 1000),
+      publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
   }
 
   return { source, items };
+};
+
+/**
+ * `skipEntry` is used to determin if an entry should be skipped or not. When a entry in the RSS feed is skipped it will
+ * not be added to the database. An entry will be skipped when
+ * - it is not within the first 50 entries of the feed, because we only keep the last 50 items of each source in our
+ *   delete logic.
+ * - the entry does not contain a title or a published date.
+ * - the published date of the entry is older than the last update date of the source minus 10 seconds.
+ */
+const skipEntry = (
+  index: number,
+  entry: FeedEntry,
+  sourceUpdatedAt: number,
+): boolean => {
+  if (index === 50) {
+    return true;
+  }
+
+  if (!entry.title?.value || !entry.published) {
+    return true;
+  }
+
+  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+    return true;
+  }
+
+  return false;
 };
 
 /**

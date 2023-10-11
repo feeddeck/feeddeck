@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
@@ -136,6 +139,22 @@ class _SettingsInfoState extends State<SettingsInfo> {
           () {
             try {
               openUrl('https://feeddeck.app');
+            } catch (_) {}
+          },
+        ),
+        _buildItem(
+          'Get Started',
+          const Icon(Icons.help),
+          () {
+            try {
+              if (kIsWeb ||
+                  Platform.isLinux ||
+                  Platform.isMacOS ||
+                  Platform.isWindows) {
+                openUrl('https://feeddeck.app/get-started/desktop');
+              } else {
+                openUrl('https://feeddeck.app/get-started/mobile');
+              }
             } catch (_) {}
           },
         ),
