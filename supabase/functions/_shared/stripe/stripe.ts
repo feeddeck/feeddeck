@@ -168,6 +168,7 @@ export const manageSubscriptionStatusChange = async (
   const { error: updateError } = await adminSupabaseClient.from("profiles")
     .update({
       tier: isCreated ? "premium" : "free",
+      subscriptionProvider: "stripe",
     }).eq("id", profile[0].id);
   if (updateError) {
     log("error", "Failed to update user profile with new tier value", {

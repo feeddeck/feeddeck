@@ -6,9 +6,9 @@ import 'package:feeddeck/repositories/profile_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/settings/accounts/settings_accounts.dart';
 import 'package:feeddeck/widgets/settings/decks/settings_decks.dart';
+import 'package:feeddeck/widgets/settings/premium/settings_premium.dart';
 import 'package:feeddeck/widgets/settings/profile/settings_profile.dart';
 import 'package:feeddeck/widgets/settings/settings_info.dart';
-import 'package:feeddeck/widgets/settings/settings_payment_banner.dart';
 
 /// The [Settings] widget implements the settings page for the FeedDeck app. The
 /// page is used to display all the users information and to provide a way where
@@ -58,7 +58,7 @@ class _SettingsState extends State<Settings> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    SettingsPaymentBanner(),
+                    SettingsPremium(),
 
                     /// Display all decks. Here the user can switch the active
                     /// deck, he can delete a deck or update the name of a

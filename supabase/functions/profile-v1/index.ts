@@ -98,6 +98,7 @@ serve(async (req) => {
         JSON.stringify({
           "id": (profile[0] as IProfile).id,
           "tier": (profile[0] as IProfile).tier,
+          "subscriptionProvider": (profile[0] as IProfile).subscriptionProvider,
           "accountGithub": (profile[0] as IProfile).accountGithub?.token
             ? true
             : false,

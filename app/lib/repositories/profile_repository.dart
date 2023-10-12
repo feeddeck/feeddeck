@@ -19,6 +19,8 @@ class ProfileRepository with ChangeNotifier {
 
   FDProfileStatus get status => _status;
   FDProfileTier get tier => _profile?.tier ?? FDProfileTier.free;
+  FDProfileSubscriptionProvider? get subscriptionProvider =>
+      _profile?.subscriptionProvider;
   bool get accountGithub => _profile?.accountGithub ?? false;
 
   Future<void> init(bool force) async {
@@ -43,6 +45,11 @@ class ProfileRepository with ChangeNotifier {
       _status = FDProfileStatus.uninitialized;
       notifyListeners();
     }
+  }
+
+  void setTier(FDProfileTier tier) {
+    _profile?.tier = tier;
+    notifyListeners();
   }
 
   Future<void> addGithubAccount(String token) async {
