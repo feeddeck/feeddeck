@@ -149,6 +149,7 @@ class FeedDeckApp extends StatelessWidget {
             ),
             canvasColor: Constants.canvasColor,
             appBarTheme: const AppBarTheme(
+              centerTitle: true,
               backgroundColor: Constants.appBarBackgroundColor,
               scrolledUnderElevation: Constants.scrolledUnderElevation,
               elevation: Constants.appBarElevation,
