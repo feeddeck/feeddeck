@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -63,6 +64,23 @@ void main() async {
   await SettingsRepository().init();
 
   runApp(const FeedDeckApp());
+}
+
+/// [FeedDeckScrollBehavior] changes the scrolling behavior of the app. This is
+/// required to enable scrolling on desktop via drag, which is the only way that
+/// a user can scroll vertically with a mouse via drag.
+///
+/// E.g. this is required for the [ColumnLayoutSources] widget, where we rely on
+/// the drag gesture to scroll the list of sources.
+class FeedDeckScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.unknown,
+      };
 }
 
 /// [onGenerateRoute] is used in `onGenerateRoute` and `onGenerateInitialRoutes`
@@ -173,6 +191,7 @@ class FeedDeckApp extends StatelessWidget {
               },
             ),
           ),
+          scrollBehavior: FeedDeckScrollBehavior(),
           onGenerateInitialRoutes: (initialRoute) =>
               [onGenerateRoute(RouteSettings(name: initialRoute))],
           onGenerateRoute: (RouteSettings settings) =>
