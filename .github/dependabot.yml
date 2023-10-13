@@ -1,0 +1,46 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "pub"
+    directory: "/app"
+    schedule:
+      interval: "monthly"
+    groups:
+      pub:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "docker"
+    directory: "/supabase/functions/_cmd"
+    schedule:
+      interval: "monthly"
+    groups:
+      docker:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/landing"
+    schedule:
+      interval: "monthly"
+    groups:
+      npm-landing:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/supabase/email-templates"
+    schedule:
+      interval: "monthly"
+    groups:
+      npm-email-templates:
+        patterns:
+          - "*"
