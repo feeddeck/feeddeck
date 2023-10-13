@@ -167,15 +167,15 @@ class SettingsPremium extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(
+                    padding: EdgeInsets.all(
                       Constants.spacingMiddle,
                     ),
                     child: Column(
-                      children: const [
+                      children: [
                         Logo(size: 64),
                         SizedBox(
                           height: Constants.spacingSmall,

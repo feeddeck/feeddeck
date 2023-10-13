@@ -54,10 +54,10 @@ class _SettingsState extends State<Settings> {
                 padding: const EdgeInsets.all(
                   Constants.spacingMiddle,
                 ),
-                child: Column(
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     SettingsPremium(),
 
                     /// Display all decks. Here the user can switch the active

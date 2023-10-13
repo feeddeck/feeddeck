@@ -63,7 +63,7 @@ class ItemMediaGallery extends StatelessWidget {
                 ),
                 Expanded(
                   child: _buildSingleMedia(context, itemMedias![1]),
-                )
+                ),
               ],
             ),
           ),
@@ -96,7 +96,7 @@ class ItemMediaGallery extends StatelessWidget {
                       ),
                       Expanded(
                         child: _buildSingleMedia(context, itemMedias![2]),
-                      )
+                      ),
                     ],
                   ),
                 ),

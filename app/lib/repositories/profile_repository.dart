@@ -61,7 +61,7 @@ class ProfileRepository with ChangeNotifier {
         'sourceType': FDSourceType.github.toShortString(),
         'options': {
           'token': token,
-        }
+        },
       },
     );
 

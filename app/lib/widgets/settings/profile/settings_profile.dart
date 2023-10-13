@@ -25,9 +25,9 @@ class _SettingsProfileState extends State<SettingsProfile> {
   Widget build(BuildContext context) {
     Provider.of<AppRepository>(context, listen: true);
 
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
           'Profile',
           style: TextStyle(

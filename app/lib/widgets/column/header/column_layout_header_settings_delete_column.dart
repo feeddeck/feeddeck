@@ -91,6 +91,7 @@ class _ColumnLayoutHeaderSettingsDeleteColumnState
       await Provider.of<AppRepository>(context, listen: false)
           .deleteColumn(widget.column.id);
     } catch (_) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           duration: Duration(seconds: 10),
