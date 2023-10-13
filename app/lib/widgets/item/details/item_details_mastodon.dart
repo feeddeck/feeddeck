@@ -41,7 +41,7 @@ class ItemDetailsMastodon extends StatelessWidget {
                   .map((item) => item as String)
                   .toList()
               : null,
-        )
+        ),
       ],
     );
   }

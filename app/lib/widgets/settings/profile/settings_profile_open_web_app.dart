@@ -48,6 +48,7 @@ class _SettingsProfileOpenWebAppState extends State<SettingsProfileOpenWebApp> {
       setState(() {
         _isLoading = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           duration: Duration(seconds: 10),

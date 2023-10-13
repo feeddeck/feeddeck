@@ -100,7 +100,7 @@ class ColumnLayoutHeaderSettings extends StatelessWidget {
               icon: const Icon(Icons.chevron_right),
             ),
           ],
-        )
+        ),
       ],
     );
   }

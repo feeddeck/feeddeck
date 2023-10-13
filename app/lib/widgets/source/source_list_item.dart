@@ -87,6 +87,7 @@ class _SourceListItemState extends State<SourceListItem> {
       AppRepository app = Provider.of<AppRepository>(context, listen: false);
       await app.deleteSource(widget.columnId, widget.source.id);
     } catch (_) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           duration: Duration(seconds: 10),

@@ -57,10 +57,10 @@ check your installed version:
 ```sh
 $ flutter --version
 
-Flutter 3.7.12 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision 4d9e56e694 (8 weeks ago) • 2023-04-17 21:47:46 -0400
-Engine • revision 1a65d409c7
-Tools • Dart 2.19.6 • DevTools 2.20.1
+Flutter 3.13.7 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 2f708eb839 (4 days ago) • 2023-10-09 09:58:08 -0500
+Engine • revision a794cf2681
+Tools • Dart 3.1.3 • DevTools 2.25.0
 
 
 $ deno --version

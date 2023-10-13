@@ -152,7 +152,7 @@ class AppRepository with ChangeNotifier {
         .from('decks')
         .insert({
           'name': name,
-          'userId': Supabase.instance.client.auth.currentUser!.id
+          'userId': Supabase.instance.client.auth.currentUser!.id,
         })
         .select()
         .single();

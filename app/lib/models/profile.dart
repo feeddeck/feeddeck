@@ -93,7 +93,8 @@ class FDProfile {
       subscriptionProvider: data.containsKey('subscriptionProvider') &&
               data['subscriptionProvider'] != null
           ? getProfileSubscriptionProviderFromString(
-              data['subscriptionProvider'])
+              data['subscriptionProvider'],
+            )
           : null,
       accountGithub: data['accountGithub'],
       createdAt: data['createdAt'],
