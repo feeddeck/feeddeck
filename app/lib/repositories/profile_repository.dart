@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:feeddeck/models/profile.dart';
-import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/api_exception.dart';
 
 enum FDProfileStatus {
@@ -13,6 +12,9 @@ enum FDProfileStatus {
   initialized,
 }
 
+/// The [ProfileRepository] is used to fetch and update a users profile data.
+/// The users profile contains all the required information for the users
+/// subscription status and the users connected accounts.
 class ProfileRepository with ChangeNotifier {
   FDProfileStatus _status = FDProfileStatus.uninitialized;
   FDProfile? _profile;
@@ -23,6 +25,8 @@ class ProfileRepository with ChangeNotifier {
       _profile?.subscriptionProvider;
   bool get accountGithub => _profile?.accountGithub ?? false;
 
+  /// [init] is used to fetch the users profile from the `profile-v2` edge
+  /// function.
   Future<void> init(bool force) async {
     if (_status == FDProfileStatus.initialized && force == false) {
       return;
@@ -30,7 +34,7 @@ class ProfileRepository with ChangeNotifier {
 
     try {
       final result = await Supabase.instance.client.functions.invoke(
-        'profile-v1',
+        'profile-v2/getProfile',
         method: HttpMethod.get,
       );
 
@@ -47,21 +51,25 @@ class ProfileRepository with ChangeNotifier {
     }
   }
 
+  /// [setTier] is used to update the users tier. We do not have to make an API
+  /// call to update the tier in the database, because this is done via Webhooks
+  /// by the connected payment provider.
+  ///
+  /// This is only required to reflect the update in the Flutter app.
   void setTier(FDProfileTier tier) {
     _profile?.tier = tier;
     notifyListeners();
   }
 
-  Future<void> addGithubAccount(String token) async {
+  /// [githubAddAccount] is used to add a GitHub account to the users profile.
+  /// For this the user must provide an private access token with the required
+  /// scopes.
+  Future<void> githubAddAccount(String token) async {
     final result = await Supabase.instance.client.functions.invoke(
-      'profile-v1',
+      'profile-v2/githubAddAccount',
       method: HttpMethod.post,
       body: {
-        'action': 'add-account',
-        'sourceType': FDSourceType.github.toShortString(),
-        'options': {
-          'token': token,
-        },
+        'token': token,
       },
     );
 
@@ -73,14 +81,12 @@ class ProfileRepository with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteGithubAccount() async {
+  /// [githubDeleteAccount] deletes the users connected GitHub account. For that
+  /// we delete the GitHub access token from the database.
+  Future<void> githubDeleteAccount() async {
     final result = await Supabase.instance.client.functions.invoke(
-      'profile-v1',
-      method: HttpMethod.post,
-      body: {
-        'action': 'delete-account',
-        'sourceType': FDSourceType.github.toShortString(),
-      },
+      'profile-v2/githubDeleteAccount',
+      method: HttpMethod.delete,
     );
 
     if (result.status != 200) {

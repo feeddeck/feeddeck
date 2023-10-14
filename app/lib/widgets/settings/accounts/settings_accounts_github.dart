@@ -35,7 +35,7 @@ class SettingsAccountsGithub extends StatelessWidget {
       await Provider.of<ProfileRepository>(
         context,
         listen: false,
-      ).deleteGithubAccount();
+      ).githubDeleteAccount();
     } catch (_) {}
   }
 
@@ -166,7 +166,7 @@ class _SettingsAccountsGithubAddState extends State<SettingsAccountsGithubAdd> {
         await Provider.of<ProfileRepository>(
           context,
           listen: false,
-        ).addGithubAccount(_tokenController.text);
+        ).githubAddAccount(_tokenController.text);
 
         setState(() {
           _isLoading = false;
