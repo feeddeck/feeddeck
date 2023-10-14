@@ -326,10 +326,11 @@ supabase functions deploy delete-user-v1 --project-ref <PROJECT-ID> --import-map
 supabase functions deploy generate-magic-link-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy profile-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
+supabase functions deploy profile-v2 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
+supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy stripe-create-checkout-session-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 ```
 
 Now we have to do some manual steps to finish the setup of our Supabase project:

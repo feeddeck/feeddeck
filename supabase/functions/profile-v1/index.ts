@@ -12,6 +12,9 @@ import {
   FEEDDECK_SUPABASE_URL,
 } from "../_shared/utils/constants.ts";
 
+/**
+ * DEPRECATED: This function is deprecated and will be removed in the future. Please use the new `profile-v2` function.
+ */
 serve(async (req) => {
   /**
    * We need to handle the preflight request for CORS as it is described in the Supabase documentation:
