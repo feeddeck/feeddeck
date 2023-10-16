@@ -413,13 +413,16 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
 2. Update the `version` key and the `msix_config.msix_version` key in the
    `pubspec.yaml` file.
 
-3. Delete the `build/` and `.dart_tool/` directories via the `flutter clean`
+3. Add the new release to the `releases` section in
+   [`app.feeddeck.feeddeck.metainfo.xml`](app/linux/flatpak/app.feeddeck.feeddeck.metainfo.xml).
+
+4. Delete the `build/` and `.dart_tool/` directories via the `flutter clean`
    command.
 
-4. Build the app for Web by running `flutter build web`. The build can be found
+5. Build the app for Web by running `flutter build web`. The build can be found
    at `app/build/web` and must be uploaded to your hosting provider.
 
-5. Build the app for Linux by running `flutter build linux --release`. To build
+6. Build the app for Linux by running `flutter build linux --release`. To build
    the `arm64` version the following commands can be run on a Raspberry Pi. Once
    the `feeddeck-linux-arm64.tar.gz` archive was created it can be uploaded to
    the GitHub release.
@@ -433,18 +436,22 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
    tar -czf feeddeck-linux-arm64.tar.gz feeddeck-linux-arm64
    ```
 
-6. Build the app for macOS by running `flutter build macos --release`. Open
+   Update the `app.feeddeck.feeddeck.yml` file at
+   [github.com/flathub/app.feeddeck.feeddeck](https://github.com/flathub/app.feeddeck.feeddeck)
+   with the new release.
+
+7. Build the app for macOS by running `flutter build macos --release`. Open
    Xcode and select **Product** > **Archive** to create and open the archive.
    After that the **Validate App** and **Distribute App** options can be used to
    upload the build to
    [https://appstoreconnect.apple.com](https://appstoreconnect.apple.com).
 
-7. Build the app for Windows by running `flutter build windows --release`. and
+8. Build the app for Windows by running `flutter build windows --release`. and
    `flutter pub run msix:create --output-path build --output-name feeddeck`. The
    build can be found at `app/build/feeddeck.msix` and must be uploaded to
    [https://partner.microsoft.com/en-us/dashboard/products/9NPHPGRRCT5H/overview](https://partner.microsoft.com/en-us/dashboard/products/9NPHPGRRCT5H/overview).
 
-8. Create a file `app/android/key.properties` with the following content:
+9. Create a file `app/android/key.properties` with the following content:
 
    ```plain
    storePassword=
@@ -453,12 +460,12 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
    storeFile=
    ```
 
-9. Build the app for Android by running `flutter build appbundle`. The build can
-   be found at `app/build/app/outputs/bundle/release/app-release.aab` and must
-   be uploaded to
-   [https://play.google.com/apps/publish](https://play.google.com/apps/publish).
+10. Build the app for Android by running `flutter build appbundle`. The build
+    can be found at `app/build/app/outputs/bundle/release/app-release.aab` and
+    must be uploaded to
+    [https://play.google.com/apps/publish](https://play.google.com/apps/publish).
 
-10. Build the app for iOS by running `flutter build ipa`. The build can be found
+11. Build the app for iOS by running `flutter build ipa`. The build can be found
     at `app/build/ios/archive/Runner.xcarchive` and must be opened in Xcode. In
     Xcode the **Validate App** and **Distribute App** options can be used to
     upload the build to

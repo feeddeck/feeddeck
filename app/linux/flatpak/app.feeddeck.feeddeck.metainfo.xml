@@ -78,6 +78,43 @@
 
       <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.0.0</url>
     </release>
+    <release version="v1.1.0" date="2023-10-16">
+      <description>
+        <p>Added</p>
+        <ul>
+          <li>#31: [core] Add Dependabot Configuration @ricoberger</li>
+          <li>#24: [core] Add In-App Purchases @ricoberger</li>
+          <li>#16: [core] Add "Get Started" Guide @ricoberger</li>
+          <li>#15: [core] Add Flatpak @ricoberger</li>
+        </ul>
+
+        <p>Fixed</p>
+        <ul>
+          <li>#35: [core] Fix Google Client ID @ricoberger</li>
+          <li>#28: [core] Fix Title Alignment @ricoberger</li>
+          <li>#27: [core] Fix Vertical Scrolling @ricoberger</li>
+          <li>#22: [core] Fix Update of Read State for Large List of Items @ricoberger</li>
+          <li>#20: [youtube] Add Missing URL in isYoutubeUrl Function @ricoberger</li>
+        </ul>
+
+        <p>Changed</p>
+        <ul>
+          <li>#34: [core] Rework Profile Edge Function @ricoberger</li>
+          <li>#33: Bump the github-actions group with 5 updates @dependabot</li>
+          <li>#32: Bump the docker group in /supabase/functions/_cmd with 1 update @dependabot</li>
+          <li>#30: [core] Update NPM Packages @ricoberger</li>
+          <li>#29: [core] Update Flutter to v3.13.7 @ricoberger</li>
+          <li>#23: [core] Add Flatpak Files to Build Archive @ricoberger</li>
+          <li>#21: [core] Use Published Date for Item Ingestion @ricoberger</li>
+          <li>#19: [nitter] Allow Usage of Custom Nitter Instances @ricoberger</li>
+          <li>#18: [rss] Allow RSS Feeds without "published" Field @ricoberger</li>
+          <li>#17: [podcast] Improve Parsing @ricoberger</li>
+          <li>#14: [core] Fix Issues with App Submission @ricoberger</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.1.0</url>
+    </release>
   </releases>
 
   <supports>
