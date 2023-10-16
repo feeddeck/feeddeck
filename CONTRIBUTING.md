@@ -428,9 +428,9 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
    the GitHub release.
 
    ```sh
-   cp linux/flatpak/app.feeddeck.feeddeck.desktop build/linux/x64/release/bundle/
-   cp linux/flatpak/app.feeddeck.feeddeck.metainfo.xml build/linux/x64/release/bundle/
-   cp linux/flatpak/app.feeddeck.feeddeck.svg build/linux/x64/release/bundle/
+   cp linux/flatpak/app.feeddeck.feeddeck.desktop build/linux/arm64/release/bundle/
+   cp linux/flatpak/app.feeddeck.feeddeck.metainfo.xml build/linux/arm64/release/bundle/
+   cp linux/flatpak/app.feeddeck.feeddeck.svg build/linux/arm64/release/bundle/
    cd build
    cp -r linux/arm64/release/bundle/ feeddeck-linux-arm64
    tar -czf feeddeck-linux-arm64.tar.gz feeddeck-linux-arm64

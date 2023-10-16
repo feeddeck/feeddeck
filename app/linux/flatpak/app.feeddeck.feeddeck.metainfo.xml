@@ -50,34 +50,6 @@
   </categories>
 
   <releases>
-    <release version="v1.0.0" date="2023-09-17">
-      <description>
-        <p>Added</p>
-        <ul>
-          <li>#10: [core] Add Continuous Delivery for Landing Page @ricoberger</li>
-          <li>#7: [core] Add Continuous Delivery for Supabase @ricoberger</li>
-          <li>#8: [core] Add Info Section to Settings @ricoberger</li>
-          <li>#6: [core] Add Continuous Delivery for Desktop Apps @ricoberger</li>
-          <li>#4: Add GitHub Action to Publish Web Version @ricoberger</li>
-          <li>#3: [core] Add Continuous Delivery and Release Workflow @ricoberger</li>
-        </ul>
-
-        <p>Fixed</p>
-        <ul>
-          <li>#9: [core] Fix Continuous Delivery for Supabase @ricoberger</li>
-        </ul>
-
-        <p>Changed</p>
-        <ul>
-          <li>#12: Prepare v1.0.0 Release @ricoberger</li>
-          <li>#5: [core] Improve Media Handling @ricoberger</li>
-          <li>#2: [nitter] Add Media Gallery to Details View @ricoberger</li>
-          <li>#1: [nitter] Add Basic Authentication @ricoberger</li>
-        </ul>
-      </description>
-
-      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.0.0</url>
-    </release>
     <release version="v1.1.0" date="2023-10-16">
       <description>
         <p>Added</p>
@@ -114,6 +86,34 @@
       </description>
 
       <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.1.0</url>
+    </release>
+    <release version="v1.0.0" date="2023-09-17">
+      <description>
+        <p>Added</p>
+        <ul>
+          <li>#10: [core] Add Continuous Delivery for Landing Page @ricoberger</li>
+          <li>#7: [core] Add Continuous Delivery for Supabase @ricoberger</li>
+          <li>#8: [core] Add Info Section to Settings @ricoberger</li>
+          <li>#6: [core] Add Continuous Delivery for Desktop Apps @ricoberger</li>
+          <li>#4: Add GitHub Action to Publish Web Version @ricoberger</li>
+          <li>#3: [core] Add Continuous Delivery and Release Workflow @ricoberger</li>
+        </ul>
+
+        <p>Fixed</p>
+        <ul>
+          <li>#9: [core] Fix Continuous Delivery for Supabase @ricoberger</li>
+        </ul>
+
+        <p>Changed</p>
+        <ul>
+          <li>#12: Prepare v1.0.0 Release @ricoberger</li>
+          <li>#5: [core] Improve Media Handling @ricoberger</li>
+          <li>#2: [nitter] Add Media Gallery to Details View @ricoberger</li>
+          <li>#1: [nitter] Add Basic Authentication @ricoberger</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.0.0</url>
     </release>
   </releases>
 
