@@ -17,7 +17,7 @@ class SettingsRepository {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0eWp1Y3BzcmFzYXZyaWVwc2NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQwMjY0NjIsImV4cCI6MjAwOTYwMjQ2Mn0.IDo7j9Kh8-5kHLtrZtHTvLf8lUkj7jiLynpIXSZbRFs';
   String supabaseSiteUrl = 'https://app.feeddeck.app';
   String googleClientId =
-      '420185423235-9ehth1eodl4lt3cdns7kaf2e89eo6rkq.apps.googleusercontent.com';
+      '296452997087-2o1qasg1gdbe39b1l39dds1doq3t6h2e.apps.googleusercontent.com';
 
   /// By default the [subscriptionEnabled] variable is set to `true`, so that a
   /// user can subscribe to FeedDeck Premium. If the variable is set to `false`
