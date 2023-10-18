@@ -84,15 +84,6 @@ class SettingsPremium extends StatelessWidget {
       return Container();
     }
 
-    /// In-App Purchases are disabled on Android for now, until we have the
-    /// first version of the app in the Play Store, so that we can properly test
-    /// the implementation.
-    ///
-    /// TODO: Enable once the first Android version is in the Play Store.
-    if (!kIsWeb && Platform.isAndroid) {
-      return Container();
-    }
-
     if (profile.tier != FDProfileTier.free) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
