@@ -143,6 +143,24 @@ class _SettingsInfoState extends State<SettingsInfo> {
           },
         ),
         _buildItem(
+          'GitHub',
+          const Icon(FDIcons.github),
+          () {
+            try {
+              openUrl('https://github.com/feeddeck/feeddeck');
+            } catch (_) {}
+          },
+        ),
+        _buildItem(
+          'X',
+          const Icon(FDIcons.x),
+          () {
+            try {
+              openUrl('https://x.com/feeddeckapp');
+            } catch (_) {}
+          },
+        ),
+        _buildItem(
           'Get Started',
           const Icon(Icons.help),
           () {
@@ -159,20 +177,20 @@ class _SettingsInfoState extends State<SettingsInfo> {
           },
         ),
         _buildItem(
-          'GitHub',
-          const Icon(FDIcons.github),
+          'Terms & Conditions',
+          const Icon(Icons.policy),
           () {
             try {
-              openUrl('https://github.com/feeddeck/feeddeck');
+              openUrl('https://feeddeck.app/terms-and-conditions');
             } catch (_) {}
           },
         ),
         _buildItem(
-          'X',
-          const Icon(FDIcons.x),
+          'Privacy Policy',
+          const Icon(Icons.security),
           () {
             try {
-              openUrl('https://x.com/feeddeckapp');
+              openUrl('https://feeddeck.app/privacy-policy');
             } catch (_) {}
           },
         ),
