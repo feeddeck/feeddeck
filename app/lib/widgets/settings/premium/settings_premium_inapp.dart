@@ -34,7 +34,7 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
     if (Platform.isAndroid) {
       await Purchases.configure(
         PurchasesConfiguration(
-          SettingsRepository().revenueCatAppStoreKey,
+          SettingsRepository().revenueCatGooglePlayKey,
         )..appUserID = supabase.Supabase.instance.client.auth.currentUser!.id,
       );
     } else if (Platform.isMacOS || Platform.isIOS) {
@@ -66,6 +66,10 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
       setState(() {
         _isLoading = false;
       });
+
+      if (!customerInfo.entitlements.all.containsKey('FeedDeck Premium')) {
+        throw Exception('FeedDeck Premium entitlement not found.');
+      }
 
       if (customerInfo.entitlements.all['FeedDeck Premium']!.isActive) {
         if (!mounted) return;
