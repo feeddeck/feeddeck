@@ -84,23 +84,101 @@ export default function TermsAndConditions() {
           </p>
           <p className="py-4">
             At some point, we may wish to update the app. The app is currently
-            available on iOS – the requirements for the system(and for any
-            additional systems we decide to extend the availability of the app
-            to) may change, and you&apos;ll need to download the updates if you
-            want to keep using the app. Rico Berger does not promise that it
-            will always update the app so that it is relevant to you and/or
-            works with the iOS version that you have installed on your device.
-            However, you promise to always accept updates to the application
-            when offered to you, We may also wish to stop providing the app, and
-            may terminate use of it at any time without giving notice of
-            termination to you. Unless we tell you otherwise, upon any
+            available on Android, iOS, macOS, Windows and Linux – the
+            requirements for the system (and for any additional systems we
+            decide to extend the availability of the app to) may change, and
+            you&apos;ll need to download the updates if you want to keep using
+            the app. Rico Berger does not promise that it will always update the
+            app so that it is relevant to you and/or works with the Android,
+            iOS, macOS, Windows and Linux version that you have installed on
+            your device. However, you promise to always accept updates to the
+            application when offered to you, We may also wish to stop providing
+            the app, and may terminate use of it at any time without giving
+            notice of termination to you. Unless we tell you otherwise, upon any
             termination, (a) the rights and licenses granted to you in these
             terms will end; (b) you must stop using the app, and (if needed)
             delete it from your device.
           </p>
           <p className="py-4">
             <h2 className="text-xl font-bold">
-              Changes to This Terms and Conditions
+              Accessing and Download the Application from an App Store
+            </h2>
+          </p>
+          <p className="py-4">
+            The following applies to any App accessed through or downloaded from
+            an App Store:
+          </p>
+          <p className="pl-8 py-4">
+            <ul className="list-disc">
+              <li>
+                (a) You acknowledge and agree that (i) the Terms are concluded
+                between you and Rico Berger only, and not Apple, Google or
+                Microsoft, and (ii) Rico Berger, not Apple, Google or Microsoft,
+                is solely responsible for the App and content thereof. Your use
+                of the App must comply with the applicable App Store&apos;s
+                terms of service or usage rules.
+              </li>
+              <li>
+                (b) You acknowledge that the App Store has no obligation
+                whatsoever to furnish any maintenance and support services with
+                respect to the App.
+              </li>
+              <li>
+                (c) In the event of any failure of the App to conform to any
+                applicable warranty, you may notify the App Store, and the App
+                Store will refund the purchase price for the App to you and to
+                the maximum extent permitted by applicable law, neither Apple,
+                Google or Microsoft will have any other warranty obligation
+                whatsoever with respect to the App. As between Rico Berger and
+                the App Store, any other claims, losses, liabilities, damages,
+                costs or expenses attributable to any failure to conform to any
+                warranty will be the sole responsibility of Rico Berger.
+              </li>
+              <li>
+                (d) You and Rico Berger acknowledge that, as between Rico Berger
+                and the App Store, the App Store is not responsible for
+                addressing any claims you have or any claims of any third party
+                relating to the App or your possession and use of the App,
+                including, but not limited to: (i) product liability claims;
+                (ii) any claim that the App fails to conform to any applicable
+                legal or regulatory requirement; and (iii) claims arising under
+                consumer protection or similar legislation.
+              </li>
+              <li>
+                (e) You and Rico Berger acknowledge that, in the event of any
+                third-party claim that the App or your possession and use of
+                that App infringes that third party&apos;s intellectual property
+                rights, as between Rico Berger and App Store, Rico Berger, not
+                the App Store, will be solely responsible for the investigation,
+                defense, settlement and discharge of any such intellectual
+                property infringement claim to the extent required by the Terms.
+              </li>
+              <li>
+                (f) You and Rico Berger acknowledge and agree that (i) Apple and
+                Apple&apos;s subsidiaries, are third-party beneficiaries of the
+                Terms as related to your license of the App from the Apple App
+                Store, (ii) Google and Google&apos;s subsidiaries, are
+                third-party beneficiaries of the Terms as related to your
+                license of the App from the Android market or Google Play App
+                Stores, and (iii) Microsoft and its subsidiaries are
+                third-parties beneficiaries of the Terms as related to your
+                license of the App from the Windows Store; and that, upon your
+                acceptance of the terms and conditions of the Terms, Apple,
+                Google, or Microsoft, as applicable, will have the right (and
+                will be deemed to have accepted the right) to enforce the Terms
+                as related to your license of the App against you as a
+                third-party beneficiary thereof.
+              </li>
+              <li>
+                (g) Without limiting any other terms of the Terms, you must
+                comply with all applicable third-party terms of agreement when
+                using the App.
+              </li>
+            </ul>
+          </p>
+          <p className="py-4">
+            <h2 className="text-xl font-bold">
+              Changes to this Terms and Conditions
             </h2>
           </p>
           <p className="py-4">
@@ -110,7 +188,7 @@ export default function TermsAndConditions() {
             this page.
           </p>
           <p className="py-4">
-            These terms and conditions are effective as of 2023-06-22
+            These terms and conditions are effective as of 2023-10-18
           </p>
           <p className="py-4">
             <h2 className="text-xl font-bold">Contact Us</h2>
