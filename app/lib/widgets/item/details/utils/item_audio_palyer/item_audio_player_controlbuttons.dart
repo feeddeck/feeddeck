@@ -67,15 +67,8 @@ class ItemAudioPlayerControlButtons extends StatelessWidget {
             final playerState = snapshot.data;
             final processingState = playerState?.processingState;
             final playing = playerState?.playing;
-            if (processingState == ProcessingState.loading ||
-                processingState == ProcessingState.buffering) {
-              return Container(
-                margin: const EdgeInsets.all(Constants.spacingSmall),
-                width: 48.0,
-                height: 48.0,
-                child: const CircularProgressIndicator(),
-              );
-            } else if (playing != true) {
+
+            if (playing != true) {
               return IconButton(
                 icon: const Icon(Icons.play_arrow),
                 iconSize: 64.0,
