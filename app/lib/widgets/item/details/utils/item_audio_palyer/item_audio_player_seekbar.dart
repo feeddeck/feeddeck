@@ -35,6 +35,16 @@ class _ItemAudioPlayerSeekBarState extends State<ItemAudioPlayerSeekBar> {
   /// audio file.
   Duration get _remaining => widget.duration - widget.position;
 
+  /// [_printDuration] prints the provided [duration] in a human readable format
+  /// `HH:mm:ss`.
+  String _printDuration(Duration duration) {
+    String negativeSign = duration.isNegative ? '-' : '';
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60).abs());
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60).abs());
+    return '$negativeSign${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -110,10 +120,7 @@ class _ItemAudioPlayerSeekBarState extends State<ItemAudioPlayerSeekBar> {
           left: Constants.spacingMiddle,
           bottom: 0.0,
           child: Text(
-            RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                    .firstMatch('${widget.position}')
-                    ?.group(1) ??
-                '${widget.position}',
+            _printDuration(widget.position),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
@@ -121,10 +128,7 @@ class _ItemAudioPlayerSeekBarState extends State<ItemAudioPlayerSeekBar> {
           right: Constants.spacingMiddle,
           bottom: 0.0,
           child: Text(
-            RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
-                    .firstMatch('$_remaining')
-                    ?.group(1) ??
-                '$_remaining',
+            _printDuration(_remaining),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),

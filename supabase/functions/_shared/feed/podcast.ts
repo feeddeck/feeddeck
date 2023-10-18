@@ -68,13 +68,16 @@ export const getPodcastFeed = async (
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }
-  if (
-    // deno-lint-ignore no-explicit-any
-    !source.icon && (feed.image?.url || (feed as any)["itunes:image"]?.href)
-  ) {
-    // deno-lint-ignore no-explicit-any
-    source.icon = feed.image?.url || (feed as any)["itunes:image"]?.href;
-    source.icon = await uploadSourceIcon(supabaseClient, source);
+  if (!source.icon) {
+    if (feed.image?.url) {
+      source.icon = feed.image.url;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
+      // deno-lint-ignore no-explicit-any
+    } else if ((feed as any)["itunes:image"]?.href) {
+      // deno-lint-ignore no-explicit-any
+      source.icon = (feed as any)["itunes:image"].href;
+      source.icon = await uploadSourceIcon(supabaseClient, source);
+    }
   }
 
   /**
