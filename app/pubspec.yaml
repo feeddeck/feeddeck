@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   app_links: ^3.4.3
+  audioplayers: ^5.2.0
   cached_network_image: ^3.2.3
   carousel_slider: ^4.2.1
   collection: ^1.17.0
@@ -45,10 +46,6 @@ dependencies:
   flutter_native_splash: ^2.2.19
   html2md: ^1.2.6
   intl: ^0.18.1
-  just_audio: ^0.9.32
-  just_audio_background: ^0.0.1-beta.10
-  just_audio_windows: ^0.2.0
-  just_audio_mpv: ^0.1.6
   package_info_plus: ^4.1.0
   provider: ^6.0.4
   purchases_flutter: ^6.0.0

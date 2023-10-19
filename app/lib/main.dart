@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -44,14 +43,6 @@ void main() async {
       await windowManager.focus();
     });
   }
-
-  /// Initialize the [just_audio_background] package, so that we can play audio
-  /// files in the background.
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );
 
   /// For the ewb we have to use the path url strategy, so that the redirect
   /// within Supabase is working in all cases. On all other platforms this is a
