@@ -12,7 +12,7 @@ platforms.
   <a href="https://app.feeddeck.app" target="_blank"><img src=".github/assets/badge-web.svg" height="50"></a>
   <a href="https://apps.apple.com/us/app/feeddeck/id6451055362" target="_blank"><img src=".github/assets/badge-mac-app-store.svg" height="50"></a>
   <a href="https://www.microsoft.com/store/apps/9NPHPGRRCT5H" target="_blank"><img src=".github/assets/badge-windows-store.svg" height="50"></a>
-  <a href="https://flathub.org/de/apps/app.feeddeck.feeddeck" target="_blank"><img src=".github/assets/badge-flathub.svg" height="50"></a>
+  <a href="https://flathub.org/en/apps/app.feeddeck.feeddeck" target="_blank"><img src=".github/assets/badge-flathub.svg" height="50"></a>
 </p>
 
 <img src=".github/assets/screenshot.png" width="100%" />

@@ -8,7 +8,7 @@ export const downloads = {
   "web": "https://app.feeddeck.app",
   "macos": "https://apps.apple.com/us/app/feeddeck/id6451055362",
   "windows": "https://www.microsoft.com/store/apps/9NPHPGRRCT5H",
-  "linux": "https://flathub.org/de/apps/app.feeddeck.feeddeck",
+  "linux": "https://flathub.org/en/apps/app.feeddeck.feeddeck",
 };
 
 const getPlatform = (): TPlatform | undefined => {

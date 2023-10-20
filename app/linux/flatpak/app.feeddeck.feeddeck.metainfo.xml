@@ -50,6 +50,29 @@
   </categories>
 
   <releases>
+    <release version="v1.1.1" date="2023-10-21">
+      <description>
+        <p>Fixed</p>
+        <ul>
+          <li>#46: [core] Fix Number of Loaded Items per Fetch @ricoberger</li>
+          <li>#45: [core] Fix ItemsRepository Status @ricoberger</li>
+          <li>#44: [core] Fix Border Radius for Drawer @ricoberger</li>
+          <li>#43: [core] Fix Status Bar for iOS @ricoberger</li>
+          <li>#42: [podcast] Fix Audio Player for Windows and Linux @ricoberger</li>
+          <li>#37: [podcast] Fix Duration and Play Button @ricoberger</li>
+        </ul>
+
+        <p>Changed</p>
+        <ul>
+          <li>#48: [core] Improve Android App Icons @ricoberger</li>
+          <li>#47: [core] Clear Cached Items @ricoberger</li>
+          <li>#39: [core] Add Privacy Policy and Terms & Conditions @ricoberger</li>
+          <li>#38: [core] Enable In-App Purchases for Android @ricoberger</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.1.1</url>
+    </release>
     <release version="v1.1.0" date="2023-10-16">
       <description>
         <p>Added</p>
