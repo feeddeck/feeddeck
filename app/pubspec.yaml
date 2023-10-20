@@ -47,8 +47,7 @@ dependencies:
   intl: ^0.18.1
   just_audio: ^0.9.32
   just_audio_background: ^0.0.1-beta.10
-  just_audio_windows: ^0.2.0
-  just_audio_mpv: ^0.1.6
+  just_audio_media_kit: ^1.0.0
   package_info_plus: ^4.1.0
   provider: ^6.0.4
   purchases_flutter: ^6.0.0
