@@ -103,4 +103,12 @@ export const generalMetadata: Metadata = {
       url: "/og.png",
     },
   },
+  itunes: {
+    appId: "1494512160",
+  },
+  other: {
+    "google-play-app": "app-id=io.feeddeck.feeddeck",
+    "msApplication-ID": "26077RicoBerger.FeedDeck",
+    "msApplication-PackageFamilyName": "26077RicoBerger.FeedDeck_2w82je6nmmv2c",
+  },
 };

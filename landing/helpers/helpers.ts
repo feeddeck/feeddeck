@@ -2,12 +2,13 @@ type TPlatform = "ios" | "android";
 type TOS = "ios" | "android" | "macos" | "windows" | "linux";
 
 export const downloads = {
-  "ios": "https://app.feeddeck.app",
-  "android": "https://app.feeddeck.app",
+  "ios": "https://apps.apple.com/us/app/feeddeck/id6451055362",
+  "android":
+    "https://play.google.com/store/apps/details?id=app.feeddeck.feeddeck",
   "web": "https://app.feeddeck.app",
-  "macos": "https://app.feeddeck.app",
-  "windows": "https://app.feeddeck.app",
-  "linux": "https://app.feeddeck.app",
+  "macos": "https://apps.apple.com/us/app/feeddeck/id6451055362",
+  "windows": "https://www.microsoft.com/store/apps/9NPHPGRRCT5H",
+  "linux": "https://flathub.org/en/apps/app.feeddeck.feeddeck",
 };
 
 const getPlatform = (): TPlatform | undefined => {
