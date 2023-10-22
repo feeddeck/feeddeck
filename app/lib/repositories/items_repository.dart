@@ -105,9 +105,9 @@ class ItemsRepository with ChangeNotifier {
   Future<void> _init() async {
     final state = ItemsRepositoryStore().get(column.identifier());
     if (state != null) {
-      _status = ItemsStatus.loaded;
-      _items.addAll(state.items);
+      _status = state.status;
       _filters = state.filters;
+      _items.addAll(state.items);
       notifyListeners();
     } else {
       await _getItems();
@@ -189,7 +189,12 @@ class ItemsRepository with ChangeNotifier {
       /// Finally we store the state of the repository, so that we do not have
       /// to retrieve the items from the database again when therepository is
       /// reinitialized.
-      ItemsRepositoryStore().set(column.identifier(), _items, _filters);
+      ItemsRepositoryStore().set(
+        column.identifier(),
+        _status,
+        _filters,
+        _items,
+      );
       notifyListeners();
     } catch (_) {
       _status = ItemsStatus.loaded;
@@ -278,7 +283,7 @@ class ItemsRepository with ChangeNotifier {
         }
       }
 
-      ItemsRepositoryStore().set(column.id, _items, _filters);
+      ItemsRepositoryStore().set(column.id, _status, _filters, _items);
       notifyListeners();
     } catch (err) {
       rethrow;
@@ -308,7 +313,7 @@ class ItemsRepository with ChangeNotifier {
         }
       }
 
-      ItemsRepositoryStore().set(column.id, _items, _filters);
+      ItemsRepositoryStore().set(column.id, _status, _filters, _items);
       notifyListeners();
     } catch (err) {
       rethrow;
@@ -330,7 +335,7 @@ class ItemsRepository with ChangeNotifier {
         }
       }
 
-      ItemsRepositoryStore().set(column.id, _items, _filters);
+      ItemsRepositoryStore().set(column.id, _status, _filters, _items);
       notifyListeners();
     } catch (err) {
       rethrow;
@@ -342,12 +347,14 @@ class ItemsRepository with ChangeNotifier {
 /// in the [ItemsRepositoryStore]. The state contains all the loaded [items] and
 /// the [filters] set by user to load the items.
 class ItemsRepositoryStoreState {
-  List<FDItem> items;
+  ItemsStatus status;
   ItemsFilters filters;
+  List<FDItem> items;
 
   ItemsRepositoryStoreState({
-    required this.items,
+    required this.status,
     required this.filters,
+    required this.items,
   });
 }
 
@@ -384,10 +391,16 @@ class ItemsRepositoryStore {
   ///
   /// The best is to call the [set] function right before we call
   /// `notifyListeners` in the repository.
-  set(String columnId, List<FDItem> items, ItemsFilters filters) {
+  set(
+    String columnId,
+    ItemsStatus status,
+    ItemsFilters filters,
+    List<FDItem> items,
+  ) {
     return itemsRepositoryStoreStates[columnId] = ItemsRepositoryStoreState(
-      items: items,
+      status: status,
       filters: filters,
+      items: items,
     );
   }
 }
