@@ -168,7 +168,7 @@ class ItemsRepository with ChangeNotifier {
       /// filter to page through all the items.
       final data = await filter
           .order('publishedAt')
-          .range(_filters.offsetFilter, _filters.offsetFilter + 50);
+          .range(_filters.offsetFilter, _filters.offsetFilter + 50 - 1);
 
       /// The returned items are added to the [_items] field and the status is
       /// set to [ItemsStatus.loaded] or [ItemsStatus.loadedLast] based on the

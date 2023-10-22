@@ -121,7 +121,7 @@ class _ColumnLayoutHeaderState extends State<ColumnLayoutHeader> {
               ),
               Text(
                 Characters(
-                  '${items.column.sources.length} ${items.column.sources.length == 1 ? 'Source' : 'Sources'} / ${items.items.length} ${items.items.length == 1 ? 'Item' : 'Items'}',
+                  '${items.column.sources.length} ${items.column.sources.length == 1 ? 'Source' : 'Sources'} / ${items.items.length}${items.status == ItemsStatus.loaded ? '+' : ''} ${items.items.length == 1 ? 'Item' : 'Items'}',
                 )
                     .replaceAll(
                       Characters(''),
