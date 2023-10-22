@@ -90,9 +90,10 @@ provide the following arguments: `--dart-define SUPABASE_URL=<SUPABASE_URL>`,
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "FeedDeck (Chrome)",
-      "request": "launch",
+      "name": "Local - Chrome",
       "type": "dart",
+      "request": "launch",
+      "program": "app/lib/main.dart",
       "args": [
         "-d",
         "chrome",
@@ -110,28 +111,10 @@ provide the following arguments: `--dart-define SUPABASE_URL=<SUPABASE_URL>`,
       ]
     },
     {
-      "name": "FeedDeck (Web Server)",
-      "request": "launch",
+      "name": "Local - iOS Simulator",
       "type": "dart",
-      "args": [
-        "-d",
-        "web-server",
-        "--web-port",
-        "3000",
-        "--dart-define",
-        "SUPABASE_URL=<SUPABASE_URL>",
-        "--dart-define",
-        "SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>",
-        "--dart-define",
-        "SUPABASE_SITE_URL=<SUPABASE_SITE_URL>",
-        "--dart-define",
-        "GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>"
-      ]
-    },
-    {
-      "name": "FeedDeck (iOS)",
       "request": "launch",
-      "type": "dart",
+      "program": "app/lib/main.dart",
       "args": [
         "-d",
         "iPhone 14 Pro Max",
@@ -146,9 +129,10 @@ provide the following arguments: `--dart-define SUPABASE_URL=<SUPABASE_URL>`,
       ]
     },
     {
-      "name": "FeedDeck (macOS)",
-      "request": "launch",
+      "name": "Local - macOS",
       "type": "dart",
+      "request": "launch",
+      "program": "app/lib/main.dart",
       "args": [
         "-d",
         "macOS",
