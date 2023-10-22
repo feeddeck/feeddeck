@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:feeddeck/repositories/app_repository.dart';
+import 'package:feeddeck/repositories/items_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 
 /// The [SettingsDecksSelect] widget shows a list of the users decks, when the
@@ -19,8 +20,13 @@ class _SettingsDecksSelectState extends State<SettingsDecksSelect> {
   /// [_selectDeck] sets the provided [deckId] as the active deck. The active
   /// deck is updated via the [selectDeck] method of the [AppRepository]. When
   /// the active deck is updated the user is redirected to the decks view.
+  ///
+  /// Before the active deck is changed the [ItemsRepositoryStore] is cleared,
+  /// to trigger a reload of the items once the deck is loaded.
   Future<void> _selectDeck(String deckId) async {
     try {
+      ItemsRepositoryStore().clear();
+
       await Provider.of<AppRepository>(context, listen: false)
           .selectDeck(deckId);
       if (!mounted) return;

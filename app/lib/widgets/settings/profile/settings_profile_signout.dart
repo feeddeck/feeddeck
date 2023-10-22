@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+import 'package:feeddeck/repositories/items_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/general/elevated_button_progress_indicator.dart';
 import 'package:feeddeck/widgets/signin/signin.dart';
@@ -20,12 +21,16 @@ class _SettingsProfileSignOutState extends State<SettingsProfileSignOut> {
 
   /// [_signOut] signs out the currently authenticated user and redirects him
   /// to the [SignIn] screen. This will sign out the user from all devices.
+  ///
+  /// Before the user is signed out the [ItemsRepositoryStore] is cleared, to
+  /// trigger a reload of the items once the user is signed in again.
   Future<void> _signOut() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
+      ItemsRepositoryStore().clear();
       await supabase.Supabase.instance.client.auth.signOut();
 
       setState(() {

@@ -369,7 +369,7 @@ class ItemsRepositoryStore {
   static final ItemsRepositoryStore _instance =
       ItemsRepositoryStore._internal();
 
-  final Map<String, ItemsRepositoryStoreState> itemsRepositoryStoreStates = {};
+  final Map<String, ItemsRepositoryStoreState> _itemsRepositoryStoreStates = {};
 
   factory ItemsRepositoryStore() {
     return _instance;
@@ -382,7 +382,7 @@ class ItemsRepositoryStore {
   /// returns `null` to indicate that we have to get the items from the
   /// database.
   ItemsRepositoryStoreState? get(String columnId) {
-    return itemsRepositoryStoreStates[columnId];
+    return _itemsRepositoryStoreStates[columnId];
   }
 
   /// [set] saves the [items] and [filters] for a [columnId] in the store. This
@@ -397,10 +397,17 @@ class ItemsRepositoryStore {
     ItemsFilters filters,
     List<FDItem> items,
   ) {
-    return itemsRepositoryStoreStates[columnId] = ItemsRepositoryStoreState(
+    return _itemsRepositoryStoreStates[columnId] = ItemsRepositoryStoreState(
       status: status,
       filters: filters,
       items: items,
     );
+  }
+
+  /// [clear] deletes all the stored [_itemsRepositoryStoreStates] from the
+  /// store. This method can be used to clear the cache, e.g. when a user
+  /// changes the active deck or signes out.
+  clear() {
+    _itemsRepositoryStoreStates.clear();
   }
 }
