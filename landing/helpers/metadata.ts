@@ -104,10 +104,10 @@ export const generalMetadata: Metadata = {
     },
   },
   itunes: {
-    appId: "1494512160",
+    appId: "6451055362",
   },
   other: {
-    "google-play-app": "app-id=io.feeddeck.feeddeck",
+    "google-play-app": "app-id=app.feeddeck.feeddeck",
     "msApplication-ID": "26077RicoBerger.FeedDeck",
     "msApplication-PackageFamilyName": "26077RicoBerger.FeedDeck_2w82je6nmmv2c",
   },
