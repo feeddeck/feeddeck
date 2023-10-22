@@ -195,9 +195,9 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
       /// The drawer is used to display the [CreateColumn] widget, so that a
       /// user can add a new column without leaving the screen.
       drawer: ClipRRect(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(Constants.spacingMiddle),
-          bottom: Radius.circular(Constants.spacingMiddle),
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(Constants.spacingMiddle),
+          bottomRight: Radius.circular(Constants.spacingMiddle),
         ),
         child: Drawer(
           width: Constants.columnWidth,
