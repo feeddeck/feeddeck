@@ -114,10 +114,22 @@ export const getMastodonFeed = async (
 
     /**
      * Create the item object and add it to the `items` array. Before the item is created we also try to get a list of
-     * media fils (images) and add it to the options. Since there could be multiple media files we add it to the options
-     * and not to the media field.
+     * media fils (images) and videos which will then be added to the `options`. Since there could be multiple media
+     * files we add it to the options and not to the media field.
+     *
+     * The implementation to generate the options field is not ideal, but is required to be compatible with older
+     * clients, where we just check if the options are defined and if it contains a media field, but we do not check if
+     * the media field is null.
      */
+    const options: { media?: string[]; videos?: string[] } = {};
     const media = getMedia(entry);
+    if (media && media.length > 0) {
+      options["media"] = media;
+    }
+    const videos = getVideos(entry);
+    if (videos && videos.length > 0) {
+      options["videos"] = videos;
+    }
 
     items.push({
       id: itemId,
@@ -126,7 +138,7 @@ export const getMastodonFeed = async (
       sourceId: source.id,
       title: "",
       link: entry.links[0].href!,
-      options: media && media.length > 0 ? { media: media } : undefined,
+      options: Object.keys(options).length === 0 ? undefined : options,
       description: entry.description?.value
         ? unescape(entry.description.value)
         : undefined,
@@ -187,8 +199,8 @@ const generateItemId = (sourceId: string, identifier: string): string => {
 };
 
 /**
- * `getMedia` returns an image for the provided feed entry from it's description. If we could not get an image from the
- * description we return `undefined`.
+ * `getMedia` returns all images for the provided feed entry from it's `media:content` field. If we could not get an
+ * image we return `undefined`.
  */
 const getMedia = (entry: FeedEntry): string[] | undefined => {
   if (entry["media:content"]) {
@@ -200,6 +212,25 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
     }
 
     return images;
+  }
+
+  return undefined;
+};
+
+/**
+ * `getVideos` returns all videos for the provided feed entry from it's `media:content` field. If we could not get a
+ * video we return `undefined`.
+ */
+const getVideos = (entry: FeedEntry): string[] | undefined => {
+  if (entry["media:content"]) {
+    const videos = [];
+    for (const media of entry["media:content"]) {
+      if (media.medium === "video" && media.url) {
+        videos.push(media.url);
+      }
+    }
+
+    return videos;
   }
 
   return undefined;

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -45,13 +46,23 @@ void main() async {
     });
   }
 
+  /// Initialize the [media_kit] packages, so that we can play audio and video
+  /// files.
+  MediaKit.ensureInitialized();
+
   /// Initialize the [just_audio_background] package, so that we can play audio
   /// files in the background.
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );
+  ///
+  /// We can not initialize the [just_audio_background] package on Windows and
+  /// Linux, because then the returned duration in the `_player.durationStream`
+  /// isn't working correctly in the [ItemAudioPlayer] widget.
+  if (kIsWeb || Platform.isAndroid || Platform.isIOS || Platform.isIOS) {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+      androidNotificationChannelName: 'Audio playback',
+      androidNotificationOngoing: true,
+    );
+  }
 
   /// For the ewb we have to use the path url strategy, so that the redirect
   /// within Supabase is working in all cases. On all other platforms this is a

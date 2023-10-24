@@ -38,7 +38,9 @@ class ItemPreviewMastodon extends StatelessWidget {
           tagetFormat: DescriptionFormat.markdown,
         ),
         ItemMediaGallery(
-          itemMedias: item.options != null && item.options!.containsKey('media')
+          itemMedias: item.options != null &&
+                  item.options!.containsKey('media') &&
+                  item.options!['media'] != null
               ? (item.options!['media'] as List)
                   .map((item) => item as String)
                   .toList()
