@@ -6,6 +6,7 @@ import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_description.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_media_gallery.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_subtitle.dart';
+import 'package:feeddeck/widgets/item/details/utils/item_videos.dart';
 
 class ItemDetailsMastodon extends StatelessWidget {
   const ItemDetailsMastodon({
@@ -36,8 +37,19 @@ class ItemDetailsMastodon extends StatelessWidget {
           height: Constants.spacingExtraSmall,
         ),
         ItemMediaGallery(
-          itemMedias: item.options != null && item.options!.containsKey('media')
+          itemMedias: item.options != null &&
+                  item.options!.containsKey('media') &&
+                  item.options!['media'] != null
               ? (item.options!['media'] as List)
+                  .map((item) => item as String)
+                  .toList()
+              : null,
+        ),
+        ItemVideos(
+          videos: item.options != null &&
+                  item.options!.containsKey('videos') &&
+                  item.options!['videos'] != null
+              ? (item.options!['videos'] as List)
                   .map((item) => item as String)
                   .toList()
               : null,
