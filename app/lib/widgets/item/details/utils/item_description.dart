@@ -47,7 +47,7 @@ class ItemDescription extends StatelessWidget {
   Widget _buildMarkdown(BuildContext context, String content) {
     return MarkdownBody(
       selectable: true,
-      data: content,
+      data: content.trim(),
       styleSheet: MarkdownStyleSheet(
         code: TextStyle(
           fontFamily: getMonospaceFontFamily(),
@@ -135,7 +135,7 @@ class ItemDescription extends StatelessWidget {
   /// [_buildPlain] renders the provided [content] as plain text.
   Widget _buildPlain(String content) {
     return SelectableText(
-      content,
+      content.trim(),
       textAlign: TextAlign.left,
       style: const TextStyle(
         fontWeight: FontWeight.normal,

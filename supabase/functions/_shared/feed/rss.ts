@@ -232,7 +232,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     for (const media of entry["media:content"]) {
       if (
         media.medium && media.medium === "image" && media.url &&
-        media.url.startsWith("https://")
+        media.url.startsWith("https://") && !media.url.endsWith(".svg")
       ) {
         return media.url;
       }
@@ -253,7 +253,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
           if (
             mediaContent.medium && mediaContent.medium === "image" &&
             mediaContent.url &&
-            mediaContent.url.startsWith("https://")
+            mediaContent.url.startsWith("https://") &&
+            !mediaContent.url.endsWith(".svg")
           ) {
             return mediaContent.url;
           }
@@ -267,7 +268,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       if (
         attachment.mimeType && attachment.mimeType.startsWith("image/") &&
         attachment.url &&
-        attachment.url.startsWith("https://")
+        attachment.url.startsWith("https://") &&
+        !attachment.url.endsWith(".svg")
       ) {
         return attachment.url;
       }
@@ -278,7 +280,10 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
       entry.description?.value,
     );
-    if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
+    if (
+      matches && matches.length == 2 && matches[1].startsWith("https://") &&
+      !matches[1].endsWith(".svg")
+    ) {
       return matches[1];
     }
   }
@@ -287,7 +292,10 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
       entry.content?.value,
     );
-    if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
+    if (
+      matches && matches.length == 2 && matches[1].startsWith("https://") &&
+      !matches[1].endsWith(".svg")
+    ) {
       return matches[1];
     }
   }
