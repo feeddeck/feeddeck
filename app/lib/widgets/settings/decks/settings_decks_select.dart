@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:feeddeck/repositories/app_repository.dart';
 import 'package:feeddeck/repositories/items_repository.dart';
+import 'package:feeddeck/repositories/layout_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 
 /// The [SettingsDecksSelect] widget shows a list of the users decks, when the
@@ -20,12 +21,17 @@ class _SettingsDecksSelectState extends State<SettingsDecksSelect> {
   /// [_selectDeck] sets the provided [deckId] as the active deck. The active
   /// deck is updated via the [selectDeck] method of the [AppRepository]. When
   /// the active deck is updated the user is redirected to the decks view.
-  ///
-  /// Before the active deck is changed the [ItemsRepositoryStore] is cleared,
-  /// to trigger a reload of the items once the deck is loaded.
   Future<void> _selectDeck(String deckId) async {
     try {
+      /// Before the active deck is changed the [ItemsRepositoryStore] is
+      /// cleared, to trigger a reload of the items once the deck is loaded.
       ItemsRepositoryStore().clear();
+
+      /// We also have to reset the tab index when the user selects a new deck,
+      /// so that the first tab is selected instead of the tab with the same
+      /// index as in the previously selected deck.
+      Provider.of<LayoutRepository>(context, listen: false)
+          .deckLayoutSmallInitialTabIndex = 0;
 
       await Provider.of<AppRepository>(context, listen: false)
           .selectDeck(deckId);

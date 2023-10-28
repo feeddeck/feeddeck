@@ -5,6 +5,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/repositories/app_repository.dart';
+import 'package:feeddeck/repositories/layout_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/column/column_layout.dart';
 import 'package:feeddeck/widgets/column/create/create_column.dart';
@@ -224,10 +225,20 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
                       backgroundColor: Constants.background,
                       selectedIndex: null,
 
-                      /// When a user selects a destination in the navigation rail
-                      /// we scroll to the corresponding column by using the
-                      /// `scroll_to_index` package.
+                      /// When a user selects a destination in the navigation
+                      /// rail we scroll to the corresponding column by using
+                      /// the `scroll_to_index` package.
                       onDestinationSelected: (int index) {
+                        /// Before we scroll to the corresponding column, we
+                        /// also update the [deckLayoutSmallInitialTabIndex] in
+                        /// the [LayoutRepository] so that the correct tab is
+                        /// also selected when a user switches to the small
+                        /// layout.
+                        Provider.of<LayoutRepository>(
+                          context,
+                          listen: false,
+                        ).deckLayoutSmallInitialTabIndex = index;
+
                         _scrollController.scrollToIndex(
                           index,
                           preferPosition: AutoScrollPosition.end,
@@ -244,8 +255,8 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
 
                       /// We add two additional items to the navigation rail via
                       /// the trailing property. These items are used to allow a
-                      /// user to create a new column and to go to the settings of
-                      /// the app.
+                      /// user to create a new column and to go to the settings
+                      /// of the app.
                       trailing: Expanded(
                         child: Align(
                           alignment: Alignment.bottomCenter,
