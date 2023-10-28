@@ -46,7 +46,7 @@ class ItemDescription extends StatelessWidget {
       ),
       child: MarkdownBody(
         selectable: false,
-        data: content,
+        data: content.trim(),
         styleSheet: MarkdownStyleSheet(
           code: TextStyle(
             fontFamily: getMonospaceFontFamily(),
@@ -87,7 +87,7 @@ class ItemDescription extends StatelessWidget {
         bottom: Constants.spacingExtraSmall,
       ),
       child: Text(
-        content,
+        content.trim(),
         maxLines: 5,
         style: const TextStyle(
           overflow: TextOverflow.ellipsis,

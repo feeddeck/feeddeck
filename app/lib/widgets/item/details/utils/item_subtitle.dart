@@ -23,9 +23,10 @@ class ItemSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sourceType = source.type.toLocalizedString();
-    final sourceTitle = source.title != '' ? ' / ${source.title}' : '';
-    final author =
-        item.author != null && item.author != '' ? ' / ${item.author}' : '';
+    final sourceTitle = source.title != '' ? ' / ${source.title.trim()}' : '';
+    final author = item.author != null && item.author != ''
+        ? ' / ${item.author!.trim()}'
+        : '';
     final publishedAt =
         ' / ${DateFormat.yMMMMd().add_Hm().format(DateTime.fromMillisecondsSinceEpoch(item.publishedAt * 1000))}';
 

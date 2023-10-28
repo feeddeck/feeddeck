@@ -41,7 +41,7 @@ class ItemPreviewRSS extends StatelessWidget {
         ),
         ItemDescription(
           itemDescription: item.description,
-          sourceFormat: DescriptionFormat.plain,
+          sourceFormat: DescriptionFormat.html,
           tagetFormat: DescriptionFormat.plain,
         ),
       ],
