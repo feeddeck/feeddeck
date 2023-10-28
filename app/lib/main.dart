@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:feeddeck/repositories/app_repository.dart';
+import 'package:feeddeck/repositories/layout_repository.dart';
 import 'package:feeddeck/repositories/profile_repository.dart';
 import 'package:feeddeck/repositories/settings_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
@@ -135,6 +136,7 @@ class FeedDeckApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => LayoutRepository()),
         ChangeNotifierProvider(create: (_) => AppRepository()),
         ChangeNotifierProvider(create: (_) => ProfileRepository()),
       ],

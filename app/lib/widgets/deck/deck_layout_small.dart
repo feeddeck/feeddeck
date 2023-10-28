@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/repositories/app_repository.dart';
+import 'package:feeddeck/repositories/layout_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/column/column_layout.dart';
 import 'package:feeddeck/widgets/column/create/create_column.dart';
@@ -19,6 +20,30 @@ import 'package:feeddeck/widgets/source/source_icon.dart';
 /// current deck and one to go to the settings screen of the app.
 class DeckLayoutSmall extends StatelessWidget {
   const DeckLayoutSmall({super.key});
+
+  /// [_getInitialIndex] returns the initial index for the
+  /// [DefaultTabController]. The intial index is saved in the
+  /// [LayoutRepository] so that we can use it when a user switches between the
+  /// small and large layout or between decks. To not run into errors we have to
+  /// check that a column which should be used was not already deleted by a
+  /// user before returning the index. If a column was deleted we reset the
+  /// index to 0.
+  int _getInitialIndex(BuildContext context, int columnsLength) {
+    final deckLayoutSmallInitialTabIndex = Provider.of<LayoutRepository>(
+      context,
+      listen: false,
+    ).deckLayoutSmallInitialTabIndex;
+
+    if (deckLayoutSmallInitialTabIndex >= columnsLength) {
+      Provider.of<LayoutRepository>(
+        context,
+        listen: false,
+      ).deckLayoutSmallInitialTabIndex = 0;
+      return 0;
+    }
+
+    return deckLayoutSmallInitialTabIndex;
+  }
 
   /// [_buildTabs] returns all items for the tab bar. The items are generated
   /// by looping thorugh the `columns` defined in the [AppRepository].
@@ -124,6 +149,7 @@ class DeckLayoutSmall extends StatelessWidget {
     AppRepository app = Provider.of<AppRepository>(context, listen: true);
 
     return DefaultTabController(
+      initialIndex: _getInitialIndex(context, app.columns.length),
       length: app.columns.length,
       child: Scaffold(
         bottomNavigationBar: SafeArea(
@@ -148,6 +174,16 @@ class DeckLayoutSmall extends StatelessWidget {
                     ),
                     child: TabBar(
                       isScrollable: true,
+                      onTap: (int index) {
+                        /// When the user clicks on a tab we update the index in
+                        /// the [LayoutRepository] so that we can use it as
+                        /// initial index when the widget is rebuild (e.g. when
+                        /// a user switches between the large and small layout).
+                        Provider.of<LayoutRepository>(
+                          context,
+                          listen: false,
+                        ).deckLayoutSmallInitialTabIndex = index;
+                      },
                       tabs: _buildTabs(context),
                     ),
                   ),
