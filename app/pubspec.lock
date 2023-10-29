@@ -1270,19 +1270,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  youtube_player_iframe:
+  youtube_explode_dart:
     dependency: "direct main"
     description:
-      name: youtube_player_iframe
-      sha256: d7aec9083430db4e5da83a3b5d7b7fcbb93cfa027d9f680ce3c7e7cd20724305
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.4"
-  youtube_player_iframe_web:
-    dependency: transitive
-    description:
-      name: youtube_player_iframe_web
-      sha256: c7020816031600349b56d2729d4e8be011fcb723ff7dc2dd0cdf72096a0e5ff4
+      name: youtube_explode_dart
+      sha256: "98fd11b51adbbca76cbdb17f560168f1d7a9835cecceea965f49eb1e5eed155c"
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
