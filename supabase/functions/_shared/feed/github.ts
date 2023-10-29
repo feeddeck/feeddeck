@@ -110,12 +110,7 @@ export const getGithubFeed = async (
         columnId: source.columnId,
         sourceId: source.id,
         title: notification.subject?.title ?? "Notification",
-        link: notification.subject?.url
-          ? `https://github.com/${notification.subject?.url.replace(
-            "https://api.github.com/repos/",
-            "",
-          )}`
-          : "",
+        link: getLinkFromApiUrl(notification.subject?.url),
         media: notification.repository.owner.avatar_url,
         description: formatDescription(notification),
         author: notification.repository?.full_name,
@@ -397,6 +392,25 @@ const request = async (
   }
 
   return await res.json();
+};
+
+/**
+ * `getLinkFromApiUrl` returns a link which can be clicked by a user based on the given GitHub API url. If there is no
+ * url given we return the default GitHub notifications link.
+ */
+const getLinkFromApiUrl = (url?: string): string => {
+  if (!url) {
+    return "https://github.com/notifications";
+  }
+
+  if (/^https:\/\/api.github.com\/repos\/.*\/.*\/pulls\/\d+$/.test(url)) {
+    const n = url.lastIndexOf("pulls");
+    url = url.slice(0, n) + url.slice(n).replace("pulls", "pull");
+  }
+
+  return `https://github.com/${
+    url.replace("https://api.github.com/repos/", "")
+  }`;
 };
 
 /**

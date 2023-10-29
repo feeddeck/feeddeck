@@ -41,7 +41,6 @@ export const getXFeed = async (
     throw new Error("Invalid feed");
   }
   const feed = JSON.parse(matches[1]) as Feed;
-  console.log(feed);
 
   /**
    * Generate a source id based on the user id, column id and the normalized `twitter` options. Besides that we also set
