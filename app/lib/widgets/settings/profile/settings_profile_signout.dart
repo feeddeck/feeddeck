@@ -20,18 +20,21 @@ class _SettingsProfileSignOutState extends State<SettingsProfileSignOut> {
   bool _isLoading = false;
 
   /// [_signOut] signs out the currently authenticated user and redirects him
-  /// to the [SignIn] screen. This will sign out the user from all devices.
+  /// to the [SignIn] screen. If the provided scope is
+  /// [supabase.SignOutScope.local] the user will be signed out from the current
+  /// device. If the scope in [supabase.SignOutScope.global] the user will be
+  /// signed out from all devices.
   ///
   /// Before the user is signed out the [ItemsRepositoryStore] is cleared, to
   /// trigger a reload of the items once the user is signed in again.
-  Future<void> _signOut() async {
+  Future<void> _signOut(supabase.SignOutScope scope) async {
     setState(() {
       _isLoading = true;
     });
 
     try {
       ItemsRepositoryStore().clear();
-      await supabase.Supabase.instance.client.auth.signOut();
+      await supabase.Supabase.instance.client.auth.signOut(scope: scope);
 
       setState(() {
         _isLoading = false;
@@ -64,7 +67,27 @@ class _SettingsProfileSignOutState extends State<SettingsProfileSignOut> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => _signOut(),
+        onTap: () {
+          /// Show a modal bottom sheet with the [SettingsProfileSignOutActions]
+          /// widget, where the user can select the scope of the sign out
+          /// action.
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            isDismissible: true,
+            useSafeArea: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            constraints: const BoxConstraints(
+              maxWidth: Constants.centeredFormMaxWidth,
+            ),
+            builder: (BuildContext context) {
+              return SettingsProfileSignOutActions(
+                signOut: _signOut,
+              );
+            },
+          );
+        },
         child: Card(
           color: Constants.secondary,
           margin: const EdgeInsets.only(
@@ -111,6 +134,78 @@ class _SettingsProfileSignOutState extends State<SettingsProfileSignOut> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The [SettingsProfileSignOutActions] widget displays a list of actions which
+/// can be used to sign out the user from the current device or from all
+/// devices.
+class SettingsProfileSignOutActions extends StatelessWidget {
+  const SettingsProfileSignOutActions({
+    super.key,
+    required this.signOut,
+  });
+
+  final Future<void> Function(supabase.SignOutScope scope) signOut;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(
+        Constants.spacingMiddle,
+      ),
+      padding: const EdgeInsets.only(
+        left: Constants.spacingMiddle,
+        right: Constants.spacingMiddle,
+      ),
+      decoration: const BoxDecoration(
+        color: Constants.background,
+        borderRadius: BorderRadius.all(
+          Radius.circular(Constants.spacingMiddle),
+        ),
+      ),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          ListTile(
+            mouseCursor: SystemMouseCursors.click,
+            onTap: () {
+              Navigator.of(context).pop();
+              signOut(supabase.SignOutScope.local);
+            },
+            leading: const Icon(
+              Icons.logout,
+            ),
+            title: const Text(
+              'From current device',
+            ),
+          ),
+          const Divider(
+            color: Constants.dividerColor,
+            height: 1,
+            thickness: 1,
+          ),
+          ListTile(
+            mouseCursor: SystemMouseCursors.click,
+            onTap: () {
+              Navigator.of(context).pop();
+              signOut(supabase.SignOutScope.global);
+            },
+            leading: const Icon(
+              Icons.logout,
+              color: Constants.error,
+            ),
+            title: const Text(
+              'From all devices',
+              style: TextStyle(
+                color: Constants.error,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
