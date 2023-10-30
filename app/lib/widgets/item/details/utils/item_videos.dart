@@ -113,24 +113,29 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                   Radius.circular(Constants.spacingMiddle),
                 ),
               ),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: widget.qualities!
-                    .map(
-                      (e) => ListTile(
-                        mouseCursor: SystemMouseCursors.click,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          player.open(
-                            Media(e.video),
-                            play: true,
-                          );
-                        },
-                        title: Text(e.quality),
-                      ),
-                    )
-                    .toList(),
+              child: ListView.separated(
+                shrinkWrap: true,
+                separatorBuilder: (context, index) {
+                  return const Divider(
+                    color: Constants.dividerColor,
+                    height: 1,
+                    thickness: 1,
+                  );
+                },
+                itemCount: widget.qualities!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    mouseCursor: SystemMouseCursors.click,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      player.open(
+                        Media(widget.qualities![index].video),
+                        play: true,
+                      );
+                    },
+                    title: Text(widget.qualities![index].quality),
+                  );
+                },
               ),
             );
           },
