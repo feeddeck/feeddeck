@@ -34,6 +34,9 @@ class ItemMediaGallery extends StatelessWidget {
             isDismissible: true,
             useSafeArea: true,
             backgroundColor: Colors.black,
+            constraints: const BoxConstraints(
+              maxWidth: double.infinity,
+            ),
             builder: (BuildContext context) {
               return ItemMediaGalleryModal(
                 initialItemMediaIndex: itemMediaIndex,
