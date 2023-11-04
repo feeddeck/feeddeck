@@ -8,22 +8,36 @@ import { log } from '../../utils/log.ts';
  * `uploadSourceIcon` uploads the `icon` of the provided `source` to the
  * Supabase storage, to avoid CORS issues within our web app and to make use of
  * the built-in CDN. If the upload was successfull the path of the uploaded icon
- * is returned. If the upload failed `undefined` is returned.
+ * is returned. If the upload failed we return the original `icon` path, so that
+ * we can still display the icon, from it's original source.
  */
 export const uploadSourceIcon = async (
   supabaseClient: SupabaseClient,
   source: ISource,
 ): Promise<string | undefined> => {
-  if (!source.icon || source.icon === '') {
+  if (
+    !source.icon || source.icon === '' || (!source.icon.startsWith('http://') &&
+      !source.icon.startsWith('https://'))
+  ) {
     return undefined;
   }
 
-  return await uploadFile(
-    supabaseClient,
-    'sources',
-    source.icon,
-    `${source.userId}/${source.id}.${source.icon.split('.').pop()}`,
-  );
+  try {
+    const cdnIcon = await uploadFile(
+      supabaseClient,
+      'sources',
+      source.icon,
+      `${source.userId}/${source.id}.${source.icon.split('.').pop()}`,
+    );
+
+    if (cdnIcon) {
+      return cdnIcon;
+    }
+
+    return source.icon;
+  } catch (_) {
+    return source.icon;
+  }
 };
 
 /**

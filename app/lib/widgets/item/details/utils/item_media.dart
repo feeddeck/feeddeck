@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:feeddeck/utils/constants.dart';
-import 'package:feeddeck/utils/image_url.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [ItemMedia] widget displays the media of an item. Based on the provided
 /// [itemMedia] value the media is displayed from the Supabase storage or
@@ -21,8 +19,6 @@ class ItemMedia extends StatelessWidget {
     if (itemMedia == null || itemMedia == '') {
       return Container();
     }
-
-    final imageUrl = getImageUrl(FDImageType.item, itemMedia!);
 
     return Container(
       padding: const EdgeInsets.only(
@@ -49,7 +45,7 @@ class ItemMedia extends StatelessWidget {
                       Center(
                         child: CachedNetworkImage(
                           fit: BoxFit.contain,
-                          imageUrl: imageUrl,
+                          imageUrl: itemMedia!,
                           placeholder: (context, url) => Container(),
                           errorWidget: (context, url, error) => Container(),
                         ),
@@ -75,7 +71,7 @@ class ItemMedia extends StatelessWidget {
           child: CachedNetworkImage(
             width: double.infinity,
             fit: BoxFit.contain,
-            imageUrl: imageUrl,
+            imageUrl: itemMedia!,
             placeholder: (context, url) => Container(),
             errorWidget: (context, url, error) => Container(),
           ),

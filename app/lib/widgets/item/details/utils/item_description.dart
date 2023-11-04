@@ -1,14 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/font.dart';
 import 'package:feeddeck/utils/openurl.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [DescriptionFormat] enum defines the source and target format of a
 /// description.
@@ -67,12 +65,6 @@ class ItemDescription extends StatelessWidget {
           return Container();
         }
 
-        String imageUrl = uri.toString();
-        if (kIsWeb) {
-          imageUrl =
-              '${Supabase.instance.client.functionsUrl}/image-proxy-v1?media=${Uri.encodeQueryComponent(imageUrl)}';
-        }
-
         return Container(
           padding: const EdgeInsets.only(
             bottom: Constants.spacingMiddle,
@@ -98,7 +90,7 @@ class ItemDescription extends StatelessWidget {
                           Center(
                             child: CachedNetworkImage(
                               fit: BoxFit.contain,
-                              imageUrl: imageUrl,
+                              imageUrl: uri.toString(),
                               placeholder: (context, url) => Container(),
                               errorWidget: (context, url, error) => Container(),
                             ),
@@ -124,7 +116,7 @@ class ItemDescription extends StatelessWidget {
               child: CachedNetworkImage(
                 width: double.infinity,
                 fit: BoxFit.contain,
-                imageUrl: imageUrl,
+                imageUrl: uri.toString(),
                 placeholder: (context, url) => Container(),
                 errorWidget: (context, url, error) => Container(),
               ),

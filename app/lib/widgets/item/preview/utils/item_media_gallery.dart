@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:feeddeck/utils/constants.dart';
-import 'package:feeddeck/utils/image_url.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_media.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [ItemMediaGallery] widget can be used to display multiple media files in
 /// a gallery. Similar to the [ItemMedia] widget the provided [itemMedias]
@@ -24,12 +22,10 @@ class ItemMediaGallery extends StatelessWidget {
   /// [CachedNetworkImage] widget. If the app is running in the web, the url is
   /// proxied through the Supabase functions.
   Widget _buildSingleMedia(BuildContext context, String itemMedia) {
-    final imageUrl = getImageUrl(FDImageType.item, itemMedia);
-
     return CachedNetworkImage(
       width: MediaQuery.of(context).size.width,
       fit: BoxFit.cover,
-      imageUrl: imageUrl,
+      imageUrl: itemMedia,
       placeholder: (context, url) => Container(),
       errorWidget: (context, url, error) => Container(),
     );
