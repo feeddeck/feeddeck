@@ -1,23 +1,24 @@
-import { decode, encode } from "std/hex";
+import { decode, encode } from 'std/hex';
 import {
   FEEDDECK_ENCRYPTION_IV,
   FEEDDECK_ENCRYPTION_KEY,
-} from "./constants.ts";
+} from './constants.ts';
 
 /**
- * The `generateKey` function is used to generate the values for the `FEEDDECK_ENCRYPTION_KEY` and
- * `FEEDDECK_ENCRYPTION_IV` environment variables, which are used to encryt / decrypt the users account data, before it
- * is stored in the database.
+ * The `generateKey` function is used to generate the values for the
+ * `FEEDDECK_ENCRYPTION_KEY` and `FEEDDECK_ENCRYPTION_IV` environment variables,
+ * which are used to encryt / decrypt the users account data, before it is
+ * stored in the database.
  */
 export const generateKey = async (): Promise<
   { rawKey: string; iv: string }
 > => {
   const key = await crypto.subtle.generateKey(
-    { name: "AES-CBC", length: 128 },
+    { name: 'AES-CBC', length: 128 },
     true,
-    ["encrypt", "decrypt"],
+    ['encrypt', 'decrypt'],
   );
-  const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", key));
+  const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', key));
   return {
     rawKey: new TextDecoder().decode(encode(rawKey)),
     iv: new TextDecoder().decode(
@@ -27,26 +28,27 @@ export const generateKey = async (): Promise<
 };
 
 /**
- * `encrypt` encrypts the provided `plainText` so it can be stored in the database. The values for the required
- * environment variables can be generated using the `generateKey` function.
+ * `encrypt` encrypts the provided `plainText` so it can be stored in the
+ * database. The values for the required environment variables can be generated
+ * using the `generateKey` function.
  */
 export const encrypt = async (plainText: string): Promise<string> => {
   const rawKey = decode(
     new TextEncoder().encode(FEEDDECK_ENCRYPTION_KEY),
   );
   const key = await crypto.subtle.importKey(
-    "raw",
+    'raw',
     rawKey.buffer,
-    "AES-CBC",
+    'AES-CBC',
     true,
-    ["encrypt", "decrypt"],
+    ['encrypt', 'decrypt'],
   );
   const iv = decode(
     new TextEncoder().encode(FEEDDECK_ENCRYPTION_IV),
   );
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: "AES-CBC", iv },
+    { name: 'AES-CBC', iv },
     key,
     new TextEncoder().encode(plainText),
   );
@@ -55,26 +57,27 @@ export const encrypt = async (plainText: string): Promise<string> => {
 };
 
 /**
- * `decrypt` decrypts the provided `encryptedText` so it can be used in the application. The values for the required
- * environment variables can be generated using the `generateKey` function.
+ * `decrypt` decrypts the provided `encryptedText` so it can be used in the
+ * application. The values for the required environment variables can be
+ * generated using the `generateKey` function.
  */
 export const decrypt = async (encryptedText: string): Promise<string> => {
   const rawKey = decode(
     new TextEncoder().encode(FEEDDECK_ENCRYPTION_KEY),
   );
   const key = await crypto.subtle.importKey(
-    "raw",
+    'raw',
     rawKey.buffer,
-    "AES-CBC",
+    'AES-CBC',
     true,
-    ["encrypt", "decrypt"],
+    ['encrypt', 'decrypt'],
   );
   const iv = decode(
     new TextEncoder().encode(FEEDDECK_ENCRYPTION_IV),
   );
 
   const decrypted = await crypto.subtle.decrypt(
-    { name: "AES-CBC", iv },
+    { name: 'AES-CBC', iv },
     key,
     decode(new TextEncoder().encode(encryptedText)),
   );

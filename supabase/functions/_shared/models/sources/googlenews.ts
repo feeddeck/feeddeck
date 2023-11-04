@@ -1,4 +1,4 @@
-export type TSourceGoogleNewsType = "url" | "search";
+export type TSourceGoogleNewsType = 'url' | 'search';
 
 export interface ISourceOptionsGoogleNews {
   type?: TSourceGoogleNewsType;

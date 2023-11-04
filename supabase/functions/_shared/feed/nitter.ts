@@ -1,20 +1,20 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { parseFeed } from "rss";
-import { Md5 } from "std/md5";
-import { FeedEntry } from "rss/types";
-import { Redis } from "redis";
-import { unescape } from "lodash";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { parseFeed } from 'rss';
+import { Md5 } from 'std/md5';
+import { FeedEntry } from 'rss/types';
+import { Redis } from 'redis';
+import { unescape } from 'lodash';
 
-import { IItem } from "../models/item.ts";
-import { ISource } from "../models/source.ts";
-import { uploadSourceIcon } from "./utils/uploadFile.ts";
-import { IProfile } from "../models/profile.ts";
-import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
+import { IItem } from '../models/item.ts';
+import { ISource } from '../models/source.ts';
+import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { IProfile } from '../models/profile.ts';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
 import {
   FEEDDECK_SOURCE_NITTER_BASIC_AUTH,
   FEEDDECK_SOURCE_NITTER_INSTANCE,
-} from "../utils/constants.ts";
-import { log } from "../utils/log.ts";
+} from '../utils/constants.ts';
+import { log } from '../utils/log.ts';
 
 export const getNitterFeed = async (
   supabaseClient: SupabaseClient,
@@ -23,58 +23,60 @@ export const getNitterFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.nitter || source.options.nitter.length === 0) {
-    throw new Error("Invalid source options");
+    throw new Error('Invalid source options');
   }
 
   const nitterOptions = parseNitterOptions(source.options.nitter);
 
   /**
-   * Get the RSS for the provided `nitter` username or search term. If a feed doesn't contains an item we return an
-   * error.
+   * Get the RSS for the provided `nitter` username or search term. If a feed
+   * doesn't contains an item we return an error.
    */
   const response = await fetchWithTimeout(
     nitterOptions.feedUrl,
     {
       headers: nitterOptions.isCustomInstance ? undefined : {
-        "Authorization": `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
+        'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
       },
-      method: "get",
+      method: 'get',
     },
     5000,
   );
   const xml = await response.text();
-  log("debug", "Add source", {
-    sourceType: "nitter",
+  log('debug', 'Add source', {
+    sourceType: 'nitter',
     requestUrl: nitterOptions.feedUrl,
     responseStatus: response.status,
   });
   const feed = await parseFeed(xml);
 
   if (!feed.title.value) {
-    throw new Error("Invalid feed");
+    throw new Error('Invalid feed');
   }
 
   /**
-   * Generate a source id based on the user id, column id and the normalized `nitter` options. Besides that we also set
-   * the source type to `nitter` and the link for the source. In opposite to the other sources we do not use the title
-   * of the feed as the title for the source, instead we are using the user input as title.
+   * Generate a source id based on the user id, column id and the normalized
+   * `nitter` options. Besides that we also set the source type to `nitter` and
+   * the link for the source. In opposite to the other sources we do not use the
+   * title of the feed as the title for the source, instead we are using the
+   * user input as title.
    */
-  if (source.id === "") {
+  if (source.id === '') {
     source.id = generateSourceId(
       source.userId,
       source.columnId,
       source.options.nitter,
     );
   }
-  source.type = "nitter";
+  source.type = 'nitter';
   source.title = nitterOptions.sourceTitle;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }
 
   /**
-   * When the source doesn't has an icon yet and the user requested the feed of a user (string starts with `@`) we try
-   * to get an icon for the source.
+   * When the source doesn't has an icon yet and the user requested the feed of
+   * a user (string starts with `@`) we try to get an icon for the source.
    */
   if (!source.icon && nitterOptions.isUsername && feed.image?.url) {
     source.icon = feed.image.url;
@@ -82,8 +84,8 @@ export const getNitterFeed = async (
   }
 
   /**
-   * Now that the source does contain all the required information we can start to generate the items for the source, by
-   * looping over all the feed entries.
+   * Now that the source does contain all the required information we can start
+   * to generate the items for the source, by looping over all the feed entries.
    */
   const items: IItem[] = [];
 
@@ -93,12 +95,13 @@ export const getNitterFeed = async (
     }
 
     /**
-     * Each item need a unique id which is generated using the `generateItemId` function. The id is a combination of the
-     * source id and the id of the entry or if the entry does not have an id we use the link of the first link of the
-     * entry.
+     * Each item need a unique id which is generated using the `generateItemId`
+     * function. The id is a combination of the source id and the id of the
+     * entry or if the entry does not have an id we use the link of the first
+     * link of the entry.
      */
-    let itemId = "";
-    if (entry.id != "") {
+    let itemId = '';
+    if (entry.id != '') {
       itemId = generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = generateItemId(source.id, entry.links[0].href);
@@ -107,9 +110,10 @@ export const getNitterFeed = async (
     }
 
     /**
-     * Create the item object and add it to the `items` array. Before the item is created we also try to get a list of
-     * media fils (images) and add it to the options. Since there could be multiple media files we add it to the options
-     * and not to the media field.
+     * Create the item object and add it to the `items` array. Before the item
+     * is created we also try to get a list of media fils (images) and add it to
+     * the options. Since there could be multiple media files we add it to the
+     * options and not to the media field.
      */
     const media = getMedia(entry);
 
@@ -124,7 +128,7 @@ export const getNitterFeed = async (
       description: entry.description?.value
         ? unescape(entry.description.value)
         : undefined,
-      author: entry["dc:creator"]?.join(", "),
+      author: entry['dc:creator']?.join(', '),
       publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
   }
@@ -133,12 +137,14 @@ export const getNitterFeed = async (
 };
 
 /**
- * `skipEntry` is used to determin if an entry should be skipped or not. When a entry in the RSS feed is skipped it will
- * not be added to the database. An entry will be skipped when
- * - it is not within the first 50 entries of the feed, because we only keep the last 50 items of each source in our
- *   delete logic.
+ * `skipEntry` is used to determin if an entry should be skipped or not. When a
+ * entry in the RSS feed is skipped it will not be added to the database. An
+ * entry will be skipped when
+ * - it is not within the first 50 entries of the feed, because we only keep the
+ *   last 50 items of each source in our delete logic.
  * - the entry does not contain a title, a link or a published date.
- * - the published date of the entry is older than the last update date of the source minus 10 seconds.
+ * - the published date of the entry is older than the last update date of the
+ *   source minus 10 seconds.
  */
 const skipEntry = (
   index: number,
@@ -164,11 +170,13 @@ const skipEntry = (
 };
 
 /**
- * `parseNitterOptions` parsed the Nitter options and returns an object with all the required data to get the feed and
- * to create the database entry for the source.
+ * `parseNitterOptions` parsed the Nitter options and returns an object with all
+ * the required data to get the feed and to create the database entry for the
+ * source.
  *
- * This is required, because a user can provide the RSS feed of his own Nitter instance or a username or search term,
- * where we have to use our own Nitter instance.
+ * This is required, because a user can provide the RSS feed of his own Nitter
+ * instance or a username or search term, where we have to use our own Nitter
+ * instance.
  */
 const parseNitterOptions = (
   options: string,
@@ -178,14 +186,14 @@ const parseNitterOptions = (
   isUsername: boolean;
   isCustomInstance: boolean;
 } => {
-  if (options.startsWith("http://") || options.startsWith("https://")) {
-    if (options.endsWith("/rss")) {
+  if (options.startsWith('http://') || options.startsWith('https://')) {
+    if (options.endsWith('/rss')) {
       return {
         feedUrl: options,
         sourceTitle: `@${
           options.slice(
-            options.replace("/rss", "").lastIndexOf("/") + 1,
-            options.replace("/rss", "").length,
+            options.replace('/rss', '').lastIndexOf('/') + 1,
+            options.replace('/rss', '').length,
           )
         }`,
         isUsername: true,
@@ -196,13 +204,13 @@ const parseNitterOptions = (
     const url = new URL(options);
     return {
       feedUrl: options,
-      sourceTitle: url.searchParams.get("q") || options,
+      sourceTitle: url.searchParams.get('q') || options,
       isUsername: false,
       isCustomInstance: true,
     };
   }
 
-  if (options[0] === "@") {
+  if (options[0] === '@') {
     return {
       feedUrl: `${FEEDDECK_SOURCE_NITTER_INSTANCE}/${options.slice(1)}/rss`,
       sourceTitle: options,
@@ -222,8 +230,9 @@ const parseNitterOptions = (
 };
 
 /**
- * `generateSourceId` generates a unique source id based on the user id, column id and the link of the RSS feed. We use
- * the MD5 algorithm for the link to generate the id.
+ * `generateSourceId` generates a unique source id based on the user id, column
+ * id and the link of the RSS feed. We use the MD5 algorithm for the link to
+ * generate the id.
  */
 const generateSourceId = (
   userId: string,
@@ -234,16 +243,18 @@ const generateSourceId = (
 };
 
 /**
- * `generateItemId` generates a unique item id based on the source id and the identifier of the item. We use the MD5
- * algorithm for the identifier, which can be the link of the item or the id of the item.
+ * `generateItemId` generates a unique item id based on the source id and the
+ * identifier of the item. We use the MD5 algorithm for the identifier, which
+ * can be the link of the item or the id of the item.
  */
 const generateItemId = (sourceId: string, identifier: string): string => {
   return `${sourceId}-${new Md5().update(identifier).toString()}`;
 };
 
 /**
- * `getMedia` returns an image for the provided feed entry from it's description. If we could not get an image from the
- * description we return `undefined`.
+ * `getMedia` returns an image for the provided feed entry from it's
+ * description. If we could not get an image from the description we return
+ * `undefined`.
  */
 const getMedia = (entry: FeedEntry): string[] | undefined => {
   const images = [];
@@ -257,9 +268,9 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
       if (
         matches && matches.length == 2
       ) {
-        if (matches[1].startsWith("http://")) {
-          images.push(matches[1].replace("http://", "https://"));
-        } else if (matches[1].startsWith("https://")) {
+        if (matches[1].startsWith('http://')) {
+          images.push(matches[1].replace('http://', 'https://'));
+        } else if (matches[1].startsWith('https://')) {
           images.push(matches[1]);
         }
       }

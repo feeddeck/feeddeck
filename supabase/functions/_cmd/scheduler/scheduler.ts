@@ -1,7 +1,7 @@
-import { connect, Redis } from "redis";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { connect, Redis } from 'redis';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-import { log } from "../../_shared/utils/log.ts";
+import { log } from '../../_shared/utils/log.ts';
 import {
   FEEDDECK_REDIS_HOSTNAME,
   FEEDDECK_REDIS_PASSWORD,
@@ -9,15 +9,16 @@ import {
   FEEDDECK_REDIS_USERNAME,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
   FEEDDECK_SUPABASE_URL,
-} from "../../_shared/utils/constants.ts";
+} from '../../_shared/utils/constants.ts';
 
 /**
- * `runScheduler` starts the scheduler which is responsible for fetching all sources from the Supabase database and
- * schedule them for the worker.
+ * `runScheduler` starts the scheduler which is responsible for fetching all
+ * sources from the Supabase database and schedule them for the worker.
  */
 export const runScheduler = async () => {
   /**
-   * Create a new Supabase client which is used to fetch all user profiles and sources from the Supabase database.
+   * Create a new Supabase client which is used to fetch all user profiles and
+   * sources from the Supabase database.
    */
   const adminSupabaseClient = createClient(
     FEEDDECK_SUPABASE_URL,
@@ -31,8 +32,9 @@ export const runScheduler = async () => {
   );
 
   /**
-   * Create a new Redis client which is used to schedule all sources for the worker and for caching data when needed,
-   * e.g. the media urls for the Google News provider.
+   * Create a new Redis client which is used to schedule all sources for the
+   * worker and for caching data when needed, e.g. the media urls for the Google
+   * News provider.
    */
   const redisClient = await connect({
     hostname: FEEDDECK_REDIS_HOSTNAME,
@@ -42,7 +44,8 @@ export const runScheduler = async () => {
   });
 
   /**
-   * Run the `scheduleSources` function in an endless loop and wait 15 minutes between each run.
+   * Run the `scheduleSources` function in an endless loop and wait 15 minutes
+   * between each run.
    */
   while (true) {
     await scheduleSources(adminSupabaseClient, redisClient);
@@ -51,14 +54,16 @@ export const runScheduler = async () => {
 };
 
 /**
- * `sleep` is a helper function which can be used to wait for a specific amount of time.
+ * `sleep` is a helper function which can be used to wait for a specific amount
+ * of time.
  */
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 /**
- * `scheduleSources` fetches all users and their sources from the Supabase database and schedules them for the worker.
+ * `scheduleSources` fetches all users and their sources from the Supabase
+ * database and schedules them for the worker.
  */
 const scheduleSources = async (
   supabaseClient: SupabaseClient,
@@ -66,23 +71,26 @@ const scheduleSources = async (
 ) => {
   try {
     /**
-     * The `profileCreatedAt` is used to fetch all user profiles which are newer than 7 days. This is used to only
-     * fetch users which are having an active subscription or which are new to FeedDeck.
+     * The `profileCreatedAt` is used to fetch all user profiles which are newer
+     * than 7 days. This is used to only fetch users which are having an active
+     * subscription or which are new to FeedDeck.
      *
-     * The `sourcesUpdatedAt` is used to fetch all sources which where not updated in the last hour.
+     * The `sourcesUpdatedAt` is used to fetch all sources which where not
+     * updated in the last hour.
      */
     const profileCreatedAt = Math.floor(new Date().getTime() / 1000) -
       (60 * 60 * 24 * 7);
     const sourcesUpdatedAt = Math.floor(new Date().getTime() / 1000) -
       (60 * 60);
-    log("info", "Schedule sources", {
+    log('info', 'Schedule sources', {
       sourcesUpdatedAt: sourcesUpdatedAt,
       profileCreatedAt: profileCreatedAt,
     });
 
     /**
-     * Fetch all user profiles which are newer than 7 days and which are having an active subscription. We fetch the
-     * profiles in batches of 1000 to avoid fetching all profiles at once.
+     * Fetch all user profiles which are newer than 7 days and which are having
+     * an active subscription. We fetch the profiles in batches of 1000 to avoid
+     * fetching all profiles at once.
      */
     // deno-lint-ignore no-explicit-any
     const profiles: any[] = [];
@@ -90,19 +98,19 @@ const scheduleSources = async (
     let offset = 0;
 
     while (true) {
-      log("debug", "Fetching profiles", { offset: offset });
+      log('debug', 'Fetching profiles', { offset: offset });
 
       const { data: tmpProfiles, error: profilesError } = await supabaseClient
         .from(
-          "profiles",
-        ).select("*").or(`tier.eq.premium,createdAt.gt.${profileCreatedAt}`)
+          'profiles',
+        ).select('*').or(`tier.eq.premium,createdAt.gt.${profileCreatedAt}`)
         .order(
-          "createdAt",
+          'createdAt',
         )
         .range(offset, offset + batchSize);
       if (profilesError) {
-        log("error", "Failed to get user profiles", {
-          "error": profilesError,
+        log('error', 'Failed to get user profiles', {
+          'error': profilesError,
         });
       } else {
         profiles.push(...tmpProfiles);
@@ -115,41 +123,42 @@ const scheduleSources = async (
       }
     }
 
-    log("info", "Fetched profiles", { profilesCount: profiles.length });
+    log('info', 'Fetched profiles', { profilesCount: profiles.length });
     for (const profile of profiles) {
       /**
        * Fetch all sources for the current user profile which where not updated in the last hour.
        */
       const { data: sources, error: sourcesError } = await supabaseClient
         .from(
-          "sources",
-        ).select("*").eq("userId", profile.id).lt(
-          "updatedAt",
+          'sources',
+        ).select('*').eq('userId', profile.id).lt(
+          'updatedAt',
           sourcesUpdatedAt,
         );
       if (sourcesError) {
-        log("error", "Failed to get user sources", {
-          "profile": profile.id,
-          "error": sourcesError,
+        log('error', 'Failed to get user sources', {
+          'profile': profile.id,
+          'error': sourcesError,
         });
       } else {
-        log("info", "Fetched sources", {
-          "profile": profile.id,
+        log('info', 'Fetched sources', {
+          'profile': profile.id,
           sourcesCount: sources.length,
         });
         for (const source of sources) {
           /**
-           * Schedule the current source for the worker. The scheduled "job" contains the source and the users profile
-           * since it is possible that we need the users account information to fetch the sources data, e.g. the users
-           * GitHub token.
+           * Schedule the current source for the worker. The scheduled "job"
+           * contains the source and the users profile since it is possible that
+           * we need the users account information to fetch the sources data,
+           * e.g. the users GitHub token.
            */
-          log("info", "Scheduling source", {
-            "source": source.id,
-            "profile": profile.id,
+          log('info', 'Scheduling source', {
+            'source': source.id,
+            'profile': profile.id,
           });
           await redisClient.rpush(
             // source.id,
-            "sources",
+            'sources',
             JSON.stringify({
               source: source,
               profile: profile,
@@ -159,6 +168,6 @@ const scheduleSources = async (
       }
     }
   } catch (err) {
-    log("error", "Failed to schedule sources...", { error: err.toString() });
+    log('error', 'Failed to schedule sources...', { error: err.toString() });
   }
 };
