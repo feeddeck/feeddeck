@@ -71,19 +71,24 @@ typescript 5.1.6
 
 ### Working with Flutter
 
-We are recommending to use the
-[Visual Studio Code](https://docs.flutter.dev/development/tools/vs-code)
-extensions for development.
+To run the app you can use the [`run.sh`](./app/run.sh) script, which will
+automatically load the `.env` file from the Supabase project and passes the
+required variables to the `flutter run` command:
 
-The easiest way to run the Flutter app within Visual Studio Code is to create a
-`.vscode/launch.json` file. Within the different configurations you have to
-provide the following arguments: `--dart-define SUPABASE_URL=<SUPABASE_URL>`,
+```sh
+./run.sh --device="chrome" --environment="local"
+```
+
+Alternative you can also run the project from Visual Studio Code or Neovim
+with the following configuration files. Within the different configurations you
+have to provide the following arguments:
+`--dart-define SUPABASE_URL=<SUPABASE_URL>`,
 `--dart-define SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>`,
 `--dart-define SUPABASE_SITE_URL=<SUPABASE_SITE_URL>` and
 `--dart-define GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>`.
 
 <details>
-<summary>Example: `.vscode/launch.json`</summary>
+<summary>Visual Studio Code: `.vscode/launch.json`</summary>
 
 ```json
 {
@@ -148,6 +153,53 @@ provide the following arguments: `--dart-define SUPABASE_URL=<SUPABASE_URL>`,
     }
   ]
 }
+```
+
+</details>
+
+<details>
+<summary>Neovim: `.nvim.lua`</summary>
+
+
+```lua
+require('flutter-tools').setup_project({
+  {
+    name = 'Local - Chrome',
+    flavor = 'debug',
+    target = 'lib/main.dart',
+    device = 'chrome',
+    dart_define = {
+      SUPABASE_URL = 'http://localhost:54321',
+      SUPABASE_ANON_KEY = '<SUPABASE_ANON_KEY'
+      SUPABASE_SITE_URL = '<SUPABASE_SITE_URL>',
+      GOOGLE_CLIENT_ID = '<GOOGLE_CLIENT_ID',
+    },
+  },
+  {
+    name = 'Local - iOS Simulator',
+    flavor = 'debug',
+    target = 'lib/main.dart',
+    device = 'iPhone 14 Pro Max',
+    dart_define = {
+      SUPABASE_URL = 'http://localhost:54321',
+      SUPABASE_ANON_KEY = '<SUPABASE_ANON_KEY'
+      SUPABASE_SITE_URL = '<SUPABASE_SITE_URL>',
+      GOOGLE_CLIENT_ID = '<GOOGLE_CLIENT_ID',
+    },
+  },
+  {
+    name = 'Local - Chrome',
+    flavor = 'debug',
+    target = 'lib/main.dart',
+    device = 'macOS',
+    dart_define = {
+      SUPABASE_URL = 'http://localhost:54321',
+      SUPABASE_ANON_KEY = '<SUPABASE_ANON_KEY'
+      SUPABASE_SITE_URL = '<SUPABASE_SITE_URL>',
+      GOOGLE_CLIENT_ID = '<GOOGLE_CLIENT_ID',
+    },
+  },
+})
 ```
 
 </details>
