@@ -1,6 +1,9 @@
 # Visual Studio Code Launch Configurations
 .vscode/launch.json
 
+# Neovim
+.nvim.lua
+
 # Environment Variables
 /supabase/.env.local
 /supabase/.env.dev
