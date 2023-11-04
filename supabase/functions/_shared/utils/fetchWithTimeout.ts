@@ -1,6 +1,6 @@
 /**
- * `fetchWithTimeout` is a wrapper around `fetch` that adds a timeout. If the request takes longer than the timeout, the
- * request will be aborted.
+ * `fetchWithTimeout` is a wrapper around `fetch` that adds a timeout. If the
+ * request takes longer than the timeout, the request will be aborted.
  */
 export const fetchWithTimeout = async (
   url: string,

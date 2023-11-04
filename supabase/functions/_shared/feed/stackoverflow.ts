@@ -1,15 +1,15 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { parseFeed } from "rss";
-import { FeedEntry } from "rss/types";
-import { Md5 } from "std/md5";
-import { Redis } from "redis";
-import { unescape } from "lodash";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { parseFeed } from 'rss';
+import { FeedEntry } from 'rss/types';
+import { Md5 } from 'std/md5';
+import { Redis } from 'redis';
+import { unescape } from 'lodash';
 
-import { ISource } from "../models/source.ts";
-import { IItem } from "../models/item.ts";
-import { IProfile } from "../models/profile.ts";
-import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
-import { log } from "../utils/log.ts";
+import { ISource } from '../models/source.ts';
+import { IItem } from '../models/item.ts';
+import { IProfile } from '../models/profile.ts';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
+import { log } from '../utils/log.ts';
 
 export const getStackoverflowFeed = async (
   _supabaseClient: SupabaseClient,
@@ -18,48 +18,50 @@ export const getStackoverflowFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.stackoverflow || !source.options?.stackoverflow?.type) {
-    throw new Error("Invalid source options");
+    throw new Error('Invalid source options');
   }
 
-  if (source.options.stackoverflow.type === "tag") {
+  if (source.options.stackoverflow.type === 'tag') {
     source.options.stackoverflow.url =
       `https://stackoverflow.com/feeds/tag?tagnames=${source.options.stackoverflow.tag}&sort=${source.options.stackoverflow.sort}`;
   }
 
   if (!source.options?.stackoverflow.url) {
-    throw new Error("Invalid source options");
+    throw new Error('Invalid source options');
   }
 
   /**
-   * Get the RSS for the provided `stackoverflow` url and parse it. If a feed doesn't contains an item we return an error.
+   * Get the RSS for the provided `stackoverflow` url and parse it. If a feed
+   * doesn't contains an item we return an error.
    */
   const response = await fetchWithTimeout(source.options.stackoverflow.url, {
-    method: "get",
+    method: 'get',
   }, 5000);
   const xml = await response.text();
-  log("debug", "Add source", {
-    sourceType: "stackoverflow",
+  log('debug', 'Add source', {
+    sourceType: 'stackoverflow',
     requestUrl: source.options.stackoverflow.url,
     responseStatus: response.status,
   });
   const feed = await parseFeed(xml);
 
   if (!feed.title.value) {
-    throw new Error("Invalid feed");
+    throw new Error('Invalid feed');
   }
 
   /**
-   * Generate a source id based on the user id, column id and the normalized `stackoverflow` url. Besides that we also
-   * set the source type to `stackoverflow` and set the title and link for the source.
+   * Generate a source id based on the user id, column id and the normalized
+   * `stackoverflow` url. Besides that we also set the source type to
+   * `stackoverflow` and set the title and link for the source.
    */
-  if (source.id === "") {
+  if (source.id === '') {
     source.id = generateSourceId(
       source.userId,
       source.columnId,
       source.options.stackoverflow.url,
     );
   }
-  source.type = "stackoverflow";
+  source.type = 'stackoverflow';
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -67,8 +69,8 @@ export const getStackoverflowFeed = async (
   source.icon = undefined;
 
   /**
-   * Now that the source does contain all the required information we can start to generate the items for the source, by
-   * looping over all the feed entries.
+   * Now that the source does contain all the required information we can start
+   * to generate the items for the source, by looping over all the feed entries.
    */
   const items: IItem[] = [];
 
@@ -100,12 +102,14 @@ export const getStackoverflowFeed = async (
 };
 
 /**
- * `skipEntry` is used to determin if an entry should be skipped or not. When a entry in the RSS feed is skipped it will
- * not be added to the database. An entry will be skipped when
- * - it is not within the first 50 entries of the feed, because we only keep the last 50 items of each source in our
- *   delete logic.
+ * `skipEntry` is used to determin if an entry should be skipped or not. When a
+ * entry in the RSS feed is skipped it will not be added to the database. An
+ * entry will be skipped when
+ * - it is not within the first 50 entries of the feed, because we only keep the
+ *   last 50 items of each source in our delete logic.
  * - the entry does not contain a title, a link or a published date.
- * - the published date of the entry is older than the last update date of the source minus 10 seconds.
+ * - the published date of the entry is older than the last update date of the
+ *   source minus 10 seconds.
  */
 const skipEntry = (
   index: number,
@@ -131,8 +135,9 @@ const skipEntry = (
 };
 
 /**
- * `generateSourceId` generates a unique source id based on the user id, column id and the link of the RSS feed. We use
- * the MD5 algorithm for the link to generate the id.
+ * `generateSourceId` generates a unique source id based on the user id, column
+ * id and the link of the RSS feed. We use the MD5 algorithm for the link to
+ * generate the id.
  */
 const generateSourceId = (
   userId: string,
@@ -145,8 +150,9 @@ const generateSourceId = (
 };
 
 /**
- * `generateItemId` generates a unique item id based on the source id and the identifier of the item. We use the MD5
- * algorithm for the identifier, which can be the link of the item or the id of the item.
+ * `generateItemId` generates a unique item id based on the source id and the
+ * identifier of the item. We use the MD5 algorithm for the identifier, which
+ * can be the link of the item or the id of the item.
  */
 const generateItemId = (sourceId: string, identifier: string): string => {
   return `${sourceId}-${new Md5().update(identifier).toString()}`;

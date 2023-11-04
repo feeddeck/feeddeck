@@ -1,16 +1,16 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { parseFeed } from "rss";
-import { Md5 } from "std/md5";
-import { FeedEntry } from "rss/types";
-import { Redis } from "redis";
-import { unescape } from "lodash";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { parseFeed } from 'rss';
+import { Md5 } from 'std/md5';
+import { FeedEntry } from 'rss/types';
+import { Redis } from 'redis';
+import { unescape } from 'lodash';
 
-import { IItem } from "../models/item.ts";
-import { ISource } from "../models/source.ts";
-import { uploadSourceIcon } from "./utils/uploadFile.ts";
-import { IProfile } from "../models/profile.ts";
-import { fetchWithTimeout } from "../utils/fetchWithTimeout.ts";
-import { log } from "../utils/log.ts";
+import { IItem } from '../models/item.ts';
+import { ISource } from '../models/source.ts';
+import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { IProfile } from '../models/profile.ts';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
+import { log } from '../utils/log.ts';
 
 export const getMastodonFeed = async (
   supabaseClient: SupabaseClient,
@@ -19,25 +19,25 @@ export const getMastodonFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.mastodon || source.options.mastodon.length === 0) {
-    throw new Error("Invalid source options");
+    throw new Error('Invalid source options');
   }
 
-  if (source.options.mastodon[0] === "@") {
-    const lastIndex = source.options.mastodon.lastIndexOf("@");
+  if (source.options.mastodon[0] === '@') {
+    const lastIndex = source.options.mastodon.lastIndexOf('@');
     const username = source.options.mastodon.slice(0, lastIndex);
     const instance = source.options.mastodon.slice(lastIndex + 1);
     source.options.mastodon = `https://${instance}/${username}.rss`;
-  } else if (source.options.mastodon[0] === "#") {
+  } else if (source.options.mastodon[0] === '#') {
     source.options.mastodon = `https://${getInstance()}/tags/${
       source.options.mastodon.slice(1)
     }.rss`;
   } else if (
-    source.options.mastodon.startsWith("https://") &&
-    !source.options.mastodon.endsWith(".rss")
+    source.options.mastodon.startsWith('https://') &&
+    !source.options.mastodon.endsWith('.rss')
   ) {
     source.options.mastodon = `${source.options.mastodon}.rss`;
   } else {
-    throw new Error("Invalid source options");
+    throw new Error('Invalid source options');
   }
 
   /**
@@ -45,42 +45,46 @@ export const getMastodonFeed = async (
    */
   const response = await fetchWithTimeout(
     source.options.mastodon,
-    { method: "get" },
+    { method: 'get' },
     5000,
   );
   const xml = await response.text();
-  log("debug", "Add source", {
-    sourceType: "mastodon",
+  log('debug', 'Add source', {
+    sourceType: 'mastodon',
     requestUrl: source.options.mastodon,
     responseStatus: response.status,
   });
   const feed = await parseFeed(xml);
 
   if (!feed.title.value) {
-    throw new Error("Invalid feed");
+    throw new Error('Invalid feed');
   }
 
   /**
-   * Generate a source id based on the user id, column id and the normalized `mastodon` options. Besides that we also
-   * set the source type to `mastodon` and the link for the source. In opposite to the other sources we do not use the
-   * title of the feed as the title for the source, instead we are using the user input as title.
+   * Generate a source id based on the user id, column id and the normalized
+   * `mastodon` options. Besides that we also set the source type to `mastodon`
+   * and the link for the source. In opposite to the other sources we do not use
+   * the title of the feed as the title for the source, instead we are using the
+   * user input as title.
    */
-  if (source.id === "") {
+  if (source.id === '') {
     source.id = generateSourceId(
       source.userId,
       source.columnId,
       source.options.mastodon,
     );
   }
-  source.type = "mastodon";
+  source.type = 'mastodon';
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }
 
   /**
-   * When the source doesn't has an icon yet and the feed contains an image we add an image to the source. We also
-   * upload the image to our CDN and set the `source.icon` to the path of the uploaded image.
+   * When the source doesn't has an icon yet and the feed contains an image we
+   * add an image to the source. We also
+   * upload the image to our CDN and set the `source.icon` to the path of the
+   * uploaded image.
    */
   if (!source.icon && feed.image?.url) {
     source.icon = feed.image.url;
@@ -88,8 +92,8 @@ export const getMastodonFeed = async (
   }
 
   /**
-   * Now that the source does contain all the required information we can start to generate the items for the source, by
-   * looping over all the feed entries.
+   * Now that the source does contain all the required information we can start
+   * to generate the items for the source, by looping over all the feed entries.
    */
   const items: IItem[] = [];
 
@@ -99,12 +103,13 @@ export const getMastodonFeed = async (
     }
 
     /**
-     * Each item need a unique id which is generated using the `generateItemId` function. The id is a combination of the
-     * source id and the id of the entry or if the entry does not have an id we use the link of the first link of the
-     * entry.
+     * Each item need a unique id which is generated using the `generateItemId`
+     * function. The id is a combination of the source id and the id of the
+     * entry or if the entry does not have an id we use the link of the first
+     * link of the entry.
      */
-    let itemId = "";
-    if (entry.id != "") {
+    let itemId = '';
+    if (entry.id != '') {
       itemId = generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = generateItemId(source.id, entry.links[0].href);
@@ -113,22 +118,24 @@ export const getMastodonFeed = async (
     }
 
     /**
-     * Create the item object and add it to the `items` array. Before the item is created we also try to get a list of
-     * media fils (images) and videos which will then be added to the `options`. Since there could be multiple media
-     * files we add it to the options and not to the media field.
+     * Create the item object and add it to the `items` array. Before the item
+     * is created we also try to get a list of media fils (images) and videos
+     * which will then be added to the `options`. Since there could be multiple
+     * media files we add it to the options and not to the media field.
      *
-     * The implementation to generate the options field is not ideal, but is required to be compatible with older
-     * clients, where we just check if the options are defined and if it contains a media field, but we do not check if
-     * the media field is null.
+     * The implementation to generate the options field is not ideal, but is
+     * required to be compatible with older clients, where we just check if the
+     * options are defined and if it contains a media field, but we do not check
+     * if the media field is null.
      */
     const options: { media?: string[]; videos?: string[] } = {};
     const media = getMedia(entry);
     if (media && media.length > 0) {
-      options["media"] = media;
+      options['media'] = media;
     }
     const videos = getVideos(entry);
     if (videos && videos.length > 0) {
-      options["videos"] = videos;
+      options['videos'] = videos;
     }
 
     items.push({
@@ -136,7 +143,7 @@ export const getMastodonFeed = async (
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
-      title: "",
+      title: '',
       link: entry.links[0].href!,
       options: Object.keys(options).length === 0 ? undefined : options,
       description: entry.description?.value
@@ -151,12 +158,14 @@ export const getMastodonFeed = async (
 };
 
 /**
- * `skipEntry` is used to determin if an entry should be skipped or not. When a entry in the RSS feed is skipped it will
- * not be added to the database. An entry will be skipped when
- * - it is not within the first 50 entries of the feed, because we only keep the last 50 items of each source in our
- *   delete logic.
+ * `skipEntry` is used to determin if an entry should be skipped or not. When a
+ * entry in the RSS feed is skipped it will not be added to the database. An
+ * entry will be skipped when
+ * - it is not within the first 50 entries of the feed, because we only keep the
+ *   last 50 items of each source in our delete logic.
  * - the entry does not contain a link or a published date.
- * - the published date of the entry is older than the last update date of the source minus 10 seconds.
+ * - the published date of the entry is older than the last update date of the
+ *   source minus 10 seconds.
  */
 const skipEntry = (
   index: number,
@@ -179,8 +188,9 @@ const skipEntry = (
 };
 
 /**
- * `generateSourceId` generates a unique source id based on the user id, column id and the link of the RSS feed. We use
- * the MD5 algorithm for the link to generate the id.
+ * `generateSourceId` generates a unique source id based on the user id, column
+ * id and the link of the RSS feed. We use the MD5 algorithm for the link to
+ * generate the id.
  */
 const generateSourceId = (
   userId: string,
@@ -191,22 +201,23 @@ const generateSourceId = (
 };
 
 /**
- * `generateItemId` generates a unique item id based on the source id and the identifier of the item. We use the MD5
- * algorithm for the identifier, which can be the link of the item or the id of the item.
+ * `generateItemId` generates a unique item id based on the source id and the
+ * identifier of the item. We use the MD5 algorithm for the identifier, which
+ * can be the link of the item or the id of the item.
  */
 const generateItemId = (sourceId: string, identifier: string): string => {
   return `${sourceId}-${new Md5().update(identifier).toString()}`;
 };
 
 /**
- * `getMedia` returns all images for the provided feed entry from it's `media:content` field. If we could not get an
- * image we return `undefined`.
+ * `getMedia` returns all images for the provided feed entry from it's
+ * `media:content` field. If we could not get an image we return `undefined`.
  */
 const getMedia = (entry: FeedEntry): string[] | undefined => {
-  if (entry["media:content"]) {
+  if (entry['media:content']) {
     const images = [];
-    for (const media of entry["media:content"]) {
-      if (media.medium === "image" && media.url) {
+    for (const media of entry['media:content']) {
+      if (media.medium === 'image' && media.url) {
         images.push(media.url);
       }
     }
@@ -218,14 +229,14 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
 };
 
 /**
- * `getVideos` returns all videos for the provided feed entry from it's `media:content` field. If we could not get a
- * video we return `undefined`.
+ * `getVideos` returns all videos for the provided feed entry from it's
+ * `media:content` field. If we could not get a video we return `undefined`.
  */
 const getVideos = (entry: FeedEntry): string[] | undefined => {
-  if (entry["media:content"]) {
+  if (entry['media:content']) {
     const videos = [];
-    for (const media of entry["media:content"]) {
-      if (media.medium === "video" && media.url) {
+    for (const media of entry['media:content']) {
+      if (media.medium === 'video' && media.url) {
         videos.push(media.url);
       }
     }
@@ -237,11 +248,12 @@ const getVideos = (entry: FeedEntry): string[] | undefined => {
 };
 
 /**
- * `getAuthor` returns the author for the provided feed entry based on the link to the entry.
+ * `getAuthor` returns the author for the provided feed entry based on the link
+ * to the entry.
  */
 const getAuthor = (entry: FeedEntry): string | undefined => {
   if (entry.links.length > 0 && entry.links[0].href) {
-    const urlParts = entry.links[0].href.replace("https://", "").split("/");
+    const urlParts = entry.links[0].href.replace('https://', '').split('/');
     if (urlParts.length === 3) {
       return `${urlParts[1]}@${urlParts[0]}`;
     }
@@ -252,16 +264,16 @@ const getAuthor = (entry: FeedEntry): string | undefined => {
 
 const getInstance = (): string => {
   const instances = [
-    "mastodon.social",
-    "fediscience.org",
-    "fosstodon.org",
-    "hachyderm.io",
-    "hci.social",
-    "indieweb.social",
-    "ioc.exchange",
-    "mindly.social",
-    "techhub.social",
-    "universeodon.com",
+    'mastodon.social',
+    'fediscience.org',
+    'fosstodon.org',
+    'hachyderm.io',
+    'hci.social',
+    'indieweb.social',
+    'ioc.exchange',
+    'mindly.social',
+    'techhub.social',
+    'universeodon.com',
   ];
 
   return instances[Math.floor(Math.random() * instances.length)];
