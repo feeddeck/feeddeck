@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:feeddeck/utils/constants.dart';
-import 'package:feeddeck/utils/image_url.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [ItemMedia] widget displays the media of an item. Based on the provided
 /// [itemMedia] value the media is displayed from the Supabase storage or
@@ -30,7 +28,7 @@ class ItemMedia extends StatelessWidget {
         width: double.infinity,
         height: 200,
         fit: BoxFit.cover,
-        imageUrl: getImageUrl(FDImageType.item, itemMedia!),
+        imageUrl: itemMedia!,
         placeholder: (context, url) => Container(),
         errorWidget: (context, url, error) => Container(),
       ),

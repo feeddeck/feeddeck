@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
 
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/font.dart';
 import 'package:feeddeck/utils/openurl.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [DescriptionFormat] enum defines the source and target format of a
 /// description.

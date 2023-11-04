@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:feeddeck/models/item.dart';
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/constants.dart';
-import 'package:feeddeck/utils/image_url.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_audio_palyer/item_audio_player.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_description.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_subtitle.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_title.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 class ItemDetailsPodcast extends StatelessWidget {
   const ItemDetailsPodcast({
@@ -20,14 +18,6 @@ class ItemDetailsPodcast extends StatelessWidget {
 
   final FDItem item;
   final FDSource source;
-
-  String? _buildImageUrl() {
-    if (source.icon != null && source.icon != '') {
-      return getImageUrl(FDImageType.source, source.icon!);
-    }
-
-    return null;
-  }
 
   /// [_buildImage] returns an image which is displayed above the
   /// [ItemAudioPlayer]. For this image we are using the [source.icon] if it is
@@ -55,8 +45,6 @@ class ItemDetailsPodcast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = _buildImageUrl();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -74,7 +62,7 @@ class ItemDetailsPodcast extends StatelessWidget {
         /// directly listen to the podcast episode.
         Column(
           children: [
-            _buildImage(imageUrl),
+            _buildImage(source.icon),
             const SizedBox(
               height: Constants.spacingMiddle,
             ),
@@ -83,7 +71,7 @@ class ItemDetailsPodcast extends StatelessWidget {
               audioFile: item.media!,
               audioTitle: item.title,
               audioArtist: source.title,
-              audioArt: imageUrl,
+              audioArt: getImageUrl(source.icon!),
             ),
             const SizedBox(
               height: Constants.spacingMiddle,

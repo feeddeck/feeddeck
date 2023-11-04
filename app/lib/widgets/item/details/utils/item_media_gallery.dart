@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:feeddeck/utils/constants.dart';
-import 'package:feeddeck/utils/image_url.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_media.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [ItemMediaGallery] widget can be used to display multiple media files in
-/// a gallery. Similar to the [ItemMedia] widget the provided [itemMedias]
 /// values can be displayed from the Supabase storage or directly from the
+/// a gallery. Similar to the [ItemMedia] widget the provided [itemMedias]
 /// provided url.
 class ItemMediaGallery extends StatelessWidget {
   const ItemMediaGallery({
@@ -22,8 +21,6 @@ class ItemMediaGallery extends StatelessWidget {
   /// [_buildSingleMedia] displays a single media file in the gallery. If the
   /// app runs on the web, we proxy the url through the Supabase functions.
   Widget _buildSingleMedia(BuildContext context, int itemMediaIndex) {
-    final imageUrl = getImageUrl(FDImageType.item, itemMedias![itemMediaIndex]);
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -48,7 +45,7 @@ class ItemMediaGallery extends StatelessWidget {
         child: CachedNetworkImage(
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.cover,
-          imageUrl: imageUrl,
+          imageUrl: itemMedias![itemMediaIndex],
           placeholder: (context, url) => Container(),
           errorWidget: (context, url, error) => Container(),
         ),
@@ -182,7 +179,7 @@ class ItemMediaGalleryModal extends StatelessWidget {
                   (itemMedia) => Center(
                     child: CachedNetworkImage(
                       fit: BoxFit.contain,
-                      imageUrl: getImageUrl(FDImageType.item, itemMedia),
+                      imageUrl: itemMedia,
                       placeholder: (context, url) => Container(),
                       errorWidget: (context, url, error) => Container(),
                     ),

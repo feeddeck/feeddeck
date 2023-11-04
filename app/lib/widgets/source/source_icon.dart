@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/fd_icons.dart';
-import 'package:feeddeck/utils/image_url.dart';
+import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// [SourceIcon] can be used to show the image for a source. For that the [icon]
 /// of the source must be provided. The size of the image can be adjusted via
@@ -18,14 +16,12 @@ class SourceIcon extends StatelessWidget {
     super.key,
     required this.type,
     required this.icon,
-    this.iconType = FDImageType.source,
     required this.size,
   });
 
   final FDSourceType type;
   final String? icon;
   final double size;
-  final FDImageType iconType;
 
   /// buildIcon returns the provided [icon] with the provided [backgroundColor].
   Widget buildIcon(
@@ -155,7 +151,7 @@ class SourceIcon extends StatelessWidget {
           height: size,
           width: size,
           fit: BoxFit.cover,
-          imageUrl: getImageUrl(iconType, icon!),
+          imageUrl: icon!,
           placeholder: (context, url) => buildDefaultIcon(size),
           errorWidget: (context, url, error) => buildDefaultIcon(size),
         ),
