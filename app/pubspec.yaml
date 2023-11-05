@@ -43,7 +43,7 @@ dependencies:
   collection: ^1.17.0
   flutter_cache_manager: ^3.3.1
   flutter_markdown: ^0.6.14
-  flutter_native_splash: ^2.2.19
+  flutter_native_splash: ^2.3.5
   html: ^0.15.4
   html2md: ^1.2.6
   intl: ^0.18.1
@@ -59,15 +59,15 @@ dependencies:
   media_kit: ^1.1.10+1
   media_kit_video: ^1.2.4
   media_kit_libs_video: ^1.0.4
-  package_info_plus: ^4.1.0
+  package_info_plus: ^4.2.0
   provider: ^6.0.4
-  purchases_flutter: ^6.0.0
+  purchases_flutter: ^6.2.0
   rxdart: ^0.27.7
   scroll_to_index: ^3.0.1
   shared_preferences: ^2.1.0
-  supabase_flutter: ^1.10.6
-  timeago: ^3.4.0
-  url_launcher: ^6.1.10
+  supabase_flutter: ^1.10.24
+  timeago: ^3.6.0
+  url_launcher: ^6.2.1
   window_manager: ^0.3.4
   youtube_explode_dart: ^2.0.2
 
@@ -80,11 +80,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
   flutter_launcher_icons: ^0.13.1
   import_sorter: ^4.6.0
-  msix: ^3.16.1
+  msix: ^3.16.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
