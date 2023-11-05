@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart' as cni;
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:feeddeck/repositories/settings_repository.dart';
@@ -25,10 +26,6 @@ String getImageUrl(String imageUrl) {
 /// The [CachedNetworkImage] is a wrapper around the [cni.CachedNetworkImage]
 /// widget, which will automatically use the correct url to display the image,
 /// via the [getImageUrl] function.
-//
-/// TODO: Once the media handling is changed everywhere, this is the place where
-/// we want to add a custom cache handler, so that the images are only stored
-/// for seven days to save storage space.
 class CachedNetworkImage extends StatelessWidget {
   final String imageUrl;
 
@@ -50,6 +47,7 @@ class CachedNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return cni.CachedNetworkImage(
+      cacheManager: CustomCacheManager(),
       imageUrl: getImageUrl(imageUrl),
       width: width,
       height: height,
@@ -58,4 +56,26 @@ class CachedNetworkImage extends StatelessWidget {
       errorWidget: errorWidget,
     );
   }
+}
+
+/// [CustomCacheManager] is a custom [CacheManager] which is used by the
+/// [CachedNetworkImage] widget to cache the images. This is required to adjust
+/// the `stalePeriod` to 7 days, instead of the default 30 days. 7 days should
+/// be enough for our use case and will reduce the storage usage.
+class CustomCacheManager extends CacheManager with ImageCacheManager {
+  static const key = 'libCachedImageData';
+
+  static final CustomCacheManager _instance = CustomCacheManager._internal();
+
+  factory CustomCacheManager() {
+    return _instance;
+  }
+
+  CustomCacheManager._internal()
+      : super(
+          Config(
+            key,
+            stalePeriod: const Duration(days: 7),
+          ),
+        );
 }
