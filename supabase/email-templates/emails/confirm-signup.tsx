@@ -42,9 +42,8 @@ const ConfirmSignup = () => {
           </Text>
           <Section className="text-center mt-[32px] mb-[32px]">
             <Button
-              pX={20}
-              pY={12}
               className="bg-[#49d3b4] rounded text-[#1f2229] text-xs font-semibold no-underline text-center"
+              style={{ padding: "12px 20px" }}
               href="{{ .SiteURL }}/confirmation?template=confirm-signup&confirmation_url={{ .ConfirmationURL }}"
             >
               Confirm Sign Up
