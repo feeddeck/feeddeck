@@ -4,8 +4,8 @@ if [[ "$#" -lt 1 ]]; then
   echo "$(basename "$0") -- program to run the app
 
 where:
-    -e|--environment set the environment on which the app should be run, e.g. -e=local
-    -d|--device set the device on which the app should be run, e.g. -d=chrome"
+    -e|--environment set the environment on which the app should be run, e.g. -e=\"local\"
+    -d|--device set the device on which the app should be run, e.g. -d=\"chrome\""
   exit
 fi
 
@@ -27,9 +27,12 @@ done
 
 if [ -z "${environment}" ] || [ -z "${device}" ]; then
   echo "You have to provide an environment and a device"
-  echo "Example: $0 -e=local -d=chrome"
+  echo "  Example: $0 -e=\"local\" -d=\"chrome\""
+  echo "  Provided: $0 -e=\"${environment}\" -d=\"${device}\""
   exit 1
 fi
+
+echo "Run: $0 -e=\"${environment}\" -d=\"${device}\""
 
 # Load the environment variables from the corresponding ".env" file in the
 # "supabase" directory.
@@ -52,4 +55,4 @@ if [ "${device}" == "chrome" ]; then
 fi
 
 # Run the app on the provided device and environment.
-flutter run -d ${device} ${additional_flags} --dart-define SUPABASE_URL=${supabase_url} --dart-define SUPABASE_ANON_KEY=${FEEDDECK_SUPABASE_ANON_KEY} --dart-define SUPABASE_SITE_URL=${FEEDDECK_SUPABASE_SITE_URL} --dart-define GOOGLE_CLIENT_ID=${FEEDDECK_GOOGLE_CLIENT_ID}
+flutter run -d "${device}" ${additional_flags} --dart-define SUPABASE_URL=${supabase_url} --dart-define SUPABASE_ANON_KEY=${FEEDDECK_SUPABASE_ANON_KEY} --dart-define SUPABASE_SITE_URL=${FEEDDECK_SUPABASE_SITE_URL} --dart-define GOOGLE_CLIENT_ID=${FEEDDECK_GOOGLE_CLIENT_ID}
