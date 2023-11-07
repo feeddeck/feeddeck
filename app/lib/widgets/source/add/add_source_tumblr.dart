@@ -117,6 +117,7 @@ class _AddSourceTumblrState extends State<AddSourceTumblr> {
                 border: OutlineInputBorder(),
                 labelText: 'Blog',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

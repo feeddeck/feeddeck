@@ -115,6 +115,7 @@ class _AddSourceYouTubeState extends State<AddSourceYouTube> {
                 border: OutlineInputBorder(),
                 labelText: 'Channel Url',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

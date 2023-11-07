@@ -110,6 +110,7 @@ class _AddSourceXState extends State<AddSourceX> {
                 border: OutlineInputBorder(),
                 labelText: 'Username',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

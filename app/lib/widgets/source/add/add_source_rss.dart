@@ -118,6 +118,7 @@ class _AddSourceRSSState extends State<AddSourceRSS> {
                 border: OutlineInputBorder(),
                 labelText: 'RSS Feed',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

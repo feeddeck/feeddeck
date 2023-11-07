@@ -118,6 +118,7 @@ class _AddSourceMastodonState extends State<AddSourceMastodon> {
                 border: OutlineInputBorder(),
                 labelText: 'Username, Hashtag, or Url',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

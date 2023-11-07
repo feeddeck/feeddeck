@@ -109,6 +109,7 @@ class _AddSourceGoogleNewsState extends State<AddSourceGoogleNews> {
             border: OutlineInputBorder(),
             labelText: 'Url',
           ),
+          onFieldSubmitted: (value) => _addSource(),
         ),
         const SizedBox(height: Constants.spacingMiddle),
       ];
@@ -126,6 +127,7 @@ class _AddSourceGoogleNewsState extends State<AddSourceGoogleNews> {
             border: OutlineInputBorder(),
             labelText: 'Search',
           ),
+          onFieldSubmitted: (value) => _addSource(),
         ),
         const SizedBox(height: Constants.spacingMiddle),
         DropdownButton<GoogleNewsCode>(
