@@ -120,6 +120,7 @@ class _AddSourceRedditState extends State<AddSourceReddit> {
                 border: OutlineInputBorder(),
                 labelText: 'Reddit Url, Subreddit or User',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

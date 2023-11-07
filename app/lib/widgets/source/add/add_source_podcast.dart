@@ -116,6 +116,7 @@ class _AddSourcePodcastState extends State<AddSourcePodcast> {
                 border: OutlineInputBorder(),
                 labelText: 'Podcast Url',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

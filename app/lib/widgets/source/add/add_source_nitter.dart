@@ -119,6 +119,7 @@ class _AddSourceNitterState extends State<AddSourceNitter> {
                 border: OutlineInputBorder(),
                 labelText: 'Username or Search Term',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

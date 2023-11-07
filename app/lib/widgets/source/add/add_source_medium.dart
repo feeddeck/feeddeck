@@ -123,6 +123,7 @@ class _AddSourceMediumState extends State<AddSourceMedium> {
                 border: OutlineInputBorder(),
                 labelText: 'Medium Url, Author or Tag',
               ),
+              onFieldSubmitted: (value) => _addSource(),
             ),
           ],
         ),

@@ -103,6 +103,7 @@ class _AddSourceStackOverflowState extends State<AddSourceStackOverflow> {
             border: OutlineInputBorder(),
             labelText: 'Url',
           ),
+          onFieldSubmitted: (value) => _addSource(),
         ),
         const SizedBox(height: Constants.spacingMiddle),
       ];
@@ -120,6 +121,7 @@ class _AddSourceStackOverflowState extends State<AddSourceStackOverflow> {
             border: OutlineInputBorder(),
             labelText: 'Tag',
           ),
+          onFieldSubmitted: (value) => _addSource(),
         ),
         const SizedBox(height: Constants.spacingMiddle),
         DropdownButton<FDStackOverflowSort>(
