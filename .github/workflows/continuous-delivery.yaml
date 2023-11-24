@@ -364,3 +364,67 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: app/build/feeddeck-windows-x86_64.zip
+
+  # The "iOS" job builds the Flutter iOS app on every pull request. This is only used to test that the build of the iOS
+  # app works. The artifact of the build isn't uploaded / used.
+  ios:
+    name: iOS
+    runs-on: macos-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    defaults:
+      run:
+        working-directory: "app"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+
+      - name: Install Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build
+        run: |
+          flutter config --enable-ios
+          flutter build ipa --no-codesign --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
+
+  # The "Android" job builds the Flutter Android app on every pull request. This is only used to test that the build of
+  # the Android app works. The artifact of the build isn't uploaded / used.
+  android:
+    name: Android
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    defaults:
+      run:
+        working-directory: "app"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.0'
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+
+      - name: Install Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build
+        run: |
+          flutter config --enable-android
+          flutter build appbundle --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
