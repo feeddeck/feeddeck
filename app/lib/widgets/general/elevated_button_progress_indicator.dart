@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 ///             ),
 ///     )
 class ElevatedButtonProgressIndicator extends StatelessWidget {
-  const ElevatedButtonProgressIndicator({Key? key}) : super(key: key);
+  const ElevatedButtonProgressIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {

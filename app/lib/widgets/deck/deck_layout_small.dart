@@ -174,6 +174,7 @@ class DeckLayoutSmall extends StatelessWidget {
                     ),
                     child: TabBar(
                       isScrollable: true,
+                      tabAlignment: TabAlignment.start,
                       onTap: (int index) {
                         /// When the user clicks on a tab we update the index in
                         /// the [LayoutRepository] so that we can use it as

@@ -59,7 +59,7 @@ dependencies:
   media_kit: ^1.1.10+1
   media_kit_video: ^1.2.4
   media_kit_libs_video: ^1.0.4
-  package_info_plus: ^4.2.0
+  package_info_plus: ^5.0.1
   provider: ^6.0.4
   purchases_flutter: ^6.2.0
   rxdart: ^0.27.7

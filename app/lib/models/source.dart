@@ -173,7 +173,7 @@ class FDSource {
       'id': id,
       'type': type.toShortString(),
       'title': title,
-      'options': options != null ? options!.toJson() : null,
+      'options': options?.toJson(),
       'link': link,
       'icon': icon,
     };

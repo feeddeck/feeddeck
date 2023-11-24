@@ -13,7 +13,7 @@ import 'package:feeddeck/utils/openurl.dart';
 /// Here the user can find information the version of the app and the links to
 /// the website, the GitHub repository and the X account.
 class SettingsInfo extends StatefulWidget {
-  const SettingsInfo({Key? key}) : super(key: key);
+  const SettingsInfo({super.key});
 
   @override
   State<SettingsInfo> createState() => _SettingsInfoState();
