@@ -148,8 +148,9 @@ const processURL = (url: string, removeParams: boolean): string => {
 };
 
 /**
- * `processURL` checks if the provided `url` is a relative url. If this is the
- * case the function returns `true`, if the url is absolute it returns `false`.
+ * `isRelativeURL` checks if the provided `url` is a relative url. If this is
+ * the case the function returns `true`, if the url is absolute it returns
+ * `false`.
  */
 const isRelativeURL = (url: string): boolean => {
   return url.startsWith('/') && !url.startsWith('//') &&

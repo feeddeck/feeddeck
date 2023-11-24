@@ -1,9 +1,10 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
+import { Feed, parseFeed } from 'rss';
 import { Md5 } from 'std/md5';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
+import * as cheerio from 'cheerio';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
@@ -28,18 +29,18 @@ export const getRSSFeed = async (
     throw new Error('Invalid source options');
   }
 
-  const response = await fetchWithTimeout(
-    source.options.rss,
-    { method: 'get' },
-    5000,
-  );
-  const xml = await response.text();
-  log('debug', 'Add source', {
-    sourceType: 'rss',
-    requestUrl: source.options.rss,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  let feed = await getFeed(source);
+  if (!feed) {
+    log(
+      'debug',
+      'Failed to get RSS feed, try to get RSS feed from website',
+      { requestUrl: source.options.rss },
+    );
+    feed = await getFeedFromWebsite(source);
+    if (!feed) {
+      throw new Error('Failed to get RSS feed');
+    }
+  }
 
   /**
    * If the feed does not have a title we consider it invalid and throw an
@@ -148,6 +149,70 @@ export const getRSSFeed = async (
   }
 
   return { source, items };
+};
+
+/**
+ * `getFeed` is a helper function to get a RSS feed for a source. It returns
+ * the feed or undefined if the request failed or the returned response could
+ * not be parsed as a feed.
+ */
+const getFeed = async (source: ISource): Promise<Feed | undefined> => {
+  try {
+    const response = await fetchWithTimeout(
+      source.options!.rss!,
+      { method: 'get' },
+      5000,
+    );
+    const xml = await response.text();
+    log('debug', 'Add source', {
+      sourceType: 'rss',
+      requestUrl: source.options!.rss!,
+      responseStatus: response.status,
+    });
+    const feed = await parseFeed(xml);
+    return feed;
+  } catch (_) {
+    return undefined;
+  }
+};
+
+/**
+ * `getFeedFromWebsite` is a helper function to get a RSS feed from a website.
+ * This function can be used to get the RSS feed after the call to `getFeed`
+ * failed. This could happen when a user provided an url to a website instead of
+ * a RSS feed.
+ *
+ * In the function we are checking if there is a
+ * `<link rel="alternate" type="application/rss+xml" href="RSS_FEED_URL">` tag
+ * on the website. If this is the case we are using the `href` attribute and try
+ * to get the RSS feed from that url via the `getFeed` function.
+ *
+ * When we construct the RSS feed url we have to ensure, that the url is
+ * absolute.
+ */
+const getFeedFromWebsite = async (
+  source: ISource,
+): Promise<Feed | undefined> => {
+  try {
+    const response = await fetchWithTimeout(
+      source.options!.rss!,
+      { method: 'get' },
+      5000,
+    );
+    const html = await response.text();
+
+    const $ = cheerio.load(html);
+    const rssLink = $('link[type="application/rss+xml"]').attr('href');
+    console.log(rssLink);
+    if (!rssLink) {
+      return undefined;
+    }
+    source.options!.rss = new URL(rssLink, source.options!.rss!).href;
+
+    return getFeed(source);
+  } catch (_) {
+    return undefined;
+  }
 };
 
 /**

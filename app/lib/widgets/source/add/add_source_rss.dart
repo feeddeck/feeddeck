@@ -14,6 +14,10 @@ import 'package:feeddeck/widgets/source/add/add_source_form.dart';
 const _helpText = '''
 The RSS source can be used to follow all your RSS feeds. You have to provide
 the url for the RSS feed, e.g. `https://www.tagesschau.de/xml/rss2/`.
+
+If you do not know the url of the RSS feed you can also provide the url of the
+website you want to add and we try to find a RSS feed for you, e.g.
+`https://www.tagesschau.de`.
 ''';
 
 /// The [AddSourceRSS] widget is used to display the form to add a new RSS
