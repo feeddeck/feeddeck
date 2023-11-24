@@ -24,12 +24,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (6.2.0):
+  - purchases_flutter (6.4.0):
     - Flutter
-    - PurchasesHybridCommon (= 7.2.0)
-  - PurchasesHybridCommon (7.2.0):
-    - RevenueCat (= 4.29.0)
-  - RevenueCat (4.29.0)
+    - PurchasesHybridCommon (= 8.0.0)
+  - PurchasesHybridCommon (8.0.0):
+    - RevenueCat (= 4.30.5)
+  - RevenueCat (4.30.5)
   - screen_brightness_ios (0.1.0):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -132,14 +132,14 @@ SPEC CHECKSUMS:
   media_kit_video: 5da63f157170e5bf303bf85453b7ef6971218a2e
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  purchases_flutter: c1a5d3052d7759840f46ba5a284b729cfecb3c1a
-  PurchasesHybridCommon: eb720dfb28754cc1c1aefe0e2503724d00dd86db
-  RevenueCat: c1f441e7794999e7144b90926699064f5554030e
+  purchases_flutter: a428f3e8ac54dfb499ff190efa99d6701094bc32
+  PurchasesHybridCommon: 80262c5ffe6621e3cf3812e6103170f6d7fbcb79
+  RevenueCat: c1e33f4e1f1fd239ba461652f02928e220becc31
   screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  url_launcher_ios: 68d46cc9766d0c41dbdc884310529557e3cd7a86
+  url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
   volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
