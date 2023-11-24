@@ -38,7 +38,10 @@ const getProfile = async (
     return new Response(
       JSON.stringify({ error: 'Failed to get delete user' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 500,
       },
     );
@@ -56,7 +59,10 @@ const getProfile = async (
       'updatedAt': (profile[0] as IProfile).updatedAt,
     }),
     {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 200,
     },
   );
@@ -104,7 +110,10 @@ serve(async (req) => {
     const { data: { user } } = await userSupabaseClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 401,
       });
     }
@@ -165,7 +174,10 @@ serve(async (req) => {
          * error.
          */
         return new Response(JSON.stringify({ error: 'Bad Request' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 400,
         });
     }
@@ -174,7 +186,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: 'An unexpected error occured' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 400,
       },
     );

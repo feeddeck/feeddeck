@@ -16,7 +16,10 @@ export const githubAddAccount = async (
 ): Promise<Response> => {
   if (!data || !data.token) {
     return new Response(JSON.stringify({ error: 'Bad Request' }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 400,
     });
   }
@@ -34,7 +37,10 @@ export const githubAddAccount = async (
     return new Response(
       JSON.stringify({ error: 'Failed to update profile' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 500,
       },
     );
@@ -42,7 +48,10 @@ export const githubAddAccount = async (
   return new Response(
     undefined,
     {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 200,
     },
   );
@@ -69,7 +78,10 @@ export const githubDeleteAccount = async (
     return new Response(
       JSON.stringify({ error: 'Failed to update profile' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 500,
       },
     );
@@ -77,7 +89,10 @@ export const githubDeleteAccount = async (
   return new Response(
     undefined,
     {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 200,
     },
   );

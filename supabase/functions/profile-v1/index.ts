@@ -51,7 +51,10 @@ serve(async (req) => {
     const { data: { user } } = await userSupabaseClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 401,
       });
     }
@@ -96,7 +99,10 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({ error: 'Failed to get delete user' }),
           {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json; charset=utf-8',
+            },
             status: 500,
           },
         );
@@ -114,7 +120,10 @@ serve(async (req) => {
           'updatedAt': (profile[0] as IProfile).updatedAt,
         }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 200,
         },
       );
@@ -160,7 +169,10 @@ serve(async (req) => {
           return new Response(
             JSON.stringify({ error: 'Failed to update profile' }),
             {
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json; charset=utf-8',
+              },
               status: 500,
             },
           );
@@ -168,7 +180,10 @@ serve(async (req) => {
         return new Response(
           undefined,
           {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json; charset=utf-8',
+            },
             status: 200,
           },
         );
@@ -194,7 +209,10 @@ serve(async (req) => {
           return new Response(
             JSON.stringify({ error: 'Failed to update profile' }),
             {
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json; charset=utf-8',
+              },
               status: 500,
             },
           );
@@ -202,7 +220,10 @@ serve(async (req) => {
         return new Response(
           undefined,
           {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json; charset=utf-8',
+            },
             status: 200,
           },
         );
@@ -217,7 +238,10 @@ serve(async (req) => {
         'request': data,
       });
       return new Response(JSON.stringify({ error: 'Invalid request data' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 400,
       });
     }
@@ -226,7 +250,10 @@ serve(async (req) => {
      * If the request method is not GET, POST or DELETE, we return an error.
      */
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 405,
     });
   } catch (err) {
@@ -234,7 +261,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: 'An unexpected error occured' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 400,
       },
     );

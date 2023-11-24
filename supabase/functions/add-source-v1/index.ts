@@ -53,7 +53,10 @@ serve(async (req) => {
     const { data: { user } } = await userSupabaseClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 401,
       });
     }
@@ -92,7 +95,10 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Failed to get user profile' }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 500,
         },
       );
@@ -119,7 +125,10 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Failed to get sources' }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 500,
         },
       );
@@ -136,7 +145,10 @@ serve(async (req) => {
             'You reached the maximum number of sources you can create, please upgrade your account to the premium tier.',
         }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 400,
         },
       );
@@ -152,7 +164,10 @@ serve(async (req) => {
           error: 'You reached the maximum number of sources you can create.',
         }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 400,
         },
       );
@@ -197,7 +212,10 @@ serve(async (req) => {
     if (sourceError) {
       log('error', 'Failed to save sources', { 'error': sourceError });
       return new Response(JSON.stringify({ error: 'Failed to save sources' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 500,
       });
     }
@@ -210,14 +228,20 @@ serve(async (req) => {
       if (itemsError) {
         log('error', 'Failed to save items', { 'error': itemsError });
         return new Response(JSON.stringify({ error: 'Failed to save items' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 500,
         });
       }
     }
 
     return new Response(JSON.stringify(source), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 200,
     });
   } catch (err) {
@@ -225,7 +249,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: 'An unexpected error occured' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 400,
       },
     );

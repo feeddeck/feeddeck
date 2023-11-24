@@ -29,7 +29,10 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Failed to get "media" parameter' }),
         {
-          headers: { ...imageCorsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...imageCorsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 400,
         },
       );
@@ -39,7 +42,10 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Invalid referer' }),
         {
-          headers: { ...imageCorsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...imageCorsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 400,
         },
       );
@@ -58,7 +64,10 @@ serve(async (req) => {
     return response;
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), {
-      headers: { ...imageCorsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...imageCorsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 400,
     });
   }
