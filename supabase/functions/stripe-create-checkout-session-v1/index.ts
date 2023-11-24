@@ -47,7 +47,10 @@ serve(async (req) => {
     const { data: { user } } = await userSupabaseClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 401,
       });
     }
@@ -59,7 +62,10 @@ serve(async (req) => {
     const url = await createCheckoutSession(stripeCustomerId);
 
     return new Response(JSON.stringify({ url: url }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 200,
     });
   } catch (err) {
@@ -67,7 +73,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: 'An unexpected error occured' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 400,
       },
     );

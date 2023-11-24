@@ -49,7 +49,10 @@ serve(async (req) => {
     const { data: { user } } = await userSupabaseClient.auth.getUser();
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 401,
       });
     }
@@ -90,7 +93,10 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Failed to get user profile' }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 500,
         },
       );
@@ -102,7 +108,10 @@ serve(async (req) => {
             'User can not be deleted, because of an active subscription, please cancel your subscription first',
         }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 400,
         },
       );
@@ -123,14 +132,20 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Failed to get delete user' }),
         {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
           status: 500,
         },
       );
     }
 
     return new Response(undefined, {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
       status: 200,
     });
   } catch (err) {
@@ -138,7 +153,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: 'An unexpected error occured' }),
       {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json; charset=utf-8',
+        },
         status: 400,
       },
     );
