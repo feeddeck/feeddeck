@@ -12,6 +12,7 @@ import 'package:feeddeck/utils/constants.dart';
 /// - [mastodon]
 /// - [medium]
 /// - [nitter]
+/// - [pinterest]
 /// - [podcast]
 /// - [reddit]
 /// - [rss]
@@ -30,6 +31,7 @@ enum FDSourceType {
   mastodon,
   medium,
   nitter,
+  pinterest,
   podcast,
   reddit,
   rss,
@@ -62,6 +64,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return 'Medium';
       case FDSourceType.nitter:
         return 'Nitter';
+      case FDSourceType.pinterest:
+        return 'Pinterest';
       case FDSourceType.podcast:
         return 'Podcast';
       case FDSourceType.reddit:
@@ -95,6 +99,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return const Color(0xff000000);
       case FDSourceType.nitter:
         return const Color(0xffff6c60);
+      case FDSourceType.pinterest:
+        return const Color(0xffe60023);
       case FDSourceType.podcast:
         return const Color(0xff872ec4);
       case FDSourceType.reddit:
@@ -188,6 +194,7 @@ class FDSourceOptions {
   String? mastodon;
   String? medium;
   String? nitter;
+  String? pinterest;
   String? podcast;
   String? reddit;
   String? rss;
@@ -202,6 +209,7 @@ class FDSourceOptions {
     this.mastodon,
     this.medium,
     this.nitter,
+    this.pinterest,
     this.podcast,
     this.reddit,
     this.rss,
@@ -233,6 +241,10 @@ class FDSourceOptions {
           responseData.containsKey('nitter') && responseData['nitter'] != null
               ? responseData['nitter']
               : null,
+      pinterest: responseData.containsKey('pinterest') &&
+              responseData['pinterest'] != null
+          ? responseData['pinterest']
+          : null,
       podcast:
           responseData.containsKey('podcast') && responseData['podcast'] != null
               ? responseData['podcast']
@@ -269,6 +281,7 @@ class FDSourceOptions {
       'mastodon': mastodon,
       'medium': medium,
       'nitter': nitter,
+      'pinterest': pinterest,
       'podcast': podcast,
       'reddit': reddit,
       'rss': rss,

@@ -8,6 +8,7 @@ export type TSourceType =
   | 'mastodon'
   | 'medium'
   | 'nitter'
+  | 'pinterest'
   | 'podcast'
   | 'reddit'
   | 'rss'
@@ -30,16 +31,17 @@ export interface ISource {
 }
 
 export interface ISourceOptions {
-  rss?: string;
-  youtube?: string;
+  github?: ISourceOptionsGithub;
+  googlenews?: ISourceOptionsGoogleNews;
   mastodon?: string;
   medium?: string;
   nitter?: string;
-  reddit?: string;
+  pinterest?: string;
   podcast?: string;
-  github?: ISourceOptionsGithub;
-  googlenews?: ISourceOptionsGoogleNews;
+  reddit?: string;
+  rss?: string;
+  stackoverflow?: ISourceOptionsStackOverflow;
   tumblr?: string;
   x?: string;
-  stackoverflow?: ISourceOptionsStackOverflow;
+  youtube?: string;
 }

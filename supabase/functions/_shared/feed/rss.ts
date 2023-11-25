@@ -203,7 +203,6 @@ const getFeedFromWebsite = async (
 
     const $ = cheerio.load(html);
     const rssLink = $('link[type="application/rss+xml"]').attr('href');
-    console.log(rssLink);
     if (!rssLink) {
       return undefined;
     }

@@ -29,6 +29,8 @@ class FDIcons {
       IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData googlenews =
       IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData pinterest =
+      IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData medium =
       IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData nitter =

@@ -12,6 +12,10 @@ class ItemTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (itemTitle.isEmpty) {
+      return Container();
+    }
+
     return SelectableText(
       itemTitle,
       textAlign: TextAlign.left,

@@ -10,6 +10,7 @@ import 'package:feeddeck/utils/openurl.dart';
 import 'package:feeddeck/widgets/item/details/item_details_mastodon.dart';
 import 'package:feeddeck/widgets/item/details/item_details_medium.dart';
 import 'package:feeddeck/widgets/item/details/item_details_nitter.dart';
+import 'package:feeddeck/widgets/item/details/item_details_pinterest.dart';
 import 'package:feeddeck/widgets/item/details/item_details_podcast.dart';
 import 'package:feeddeck/widgets/item/details/item_details_reddit.dart';
 import 'package:feeddeck/widgets/item/details/item_details_rss.dart';
@@ -82,6 +83,11 @@ class ItemDetails extends StatelessWidget {
         );
       case FDSourceType.nitter:
         return ItemDetailsNitter(
+          item: item,
+          source: source,
+        );
+      case FDSourceType.pinterest:
+        return ItemDetailsPinterest(
           item: item,
           source: source,
         );

@@ -67,6 +67,7 @@ export default function Home() {
             <Mastodon />
             <Medium />
             <Nitter />
+            <Pinterest />
             <Reddit />
             <RSS />
             <StackOverflow />
@@ -249,6 +250,24 @@ const Nitter = () => (
       </g>
     </svg>
     <div className="pt-4">Nitter</div>
+  </div>
+);
+
+const Pinterest = () => (
+  <div className="flex flex-col items-center justify-center">
+    <svg
+      width="32px"
+      height="32px"
+      viewBox="0 0 4096 4096"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+    >
+      <g id="Pinterest" transform="matrix(8.20665,0,0,8.20665,472.324,-53.3432)">
+        <path d="M204,6.5C101.4,6.5 0,74.9 0,185.6C0,256 39.6,296 63.6,296C73.5,296 79.2,268.4 79.2,260.6C79.2,251.3 55.5,231.5 55.5,192.8C55.5,112.4 116.7,55.4 195.9,55.4C264,55.4 314.4,94.1 314.4,165.2C314.4,218.3 293.1,317.9 224.1,317.9C199.2,317.9 177.9,299.9 177.9,274.1C177.9,236.3 204.3,199.7 204.3,160.7C204.3,94.5 110.4,106.5 110.4,186.5C110.4,203.3 112.5,221.9 120,237.2C106.2,296.6 78,385.1 78,446.3C78,465.2 80.7,483.8 82.5,502.7C85.9,506.5 84.2,506.1 89.4,504.2C139.8,435.2 138,421.7 160.8,331.4C173.1,354.8 204.9,367.4 230.1,367.4C336.3,367.4 384,263.9 384,170.6C384,71.3 298.2,6.5 204,6.5Z" />
+      </g>
+    </svg>
+    <div className="pt-4">Pinterest</div>
   </div>
 );
 

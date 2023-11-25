@@ -10,6 +10,7 @@ import 'package:feeddeck/widgets/item/preview/item_preview_googlenews.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_mastodon.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_medium.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_nitter.dart';
+import 'package:feeddeck/widgets/item/preview/item_preview_pinterest.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_podcast.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_reddit.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_rss.dart';
@@ -64,6 +65,11 @@ class ItemPreview extends StatelessWidget {
         );
       case FDSourceType.nitter:
         return ItemPreviewNitter(
+          item: item,
+          source: source,
+        );
+      case FDSourceType.pinterest:
+        return ItemPreviewPinterest(
           item: item,
           source: source,
         );
