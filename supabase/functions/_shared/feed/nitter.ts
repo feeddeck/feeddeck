@@ -264,7 +264,7 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
     let matches;
 
     do {
-      matches = re.exec(entry.description?.value);
+      matches = re.exec(unescape(entry.description.value));
       if (
         matches && matches.length == 2
       ) {

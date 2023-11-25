@@ -357,7 +357,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
 
   if (entry.description?.value) {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
-      entry.description?.value,
+      unescape(entry.description.value),
     );
     if (
       matches && matches.length == 2 && matches[1].startsWith('https://') &&
@@ -369,7 +369,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
 
   if (entry.content?.value) {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
-      entry.content?.value,
+      unescape(entry.content.value),
     );
     if (
       matches && matches.length == 2 && matches[1].startsWith('https://') &&
