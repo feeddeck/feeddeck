@@ -180,7 +180,7 @@ const generateItemId = (sourceId: string, identifier: string): string => {
 const getMedia = (entry: FeedEntry): string | undefined => {
   if (entry.description?.value) {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
-      unescape(entry.description?.value),
+      unescape(entry.description.value),
     );
     if (matches && matches.length == 2 && matches[1].startsWith('https://')) {
       return matches[1];
