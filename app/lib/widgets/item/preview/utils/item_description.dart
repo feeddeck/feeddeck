@@ -82,6 +82,10 @@ class ItemDescription extends StatelessWidget {
 
   /// [_buildPlain] renders the provided [content] as plain text.
   Widget _buildPlain(String content) {
+    if (content == '') {
+      return Container();
+    }
+
     return Container(
       padding: const EdgeInsets.only(
         bottom: Constants.spacingExtraSmall,

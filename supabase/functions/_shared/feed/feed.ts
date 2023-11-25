@@ -4,6 +4,7 @@ import { Redis } from 'redis';
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
 import { getMediumFeed, isMediumUrl } from './medium.ts';
+import { getPinterestFeed, isPinterestUrl } from './pinterest.ts';
 import { getRSSFeed } from './rss.ts';
 import { getPodcastFeed } from './podcast.ts';
 import { getTumblrFeed, isTumblrUrl } from './tumblr.ts';
@@ -49,6 +50,13 @@ export const getFeed = async (
       return await getMediumFeed(supabaseClient, redisClient, profile, source);
     case 'nitter':
       return await getNitterFeed(supabaseClient, redisClient, profile, source);
+    case 'pinterest':
+      return await getPinterestFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+      );
     case 'podcast':
       return await getPodcastFeed(supabaseClient, redisClient, profile, source);
     case 'reddit':
@@ -59,6 +67,13 @@ export const getFeed = async (
           return await getMediumFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { medium: source.options.rss },
+          });
+        }
+
+        if (source.options?.rss && isPinterestUrl(source.options.rss)) {
+          return await getPinterestFeed(supabaseClient, redisClient, profile, {
+            ...source,
+            options: { pinterest: source.options.rss },
           });
         }
 

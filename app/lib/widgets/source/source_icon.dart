@@ -79,6 +79,13 @@ class SourceIcon extends StatelessWidget {
           type.color,
           const Color(0xffffffff),
         );
+      case FDSourceType.pinterest:
+        return buildIcon(
+          FDIcons.pinterest,
+          iconSize,
+          type.color,
+          const Color(0xffffffff),
+        );
       case FDSourceType.podcast:
         return buildIcon(
           Icons.podcasts,

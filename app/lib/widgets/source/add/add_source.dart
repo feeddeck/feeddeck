@@ -1,3 +1,4 @@
+import 'package:feeddeck/widgets/source/add/add_source_pinterest.dart';
 import 'package:flutter/material.dart';
 
 import 'package:feeddeck/models/column.dart';
@@ -63,6 +64,10 @@ class _AddSourceState extends State<AddSource> {
       return AddSourceNitter(column: widget.column);
     }
 
+    if (_sourceType == FDSourceType.pinterest) {
+      return AddSourcePinterst(column: widget.column);
+    }
+
     if (_sourceType == FDSourceType.podcast) {
       return AddSourcePodcast(column: widget.column);
     }
@@ -75,6 +80,10 @@ class _AddSourceState extends State<AddSource> {
       return AddSourceRSS(column: widget.column);
     }
 
+    if (_sourceType == FDSourceType.stackoverflow) {
+      return AddSourceStackOverflow(column: widget.column);
+    }
+
     if (_sourceType == FDSourceType.tumblr) {
       return AddSourceTumblr(column: widget.column);
     }
@@ -82,10 +91,6 @@ class _AddSourceState extends State<AddSource> {
     // if (_sourceType == FDSourceType.x) {
     //   return AddSourceX(column: widget.column);
     // }
-
-    if (_sourceType == FDSourceType.stackoverflow) {
-      return AddSourceStackOverflow(column: widget.column);
-    }
 
     if (_sourceType == FDSourceType.youtube) {
       return AddSourceYouTube(column: widget.column);
