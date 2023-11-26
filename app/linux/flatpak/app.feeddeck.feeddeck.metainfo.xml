@@ -64,13 +64,13 @@
         </ul>
 
         <p>Fixed</p>
+        <ul>
           <li>#75: [core] Fix getMedia Function @ricoberger</li>
           <li>#73: [core] Fix Decoding of Special Characters @ricoberger</li>
           <li>#64: [github] Fix Icons in Item Preview @ricoberger</li>
           <li>#58: [core] Add Missing Divider to Video Quality Selection @ricoberger</li>
           <li>#57: [core] Fix Modal Bottom Sheet Size for Images @ricoberger</li>
           <li>#55: [github] Fix Notification Links for PRs @ricoberger</li>
-        <ul>
         </ul>
 
         <p>Changed</p>
