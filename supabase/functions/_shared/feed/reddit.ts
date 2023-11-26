@@ -116,9 +116,7 @@ export const getRedditFeed = async (
       title: entry.title!.value!,
       link: entry.links[0].href!,
       media: getMedia(entry),
-      description: entry.content?.value
-        ? unescape(entry.content.value)
-        : undefined,
+      description: getDescription(entry),
       author: entry.author?.name,
       publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
@@ -180,6 +178,27 @@ const generateSourceId = (
  */
 const generateItemId = (sourceId: string, identifier: string): string => {
   return `${sourceId}-${new Md5().update(identifier).toString()}`;
+};
+
+/**
+ * `getDescription` returns the description for a feed entry. If the entry does
+ * not contain a description we return `undefined`. Some Reddit feed items are
+ * containing a table, which we have to remove from the description, to improve
+ * the rendering in the Flutter app.
+ */
+const getDescription = (entry: FeedEntry): string | undefined => {
+  if (entry.content?.value) {
+    const content = unescape(entry.content.value);
+    return content.replaceAll('<table>', '').replaceAll('<tr>', '').replaceAll(
+      '<td>',
+      '',
+    ).replaceAll('</table>', '').replaceAll('</tr>', '').replaceAll(
+      '</td>',
+      '',
+    );
+  }
+
+  return undefined;
 };
 
 /**
