@@ -50,6 +50,51 @@
   </categories>
 
   <releases>
+    <release version="v1.2.0" date="2023-11-26">
+      <description>
+        <p>Added</p>
+        <ul>
+          <li>#74: [pinterest] Add Support for Pinterest @ricoberger</li>
+          <li>#72: [rss] Allow Users to Provide a Website URL @ricoberger</li>
+          <li>#71: [core] Add GitHub Action for iOS and Android @ricoberger</li>
+          <li>#63: [core] Add Development Setup for Neovim @ricoberger</li>
+          <li>#56: [youtube] Add Desktop Support @ricoberger</li>
+          <li>#54: [core] Sign Out from Current Device @ricoberger</li>
+          <li>#51: [mastodon] Add Support for Videos @ricoberger</li>
+        </ul>
+
+        <p>Fixed</p>
+          <li>#75: [core] Fix getMedia Function @ricoberger</li>
+          <li>#73: [core] Fix Decoding of Special Characters @ricoberger</li>
+          <li>#64: [github] Fix Icons in Item Preview @ricoberger</li>
+          <li>#58: [core] Add Missing Divider to Video Quality Selection @ricoberger</li>
+          <li>#57: [core] Fix Modal Bottom Sheet Size for Images @ricoberger</li>
+          <li>#55: [github] Fix Notification Links for PRs @ricoberger</li>
+        <ul>
+        </ul>
+
+        <p>Changed</p>
+        <ul>
+          <li>#79: [medium] Remove Spam @ricoberger</li>
+          <li>#78: [reddit] Remove Tables from Description @ricoberger</li>
+          <li>#77: [core] Improve Subtitle in Details View @ricoberger</li>
+          <li>#76: [core] Improve Icon Handling @ricoberger</li>
+          <li>#70: [core] Update Flutter to Version 3.16.0 @ricoberger</li>
+          <li>#69: [core] Submit "Add Source" Forms on Enter @ricoberger</li>
+          <li>#68: Bump the pub group in /app with 8 updates @dependabot</li>
+          <li>#61: Bump the npm-email-templates group in /supabase/email-templates with 1 update @dependabot</li>
+          <li>#60: Bump the npm-landing group in /landing with 7 updates @dependabot</li>
+          <li>#62: Bump the github-actions group with 1 update @dependabot</li>
+          <li>#67: [core] Add Custom Cache Manager @ricoberger</li>
+          <li>#66: [core] Improve Media Handling @ricoberger</li>
+          <li>#65: [core] Run "deno fmt" @ricoberger</li>
+          <li>#53: [core] Improve Tabs Handling in Small Deck Layout @ricoberger</li>
+          <li>#52: [rss] Improve Rendering of Items @ricoberger</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.2.0</url>
+    </release>
     <release version="v1.1.1" date="2023-10-21">
       <description>
         <p>Fixed</p>
