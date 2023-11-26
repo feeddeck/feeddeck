@@ -43,106 +43,21 @@ class SourceIcon extends StatelessWidget {
 
   /// [buildDefaultIcon] returns an icon based on the provided source [type].
   Widget buildDefaultIcon(double iconSize) {
-    switch (type) {
-      case FDSourceType.github:
-        return buildIcon(
-          FDIcons.github,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.googlenews:
-        return buildIcon(
-          FDIcons.googlenews,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.mastodon:
-        return buildIcon(
-          FDIcons.mastodon,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.medium:
-        return buildIcon(
-          FDIcons.medium,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.nitter:
-        return buildIcon(
-          FDIcons.nitter,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.pinterest:
-        return buildIcon(
-          FDIcons.pinterest,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.podcast:
-        return buildIcon(
-          Icons.podcasts,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.reddit:
-        return buildIcon(
-          FDIcons.reddit,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.rss:
-        return buildIcon(
-          FDIcons.rss,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.stackoverflow:
-        return buildIcon(
-          FDIcons.stackoverflow,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      case FDSourceType.tumblr:
-        return buildIcon(
-          FDIcons.tumblr,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      // case FDSourceType.x:
-      //   return buildIcon(
-      //     FDIcons.x,
-      //     iconSize,
-      //     type.color,
-      //     const Color(0xffffffff),
-      //   );
-      case FDSourceType.youtube:
-        return buildIcon(
-          FDIcons.youtube,
-          iconSize,
-          type.color,
-          const Color(0xffffffff),
-        );
-      default:
-        return buildIcon(
-          FDIcons.feeddeck,
-          iconSize,
-          Constants.primary,
-          Constants.onPrimary,
-        );
+    if (FDSourceType.values.contains(type)) {
+      return buildIcon(
+        type.icon,
+        iconSize,
+        type.bgColor,
+        type.fgColor,
+      );
     }
+
+    return buildIcon(
+      FDIcons.feeddeck,
+      iconSize,
+      Constants.primary,
+      Constants.onPrimary,
+    );
   }
 
   @override

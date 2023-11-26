@@ -1,4 +1,3 @@
-import 'package:feeddeck/widgets/source/add/add_source_pinterest.dart';
 import 'package:flutter/material.dart';
 
 import 'package:feeddeck/models/column.dart';
@@ -9,6 +8,7 @@ import 'package:feeddeck/widgets/source/add/add_source_googlenews.dart';
 import 'package:feeddeck/widgets/source/add/add_source_mastodon.dart';
 import 'package:feeddeck/widgets/source/add/add_source_medium.dart';
 import 'package:feeddeck/widgets/source/add/add_source_nitter.dart';
+import 'package:feeddeck/widgets/source/add/add_source_pinterest.dart';
 import 'package:feeddeck/widgets/source/add/add_source_podcast.dart';
 import 'package:feeddeck/widgets/source/add/add_source_reddit.dart';
 import 'package:feeddeck/widgets/source/add/add_source_rss.dart';
@@ -120,7 +120,7 @@ class _AddSourceState extends State<AddSource> {
                 /// If we decide later to use a generic color as background
                 /// the following line can be used:
                 /// color: Constants.secondary,
-                color: FDSourceType.values[index].color,
+                color: FDSourceType.values[index].bgColor,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Column(
@@ -137,14 +137,14 @@ class _AddSourceState extends State<AddSource> {
                   ),
                   Text(
                     FDSourceType.values[index].toLocalizedString(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       /// Since we are using the brand color as background
                       /// color, we are using the same color as for the icon
                       /// as text color (source_icon.dart). If we decide later
                       /// to use a generic color as background the following
                       /// line can be used:
                       /// color: Constants.onSecondary,
-                      color: Color(0xffffffff),
+                      color: FDSourceType.values[index].fgColor,
                     ),
                   ),
                 ],
