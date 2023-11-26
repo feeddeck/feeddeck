@@ -20,27 +20,94 @@ class ItemSubtitle extends StatelessWidget {
   final FDItem item;
   final FDSource source;
 
+  /// [_buildChildren] is used to build the children of the [RichText] widget.
+  /// Depending on the provided information we will display the source title,
+  /// the author and the publishing time of the item. We also include an icon
+  /// for each information.
+  List<InlineSpan> _buildChildren() {
+    final List<InlineSpan> children = [];
+
+    if (source.title.trim().isNotEmpty) {
+      children.addAll([
+        WidgetSpan(
+          child: Icon(
+            source.type.icon,
+            size: 12,
+            color: Constants.secondaryTextColor,
+          ),
+        ),
+        TextSpan(
+          text: '  ${source.title.trim()}',
+        ),
+      ]);
+    } else {
+      children.addAll([
+        WidgetSpan(
+          child: Icon(
+            source.type.icon,
+            size: 12,
+            color: Constants.secondaryTextColor,
+          ),
+        ),
+        TextSpan(
+          text: '  ${source.type.toLocalizedString()}',
+        ),
+      ]);
+    }
+
+    if (item.author != null && item.author!.trim().isNotEmpty) {
+      children.addAll([
+        const TextSpan(
+          text: '     |     ',
+        ),
+        const WidgetSpan(
+          child: Icon(
+            Icons.person,
+            size: 12,
+            color: Constants.secondaryTextColor,
+          ),
+        ),
+        TextSpan(
+          text: '  ${item.author!.trim()}',
+        ),
+      ]);
+    }
+
+    children.addAll([
+      const TextSpan(
+        text: '     |     ',
+      ),
+      const WidgetSpan(
+        child: Icon(
+          Icons.schedule,
+          size: 12,
+          color: Constants.secondaryTextColor,
+        ),
+      ),
+      TextSpan(
+        text:
+            '  ${DateFormat.yMMMMd().add_Hm().format(DateTime.fromMillisecondsSinceEpoch(item.publishedAt * 1000))}',
+      ),
+    ]);
+
+    return children;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final sourceType = source.type.toLocalizedString();
-    final sourceTitle = source.title != '' ? ' / ${source.title.trim()}' : '';
-    final author = item.author != null && item.author != ''
-        ? ' / ${item.author!.trim()}'
-        : '';
-    final publishedAt =
-        ' / ${DateFormat.yMMMMd().add_Hm().format(DateTime.fromMillisecondsSinceEpoch(item.publishedAt * 1000))}';
-
     return Padding(
       padding: const EdgeInsets.only(
         bottom: Constants.spacingMiddle,
       ),
-      child: SelectableText(
-        '$sourceType$sourceTitle$author$publishedAt',
+      child: RichText(
         textAlign: TextAlign.left,
-        style: const TextStyle(
-          color: Constants.secondaryTextColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 10,
+        text: TextSpan(
+          style: const TextStyle(
+            color: Constants.secondaryTextColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 10,
+          ),
+          children: _buildChildren(),
         ),
       ),
     );
