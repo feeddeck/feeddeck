@@ -4,6 +4,7 @@ import 'package:feeddeck/models/sources/github.dart';
 import 'package:feeddeck/models/sources/googlenews.dart';
 import 'package:feeddeck/models/sources/stackoverflow.dart';
 import 'package:feeddeck/utils/constants.dart';
+import 'package:feeddeck/utils/fd_icons.dart';
 
 /// [FDSourceType] is a enum value which defines the source type. A source can
 /// have one of the following types:
@@ -85,9 +86,42 @@ extension FDSourceTypeExtension on FDSourceType {
     }
   }
 
-  /// [color] returns the brand color for a source type, which can be used as
-  /// background color for the icon of a source type.
-  Color get color {
+  /// [icon] returns the icon for a source.
+  IconData get icon {
+    switch (this) {
+      case FDSourceType.github:
+        return FDIcons.github;
+      case FDSourceType.googlenews:
+        return FDIcons.googlenews;
+      case FDSourceType.mastodon:
+        return FDIcons.mastodon;
+      case FDSourceType.medium:
+        return FDIcons.medium;
+      case FDSourceType.nitter:
+        return FDIcons.nitter;
+      case FDSourceType.pinterest:
+        return FDIcons.pinterest;
+      case FDSourceType.podcast:
+        return Icons.podcasts;
+      case FDSourceType.reddit:
+        return FDIcons.reddit;
+      case FDSourceType.rss:
+        return FDIcons.rss;
+      case FDSourceType.stackoverflow:
+        return FDIcons.stackoverflow;
+      case FDSourceType.tumblr:
+        return FDIcons.tumblr;
+      // case FDSourceType.x:
+      //   return FDIcons.x;
+      case FDSourceType.youtube:
+        return FDIcons.youtube;
+      default:
+        return FDIcons.feeddeck;
+    }
+  }
+
+  /// [bgColor] returns the background color for the source icon.
+  Color get bgColor {
     switch (this) {
       case FDSourceType.github:
         return const Color(0xff000000);
@@ -117,6 +151,41 @@ extension FDSourceTypeExtension on FDSourceType {
         return const Color(0xffff0000);
       default:
         return Constants.primary;
+    }
+  }
+
+  /// [fgColor] returns the forground color for the source icon. This should be
+  /// used toether with the [bgColor].
+  Color get fgColor {
+    switch (this) {
+      case FDSourceType.github:
+        return const Color(0xffffffff);
+      case FDSourceType.googlenews:
+        return const Color(0xffffffff);
+      case FDSourceType.mastodon:
+        return const Color(0xffffffff);
+      case FDSourceType.medium:
+        return const Color(0xffffffff);
+      case FDSourceType.nitter:
+        return const Color(0xffffffff);
+      case FDSourceType.pinterest:
+        return const Color(0xffffffff);
+      case FDSourceType.podcast:
+        return const Color(0xffffffff);
+      case FDSourceType.reddit:
+        return const Color(0xffffffff);
+      case FDSourceType.rss:
+        return const Color(0xffffffff);
+      case FDSourceType.stackoverflow:
+        return const Color(0xffffffff);
+      case FDSourceType.tumblr:
+        return const Color(0xffffffff);
+      // case FDSourceType.x:
+      //   return const Color(0xffffffff);
+      case FDSourceType.youtube:
+        return const Color(0xffffffff);
+      default:
+        return Constants.onPrimary;
     }
   }
 }
