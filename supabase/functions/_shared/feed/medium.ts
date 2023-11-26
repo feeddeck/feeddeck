@@ -197,6 +197,41 @@ const skipEntry = (
     return true;
   }
 
+  /**
+   * Skip entries which might be spam. To detect possible spam, we check the
+   * title of the entry against a list of words, when the title contains 3 or
+   * more of these words we consider the entry as spam.
+   */
+  const filterWords = [
+    'cash',
+    'loan',
+    'customer',
+    'care',
+    'helpline',
+    'number',
+    'patti',
+    'toll',
+    'free',
+    'paisa',
+    'call',
+    'kup',
+    'niewykrywalnych',
+    'fałszywych',
+    'pieniędzy',
+    'whatsapp',
+  ];
+  const title = entry.title.value.toLowerCase();
+  let score = 0;
+
+  for (const word of filterWords) {
+    if (title.includes(word)) {
+      score += 1;
+    }
+  }
+  if (score >= 3) {
+    return true;
+  }
+
   return false;
 };
 
