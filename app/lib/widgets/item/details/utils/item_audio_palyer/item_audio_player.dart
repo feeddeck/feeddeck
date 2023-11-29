@@ -65,6 +65,7 @@ class _ItemAudioPlayerState extends State<ItemAudioPlayer> {
 
   @override
   void dispose() {
+    _player.pause();
     _player.dispose();
     super.dispose();
   }

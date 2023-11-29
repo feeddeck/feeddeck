@@ -57,7 +57,7 @@ void main() async {
   /// We can not initialize the [just_audio_background] package on Windows and
   /// Linux, because then the returned duration in the `_player.durationStream`
   /// isn't working correctly in the [ItemAudioPlayer] widget.
-  if (kIsWeb || Platform.isAndroid || Platform.isIOS || Platform.isIOS) {
+  if (kIsWeb || Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
       androidNotificationChannelName: 'Audio playback',
