@@ -219,6 +219,7 @@ const skipEntry = (
     'fałszywych',
     'pieniędzy',
     'whatsapp',
+    'money',
   ];
   const title = entry.title.value.toLowerCase();
   let score = 0;
