@@ -70,7 +70,7 @@ class _ItemActionsState extends State<ItemActions> {
     });
   }
 
-  /// [_showActionsMenuLarge] shows a popup menu with all available aactions for
+  /// [_showActionsMenuLarge] shows a popup menu with all available actions for
   /// an item. This means the user can mark an item as read or unread or a user
   /// can add or remove a bookmark for an item.
   void _showActionsMenuLarge(BuildContext context) async {
@@ -143,6 +143,11 @@ class _ItemActionsState extends State<ItemActions> {
     }
   }
 
+  /// [_showActionsMenuSmall] shows a modal bottom sheet with all available
+  /// actions for an item. This means the user can mark an item as read or
+  /// unread or a user can add or remove a bookmark for an item. The actions are
+  /// the same as we show on large screens via [_showActionsMenuLarge], but the
+  /// modal bottom sheet is optiomized for small screens.
   void _showActionsMenuSmall(BuildContext mainContext) async {
     HapticFeedback.heavyImpact();
 
@@ -326,12 +331,16 @@ class _ItemActionsState extends State<ItemActions> {
     /// On large screens we show an actions menu via `_showActionsMenuLarge`,
     /// which is rendered directly at the point where the user pressed on the
     /// item.
+    /// The menu can be opened by a long press or by a secondary tap (right
+    /// click) on the item.
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: widget.onTap,
         onTapDown: (details) => _getTapPositionLarge(details),
         onLongPress: () => _showActionsMenuLarge(context),
+        onSecondaryTapDown: (details) => _getTapPositionLarge(details),
+        onSecondaryTap: () => _showActionsMenuLarge(context),
         child: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
