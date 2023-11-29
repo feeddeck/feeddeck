@@ -81,6 +81,10 @@ class ItemDescription extends StatelessWidget {
   }
 
   /// [_buildPlain] renders the provided [content] as plain text.
+  ///
+  /// To not have some trailing newlines, the [content] is trimmed and splitted
+  /// on newline characters, so that we can filter out empty lines, before the
+  /// the content is rendered.
   Widget _buildPlain(String content) {
     if (content == '') {
       return Container();
@@ -91,7 +95,7 @@ class ItemDescription extends StatelessWidget {
         bottom: Constants.spacingExtraSmall,
       ),
       child: Text(
-        content.trim(),
+        content.trim().split('\n').where((line) => line != '').join('\n'),
         maxLines: 5,
         style: const TextStyle(
           overflow: TextOverflow.ellipsis,
