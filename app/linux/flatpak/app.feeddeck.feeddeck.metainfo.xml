@@ -50,6 +50,25 @@
   </categories>
 
   <releases>
+    <release version="v1.2.1" date="2023-11-30">
+      <description>
+        <p>Fixed</p>
+        <ul>
+          <li>#84: [podcast] Stop Audio Playback on Windows and Linux @ricoberger</li>
+          <li>#82: [core] Fix build.gradle File for Android Release @ricoberger</li>
+        </ul>
+
+        <p>Changed</p>
+        <ul>
+          <li>#86: [core] Remove Blank Line in Item Preview Description @ricoberger</li>
+          <li>#85: [core] Add Right Click Support for Item Actions @ricoberger</li>
+          <li>#83: [medium] Extend Filter Words List @ricoberger</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.2.1</url>
+    </release>
+
     <release version="v1.2.0" date="2023-11-26">
       <description>
         <p>Added</p>
