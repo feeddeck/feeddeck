@@ -79,130 +79,24 @@ required variables to the `flutter run` command:
 ./run.sh --device="chrome" --environment="local"
 ```
 
-Alternative you can also run the project from Visual Studio Code or Neovim
-with the following configuration files. Within the different configurations you
-have to provide the following arguments:
-`--dart-define SUPABASE_URL=<SUPABASE_URL>`,
-`--dart-define SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>`,
-`--dart-define SUPABASE_SITE_URL=<SUPABASE_SITE_URL>` and
-`--dart-define GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>`.
+To run the tests the following command can be used:
 
-<details>
-<summary>Visual Studio Code: `.vscode/launch.json`</summary>
-
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Local - Chrome",
-      "type": "dart",
-      "request": "launch",
-      "program": "app/lib/main.dart",
-      "args": [
-        "-d",
-        "chrome",
-        "--web-port",
-        "3000",
-        "--web-browser-flag=--disable-web-security",
-        "--dart-define",
-        "SUPABASE_URL=<SUPABASE_URL>",
-        "--dart-define",
-        "SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>",
-        "--dart-define",
-        "SUPABASE_SITE_URL=<SUPABASE_SITE_URL>",
-        "--dart-define",
-        "GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>"
-      ]
-    },
-    {
-      "name": "Local - iOS Simulator",
-      "type": "dart",
-      "request": "launch",
-      "program": "app/lib/main.dart",
-      "args": [
-        "-d",
-        "iPhone 14 Pro Max",
-        "--dart-define",
-        "SUPABASE_URL=<SUPABASE_URL>",
-        "--dart-define",
-        "SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>",
-        "--dart-define",
-        "SUPABASE_SITE_URL=<SUPABASE_SITE_URL>",
-        "--dart-define",
-        "GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>"
-      ]
-    },
-    {
-      "name": "Local - macOS",
-      "type": "dart",
-      "request": "launch",
-      "program": "app/lib/main.dart",
-      "args": [
-        "-d",
-        "macOS",
-        "--dart-define",
-        "SUPABASE_URL=<SUPABASE_URL>",
-        "--dart-define",
-        "SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>",
-        "--dart-define",
-        "SUPABASE_SITE_URL=<SUPABASE_SITE_URL>",
-        "--dart-define",
-        "GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID>"
-      ]
-    }
-  ]
-}
+```sh
+flutter test
 ```
 
-</details>
+To check the test coverage the `--coverage` flag can be added to the command and
+an HTML report can be generated:
 
-<details>
-<summary>Neovim: `.nvim.lua`</summary>
+```sh
+flutter test --coverage
 
+# To generate the HTML report lcov is required, which can be installed via Homebrew:
+brew install lcov
 
-```lua
-require('flutter-tools').setup_project({
-  {
-    name = 'Local - Chrome',
-    flavor = 'debug',
-    target = 'lib/main.dart',
-    device = 'chrome',
-    dart_define = {
-      SUPABASE_URL = 'http://localhost:54321',
-      SUPABASE_ANON_KEY = '<SUPABASE_ANON_KEY'
-      SUPABASE_SITE_URL = '<SUPABASE_SITE_URL>',
-      GOOGLE_CLIENT_ID = '<GOOGLE_CLIENT_ID',
-    },
-  },
-  {
-    name = 'Local - iOS Simulator',
-    flavor = 'debug',
-    target = 'lib/main.dart',
-    device = 'iPhone 14 Pro Max',
-    dart_define = {
-      SUPABASE_URL = 'http://localhost:54321',
-      SUPABASE_ANON_KEY = '<SUPABASE_ANON_KEY'
-      SUPABASE_SITE_URL = '<SUPABASE_SITE_URL>',
-      GOOGLE_CLIENT_ID = '<GOOGLE_CLIENT_ID',
-    },
-  },
-  {
-    name = 'Local - Chrome',
-    flavor = 'debug',
-    target = 'lib/main.dart',
-    device = 'macOS',
-    dart_define = {
-      SUPABASE_URL = 'http://localhost:54321',
-      SUPABASE_ANON_KEY = '<SUPABASE_ANON_KEY'
-      SUPABASE_SITE_URL = '<SUPABASE_SITE_URL>',
-      GOOGLE_CLIENT_ID = '<GOOGLE_CLIENT_ID',
-    },
-  },
-})
+genhtml coverage/lcov.info -o coverage/html
+open coverage/html/index.html
 ```
-
-</details>
 
 #### Sort all Imports
 
