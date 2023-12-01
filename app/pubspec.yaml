@@ -84,7 +84,7 @@ dev_dependencies:
 
   flutter_launcher_icons: ^0.13.1
   import_sorter: ^4.6.0
-  msix: ^3.16.6
+  msix: ^3.16.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
