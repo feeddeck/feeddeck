@@ -65,6 +65,12 @@ class _ItemAudioPlayerState extends State<ItemAudioPlayer> {
 
   @override
   void dispose() {
+    /// We have to dispose the [_player] when the widget is disposed, otherwise
+    /// the audio will continue to play in the background.
+    ///
+    /// On Linux and Windows the audio will continue to play even if the
+    /// [_player] is disposed, so that we also call the `pause` method of the
+    /// [_player] to stop the audio.
     _player.pause();
     _player.dispose();
     super.dispose();
