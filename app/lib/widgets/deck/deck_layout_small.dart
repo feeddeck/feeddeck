@@ -149,6 +149,7 @@ class DeckLayoutSmall extends StatelessWidget {
     AppRepository app = Provider.of<AppRepository>(context, listen: true);
 
     return DefaultTabController(
+      key: ValueKey(app.activeDeckId),
       initialIndex: _getInitialIndex(context, app.columns.length),
       length: app.columns.length,
       child: Scaffold(
