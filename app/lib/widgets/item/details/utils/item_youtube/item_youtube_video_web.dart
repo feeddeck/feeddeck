@@ -7,6 +7,33 @@ import 'package:flutter/material.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'item_youtube_video.dart';
 
+/// [_convertVideoUrl] converts the video url to a format that can be used to
+/// embed the video in an iframe.
+String _convertVideoUrl(String videoUrl) {
+  if (videoUrl.startsWith('https://youtu.be/')) {
+    return videoUrl.replaceFirst(
+      'https://youtu.be/',
+      'https://www.youtube-nocookie.com/embed/',
+    );
+  }
+
+  if (videoUrl.startsWith('https://www.youtube.com/watch?v=')) {
+    return 'https://www.youtube-nocookie.com/embed/${videoUrl.replaceFirst(
+      'https://www.youtube.com/watch?v=',
+      '',
+    )}';
+  }
+
+  if (videoUrl.startsWith('https://m.youtube.com/watch?v=')) {
+    return 'https://www.youtube-nocookie.com/embed/${videoUrl.replaceFirst(
+      'https://m.youtube.com/watch?v=',
+      '',
+    )}';
+  }
+
+  return videoUrl;
+}
+
 class ItemYoutubeVideoWeb extends StatefulWidget implements ItemYoutubeVideo {
   const ItemYoutubeVideoWeb({
     super.key,
@@ -27,11 +54,8 @@ class _ItemYoutubeVideoWebState extends State<ItemYoutubeVideoWeb> {
   @override
   void initState() {
     super.initState();
-    _iframeElement.src =
-        'https://www.youtube-nocookie.com/embed/${widget.videoUrl.replaceFirst(
-      'https://www.youtube.com/watch?v=',
-      '',
-    )}';
+
+    _iframeElement.src = _convertVideoUrl(widget.videoUrl);
     _iframeElement.style.border = 'none';
     _iframeElement.allowFullscreen = true;
 

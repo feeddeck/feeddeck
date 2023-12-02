@@ -7,6 +7,7 @@ import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/repositories/items_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/openurl.dart';
+import 'package:feeddeck/widgets/item/details/item_details_lemmy.dart';
 import 'package:feeddeck/widgets/item/details/item_details_mastodon.dart';
 import 'package:feeddeck/widgets/item/details/item_details_medium.dart';
 import 'package:feeddeck/widgets/item/details/item_details_nitter.dart';
@@ -71,6 +72,11 @@ class ItemDetails extends StatelessWidget {
       /// corresponding preview item.
       case FDSourceType.googlenews:
         return Container();
+      case FDSourceType.lemmy:
+        return ItemDetailsLemmy(
+          item: item,
+          source: source,
+        );
       case FDSourceType.mastodon:
         return ItemDetailsMastodon(
           item: item,

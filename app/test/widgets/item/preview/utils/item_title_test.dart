@@ -1,6 +1,8 @@
-import 'package:feeddeck/widgets/item/preview/utils/item_title.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:feeddeck/widgets/item/preview/utils/item_title.dart';
 
 void main() {
   testWidgets('Should render title', (tester) async {
