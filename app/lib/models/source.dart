@@ -10,6 +10,7 @@ import 'package:feeddeck/utils/fd_icons.dart';
 /// have one of the following types:
 /// - [github]
 /// - [googlenews]
+/// - [lemmy]
 /// - [mastodon]
 /// - [medium]
 /// - [nitter]
@@ -29,6 +30,7 @@ import 'package:feeddeck/utils/fd_icons.dart';
 enum FDSourceType {
   github,
   googlenews,
+  lemmy,
   mastodon,
   medium,
   nitter,
@@ -59,6 +61,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return 'GitHub';
       case FDSourceType.googlenews:
         return 'Google News';
+      case FDSourceType.lemmy:
+        return 'Lemmy';
       case FDSourceType.mastodon:
         return 'Mastodon';
       case FDSourceType.medium:
@@ -93,6 +97,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return FDIcons.github;
       case FDSourceType.googlenews:
         return FDIcons.googlenews;
+      case FDSourceType.lemmy:
+        return FDIcons.lemmy;
       case FDSourceType.mastodon:
         return FDIcons.mastodon;
       case FDSourceType.medium:
@@ -127,6 +133,8 @@ extension FDSourceTypeExtension on FDSourceType {
         return const Color(0xff000000);
       case FDSourceType.googlenews:
         return const Color(0xff4285f4);
+      case FDSourceType.lemmy:
+        return const Color(0xff00bc8c);
       case FDSourceType.mastodon:
         return const Color(0xff6364ff);
       case FDSourceType.medium:
@@ -161,6 +169,8 @@ extension FDSourceTypeExtension on FDSourceType {
       case FDSourceType.github:
         return const Color(0xffffffff);
       case FDSourceType.googlenews:
+        return const Color(0xffffffff);
+      case FDSourceType.lemmy:
         return const Color(0xffffffff);
       case FDSourceType.mastodon:
         return const Color(0xffffffff);
@@ -260,6 +270,7 @@ class FDSource {
 class FDSourceOptions {
   FDGitHubOptions? github;
   FDGoogleNewsOptions? googlenews;
+  String? lemmy;
   String? mastodon;
   String? medium;
   String? nitter;
@@ -275,6 +286,7 @@ class FDSourceOptions {
   FDSourceOptions({
     this.github,
     this.googlenews,
+    this.lemmy,
     this.mastodon,
     this.medium,
     this.nitter,
@@ -297,6 +309,9 @@ class FDSourceOptions {
       googlenews: responseData.containsKey('googlenews') &&
               responseData['googlenews'] != null
           ? FDGoogleNewsOptions.fromJson(responseData['googlenews'])
+          : null,
+      lemmy: responseData.containsKey('lemmy') && responseData['lemmy'] != null
+          ? responseData['lemmy']
           : null,
       mastodon: responseData.containsKey('mastodon') &&
               responseData['mastodon'] != null
@@ -347,6 +362,7 @@ class FDSourceOptions {
     return {
       'github': github?.toJson(),
       'googlenews': googlenews?.toJson(),
+      'lemmy': lemmy,
       'mastodon': mastodon,
       'medium': medium,
       'nitter': nitter,

@@ -5,6 +5,7 @@ import { ISourceOptionsStackOverflow } from './sources/stackoverflow.ts';
 export type TSourceType =
   | 'github'
   | 'googlenews'
+  | 'lemmy'
   | 'mastodon'
   | 'medium'
   | 'nitter'
@@ -33,6 +34,7 @@ export interface ISource {
 export interface ISourceOptions {
   github?: ISourceOptionsGithub;
   googlenews?: ISourceOptionsGoogleNews;
+  lemmy?: string;
   mastodon?: string;
   medium?: string;
   nitter?: string;

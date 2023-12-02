@@ -7,6 +7,7 @@ import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/repositories/items_repository.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_github.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_googlenews.dart';
+import 'package:feeddeck/widgets/item/preview/item_preview_lemmy.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_mastodon.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_medium.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_nitter.dart';
@@ -50,6 +51,11 @@ class ItemPreview extends StatelessWidget {
         );
       case FDSourceType.googlenews:
         return ItemPreviewGooglenews(
+          item: item,
+          source: source,
+        );
+      case FDSourceType.lemmy:
+        return ItemPreviewLemmy(
           item: item,
           source: source,
         );

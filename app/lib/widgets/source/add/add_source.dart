@@ -5,6 +5,7 @@ import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/source/add/add_source_github.dart';
 import 'package:feeddeck/widgets/source/add/add_source_googlenews.dart';
+import 'package:feeddeck/widgets/source/add/add_source_lemmy.dart';
 import 'package:feeddeck/widgets/source/add/add_source_mastodon.dart';
 import 'package:feeddeck/widgets/source/add/add_source_medium.dart';
 import 'package:feeddeck/widgets/source/add/add_source_nitter.dart';
@@ -50,6 +51,10 @@ class _AddSourceState extends State<AddSource> {
 
     if (_sourceType == FDSourceType.googlenews) {
       return AddSourceGoogleNews(column: widget.column);
+    }
+
+    if (_sourceType == FDSourceType.lemmy) {
+      return AddSourceLemmy(column: widget.column);
     }
 
     if (_sourceType == FDSourceType.mastodon) {

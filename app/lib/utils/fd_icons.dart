@@ -63,4 +63,6 @@ class FDIcons {
       IconData(0xe814, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData mastodon =
       IconData(0xe815, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lemmy =
+      IconData(0xe816, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

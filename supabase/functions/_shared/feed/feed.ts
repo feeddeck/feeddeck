@@ -3,6 +3,7 @@ import { Redis } from 'redis';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
+import { getLemmyFeed, isLemmyUrl } from './lemmy.ts';
 import { getMediumFeed, isMediumUrl } from './medium.ts';
 import { getPinterestFeed, isPinterestUrl } from './pinterest.ts';
 import { getRSSFeed } from './rss.ts';
@@ -39,6 +40,8 @@ export const getFeed = async (
         profile,
         source,
       );
+    case 'lemmy':
+      return await getLemmyFeed(supabaseClient, redisClient, profile, source);
     case 'mastodon':
       return await getMastodonFeed(
         supabaseClient,
@@ -63,6 +66,13 @@ export const getFeed = async (
       return await getRedditFeed(supabaseClient, redisClient, profile, source);
     case 'rss':
       try {
+        if (source.options?.rss && isLemmyUrl(source.options.rss)) {
+          return await getLemmyFeed(supabaseClient, redisClient, profile, {
+            ...source,
+            options: { lemmy: source.options.rss },
+          });
+        }
+
         if (source.options?.rss && isMediumUrl(source.options.rss)) {
           return await getMediumFeed(supabaseClient, redisClient, profile, {
             ...source,
