@@ -158,7 +158,9 @@ class ItemDescription extends StatelessWidget {
     if (sourceFormat == DescriptionFormat.html &&
         tagetFormat == DescriptionFormat.plain) {
       return _buildPlain(
-        itemDescription!.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ''),
+        itemDescription!
+            .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ')
+            .replaceAll(RegExp('\\s+'), ' '),
       );
     }
 
