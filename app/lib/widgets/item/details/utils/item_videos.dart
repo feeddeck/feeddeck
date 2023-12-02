@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -25,22 +26,12 @@ class ItemVideos extends StatelessWidget {
       return Container();
     }
 
-    return Container(
-      padding: const EdgeInsets.only(
-        bottom: Constants.spacingMiddle,
-      ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        separatorBuilder: (context, index) {
-          return const SizedBox(
-            height: Constants.spacingMiddle,
-          );
-        },
-        itemCount: videos!.length,
-        itemBuilder: (context, index) {
-          return ItemVideoPlayer(video: videos![index]);
-        },
-      ),
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: videos!.length,
+      itemBuilder: (context, index) {
+        return ItemVideoPlayer(video: videos![index]);
+      },
     );
   }
 }
@@ -113,29 +104,50 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                   Radius.circular(Constants.spacingMiddle),
                 ),
               ),
-              child: ListView.separated(
-                shrinkWrap: true,
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    color: Constants.dividerColor,
-                    height: 1,
-                    thickness: 1,
-                  );
-                },
-                itemCount: widget.qualities!.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    mouseCursor: SystemMouseCursors.click,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      player.open(
-                        Media(widget.qualities![index].video),
-                        play: true,
-                      );
-                    },
-                    title: Text(widget.qualities![index].quality),
-                  );
-                },
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: widget.qualities!
+                    .asMap()
+                    .entries
+                    .map((quality) {
+                      if (quality.key == widget.qualities!.length - 1) {
+                        return [
+                          ListTile(
+                            mouseCursor: SystemMouseCursors.click,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              player.open(
+                                Media(quality.value.video),
+                                play: true,
+                              );
+                            },
+                            title: Text(quality.value.quality),
+                          ),
+                        ];
+                      }
+
+                      return [
+                        ListTile(
+                          mouseCursor: SystemMouseCursors.click,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            player.open(
+                              Media(quality.value.video),
+                              play: true,
+                            );
+                          },
+                          title: Text(quality.value.quality),
+                        ),
+                        const Divider(
+                          color: Constants.dividerColor,
+                          height: 1,
+                          thickness: 1,
+                        ),
+                      ];
+                    })
+                    .expand((e) => e)
+                    .toList(),
               ),
             );
           },
@@ -211,46 +223,51 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Center(
-          child: SizedBox(
-            width: constraints.maxWidth,
-            height: constraints.maxWidth * 9.0 / 16.0,
-            child: MaterialDesktopVideoControlsTheme(
-              normal: MaterialDesktopVideoControlsThemeData(
-                bottomButtonBar: _buildBottomButtonBar(false),
-                seekBarPositionColor: Constants.primary,
-                seekBarThumbColor: Constants.primary,
-              ),
-              fullscreen: const MaterialDesktopVideoControlsThemeData(
-                seekBarPositionColor: Constants.primary,
-                seekBarThumbColor: Constants.primary,
-              ),
-              child: MaterialVideoControlsTheme(
-                normal: MaterialVideoControlsThemeData(
-                  bottomButtonBar: _buildBottomButtonBar(true),
+    return Container(
+      padding: const EdgeInsets.only(
+        bottom: Constants.spacingMiddle,
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Center(
+            child: SizedBox(
+              width: constraints.maxWidth,
+              height: constraints.maxWidth * 9.0 / 16.0,
+              child: MaterialDesktopVideoControlsTheme(
+                normal: MaterialDesktopVideoControlsThemeData(
+                  bottomButtonBar: _buildBottomButtonBar(false),
                   seekBarPositionColor: Constants.primary,
                   seekBarThumbColor: Constants.primary,
                 ),
-                fullscreen: const MaterialVideoControlsThemeData(
+                fullscreen: const MaterialDesktopVideoControlsThemeData(
                   seekBarPositionColor: Constants.primary,
                   seekBarThumbColor: Constants.primary,
                 ),
-                child: Video(
-                  controller: controller,
-                  controls: kIsWeb ||
-                          Platform.isLinux ||
-                          Platform.isMacOS ||
-                          Platform.isWindows
-                      ? MaterialDesktopVideoControls
-                      : MaterialVideoControls,
+                child: MaterialVideoControlsTheme(
+                  normal: MaterialVideoControlsThemeData(
+                    bottomButtonBar: _buildBottomButtonBar(true),
+                    seekBarPositionColor: Constants.primary,
+                    seekBarThumbColor: Constants.primary,
+                  ),
+                  fullscreen: const MaterialVideoControlsThemeData(
+                    seekBarPositionColor: Constants.primary,
+                    seekBarThumbColor: Constants.primary,
+                  ),
+                  child: Video(
+                    controller: controller,
+                    controls: kIsWeb ||
+                            Platform.isLinux ||
+                            Platform.isMacOS ||
+                            Platform.isWindows
+                        ? MaterialDesktopVideoControls
+                        : MaterialVideoControls,
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

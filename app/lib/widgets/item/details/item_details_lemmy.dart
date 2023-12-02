@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:feeddeck/models/item.dart';
 import 'package:feeddeck/models/source.dart';
-import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_description.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_media.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_subtitle.dart';
@@ -39,13 +38,8 @@ class ItemDetailsLemmy extends StatelessWidget {
       }
 
       if (mediaUrl.path.endsWith('.mp4')) {
-        return Container(
-          padding: const EdgeInsets.only(
-            bottom: Constants.spacingMiddle,
-          ),
-          child: ItemVideoPlayer(
-            video: item.media!,
-          ),
+        return ItemVideoPlayer(
+          video: item.media!,
         );
       }
 

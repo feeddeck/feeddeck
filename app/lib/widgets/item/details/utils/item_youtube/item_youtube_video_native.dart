@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_media.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_videos.dart';
 import 'item_youtube_video.dart';
@@ -70,14 +69,9 @@ class _ItemYoutubeVideoNativeState extends State<ItemYoutubeVideoNative> {
           return ItemMedia(itemMedia: widget.imageUrl);
         }
 
-        return Container(
-          padding: const EdgeInsets.only(
-            bottom: Constants.spacingMiddle,
-          ),
-          child: ItemVideoPlayer(
-            video: snapshot.data!.first.video,
-            qualities: snapshot.data,
-          ),
+        return ItemVideoPlayer(
+          video: snapshot.data!.first.video,
+          qualities: snapshot.data,
         );
       },
     );
