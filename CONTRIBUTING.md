@@ -230,6 +230,26 @@ cd supabase/functions/_cmd
 docker-compose up --build
 ```
 
+To run the tests for our code, the following command can be used:
+
+```sh
+deno test --import-map=supabase/functions/import_map.json supabase/functions
+```
+
+To check the test coverage the `--coverage` flag can be added to the command and
+an HTML report can be generated:
+
+```sh
+deno test --import-map=supabase/functions/import_map.json supabase/functions --coverage=coverage_deno
+
+# To generate the HTML report lcov is required, which can be installed via Homebrew:
+brew install lcov
+
+deno coverage coverage_deno --lcov --output=coverage_deno/coverage_deno.lcov
+genhtml -o coverage_deno/html coverage_deno/coverage_deno.lcov
+open coverage_deno/html/index.html
+```
+
 ## Hosting
 
 FeedDeck uses Supabase as backend. For Supabase we can use

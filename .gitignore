@@ -6,3 +6,6 @@
 /supabase/.env.dev
 /supabase/.env.stage
 /supabase/.env.prod
+
+# Deno
+/coverage_deno
