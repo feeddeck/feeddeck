@@ -8,8 +8,7 @@ import { unescape } from 'lodash';
 import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 export const getStackoverflowFeed = async (
   _supabaseClient: SupabaseClient,
@@ -34,11 +33,15 @@ export const getStackoverflowFeed = async (
    * Get the RSS for the provided `stackoverflow` url and parse it. If a feed
    * doesn't contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.stackoverflow.url, {
-    method: 'get',
-  }, 5000);
+  const response = await utils.fetchWithTimeout(
+    source.options.stackoverflow.url,
+    {
+      method: 'get',
+    },
+    5000,
+  );
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'stackoverflow',
     requestUrl: source.options.stackoverflow.url,
     responseStatus: response.status,

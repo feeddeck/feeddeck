@@ -1,6 +1,7 @@
 {
   "imports": {
     "std/assert": "https://deno.land/std@0.208.0/assert/mod.ts",
+    "std/testing/mock": "https://deno.land/std@0.208.0/testing/mock.ts",
     "std/server": "https://deno.land/std@0.177.0/http/server.ts",
     "std/md5": "https://deno.land/std@0.119.0/hash/md5.ts",
     "std/hex": "https://deno.land/std@0.177.0/encoding/hex.ts",

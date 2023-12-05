@@ -50,4 +50,4 @@ jobs:
 
       - name: Test
         run: |
-          deno test --import-map=supabase/functions/import_map.json supabase/functions
+          deno test --allow-env --import-map=supabase/functions/import_map.json supabase/functions

@@ -7,14 +7,13 @@ import { unescape } from 'lodash';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
 import {
   FEEDDECK_SOURCE_NITTER_BASIC_AUTH,
   FEEDDECK_SOURCE_NITTER_INSTANCE,
 } from '../utils/constants.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 export const getNitterFeed = async (
   supabaseClient: SupabaseClient,
@@ -32,7 +31,7 @@ export const getNitterFeed = async (
    * Get the RSS for the provided `nitter` username or search term. If a feed
    * doesn't contains an item we return an error.
    */
-  const response = await fetchWithTimeout(
+  const response = await utils.fetchWithTimeout(
     nitterOptions.feedUrl,
     {
       headers: nitterOptions.isCustomInstance ? undefined : {
@@ -43,7 +42,7 @@ export const getNitterFeed = async (
     5000,
   );
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'nitter',
     requestUrl: nitterOptions.feedUrl,
     responseStatus: response.status,
@@ -80,7 +79,7 @@ export const getNitterFeed = async (
    */
   if (!source.icon && nitterOptions.isUsername && feed.image?.url) {
     source.icon = feed.image.url;
-    source.icon = await uploadSourceIcon(supabaseClient, source);
+    source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -178,7 +177,7 @@ const skipEntry = (
  * instance or a username or search term, where we have to use our own Nitter
  * instance.
  */
-const parseNitterOptions = (
+export const parseNitterOptions = (
   options: string,
 ): {
   feedUrl: string;

@@ -7,10 +7,9 @@ import { unescape } from 'lodash';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 export const getMastodonFeed = async (
   supabaseClient: SupabaseClient,
@@ -43,13 +42,13 @@ export const getMastodonFeed = async (
   /**
    * Get the RSS for the provided Mastodon username, hashtag or url.
    */
-  const response = await fetchWithTimeout(
+  const response = await utils.fetchWithTimeout(
     source.options.mastodon,
     { method: 'get' },
     5000,
   );
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'mastodon',
     requestUrl: source.options.mastodon,
     responseStatus: response.status,
@@ -88,7 +87,7 @@ export const getMastodonFeed = async (
    */
   if (!source.icon && feed.image?.url) {
     source.icon = feed.image.url;
-    source.icon = await uploadSourceIcon(supabaseClient, source);
+    source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
   }
 
   /**
