@@ -1428,7 +1428,7 @@ const responseHV = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getRSSFeed - FP', async () => {
+Deno.test('getRSSFeed - HV', async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
     'fetchWithTimeout',
