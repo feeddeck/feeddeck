@@ -339,8 +339,9 @@ class _ItemActionsState extends State<ItemActions> {
         onTap: widget.onTap,
         onTapDown: (details) => _getTapPositionLarge(details),
         onLongPress: () => _showActionsMenuLarge(context),
-        onSecondaryTapDown: (details) => _getTapPositionLarge(details),
-        onSecondaryTap: () => _showActionsMenuLarge(context),
+        onSecondaryTapDown:
+            kIsWeb ? null : (details) => _getTapPositionLarge(details),
+        onSecondaryTap: kIsWeb ? null : () => _showActionsMenuLarge(context),
         child: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
