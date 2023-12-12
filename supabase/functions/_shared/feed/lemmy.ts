@@ -1,6 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { parseFeed } from 'rss';
-import { Md5 } from 'std/md5';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -169,7 +168,7 @@ export const getLemmyFeed = async (
    * set the title and link for the source.
    */
   if (source.id === '') {
-    source.id = generateSourceId(
+    source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.lemmy,
@@ -197,7 +196,7 @@ export const getLemmyFeed = async (
      * function. The id is a combination of the source id and the id of the
      * entry.
      */
-    const itemId = generateItemId(source.id, entry.id);
+    const itemId = await generateItemId(source.id, entry.id);
 
     /**
      * Create the item object and add it to the `items` array.
@@ -257,12 +256,12 @@ const skipEntry = (
  * id and the link of the RSS feed. We use the MD5 algorithm for the link to
  * generate the id.
  */
-const generateSourceId = (
+const generateSourceId = async (
   userId: string,
   columnId: string,
   link: string,
-): string => {
-  return `lemmy-${userId}-${columnId}-${new Md5().update(link).toString()}`;
+): Promise<string> => {
+  return `lemmy-${userId}-${columnId}-${await utils.md5(link)}`;
 };
 
 /**
@@ -270,8 +269,11 @@ const generateSourceId = (
  * identifier of the item. We use the MD5 algorithm for the identifier, which
  * can be the link of the item or the id of the item.
  */
-const generateItemId = (sourceId: string, identifier: string): string => {
-  return `${sourceId}-${new Md5().update(identifier).toString()}`;
+const generateItemId = async (
+  sourceId: string,
+  identifier: string,
+): Promise<string> => {
+  return `${sourceId}-${await utils.md5(identifier)}`;
 };
 
 /**

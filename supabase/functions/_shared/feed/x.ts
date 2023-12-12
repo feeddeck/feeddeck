@@ -1,13 +1,12 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Md5 } from 'std/md5';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
+import { utils } from '../utils/index.ts';
 
 export const getXFeed = async (
   supabaseClient: SupabaseClient,
@@ -27,7 +26,7 @@ export const getXFeed = async (
    * Get the feed for the provided X username, based on the content of the HTML
    * returned for the syndication.twitter.com url.
    */
-  const response = await fetchWithTimeout(
+  const response = await utils.fetchWithTimeout(
     generateFeedUrl(source.options.x),
     { method: 'get' },
     5000,
@@ -50,7 +49,7 @@ export const getXFeed = async (
    * user input as title.
    */
   if (source.id === '') {
-    source.id = generateSourceId(
+    source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.x,
@@ -73,7 +72,7 @@ export const getXFeed = async (
   ) {
     source.icon = feed.props.pageProps.timeline.entries[0].content.tweet.user
       .profile_image_url_https;
-    source.icon = await uploadSourceIcon(supabaseClient, source);
+    source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -94,7 +93,7 @@ export const getXFeed = async (
     const media = getMedia(entry);
 
     items.push({
-      id: generateItemId(source.id, entry.content.tweet.id_str),
+      id: await generateItemId(source.id, entry.content.tweet.id_str),
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
@@ -128,12 +127,12 @@ const generateFeedUrl = (input: string): string => {
  * id and the link of the RSS feed. We use the MD5 algorithm for the link to
  * generate the id.
  */
-const generateSourceId = (
+const generateSourceId = async (
   userId: string,
   columnId: string,
   link: string,
-): string => {
-  return `x-${userId}-${columnId}-${new Md5().update(link).toString()}`;
+): Promise<string> => {
+  return `x-${userId}-${columnId}-${await utils.md5(link)}`;
 };
 
 /**
@@ -141,8 +140,11 @@ const generateSourceId = (
  * identifier of the item. We use the MD5 algorithm for the identifier, which
  * can be the link of the item or the id of the item.
  */
-const generateItemId = (sourceId: string, identifier: string): string => {
-  return `${sourceId}-${new Md5().update(identifier).toString()}`;
+const generateItemId = async (
+  sourceId: string,
+  identifier: string,
+): Promise<string> => {
+  return `${sourceId}-${await utils.md5(identifier)}`;
 };
 
 /**
