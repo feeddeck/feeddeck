@@ -1368,3 +1368,178 @@ Deno.test('getRSSFeed - FP', async () => {
   assertSpyCalls(getFaviconSpy, 1);
   assertSpyCalls(uploadSourceIconSpy, 1);
 });
+
+const responseHV = `<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" version="2.0">
+   <channel>
+      <title>Hippovideo.io</title>
+      <atom:link href="https://www.hippovideo.io/blog/feed/" rel="self" type="application/rss+xml" />
+      <link>https://www.hippovideo.io/blog</link>
+      <description>Video Personalization &amp; Distribution Platform</description>
+      <lastBuildDate>Thu, 26 Oct 2023 09:14:30 +0000</lastBuildDate>
+      <language>en-US</language>
+      <sy:updatePeriod>hourly</sy:updatePeriod>
+      <sy:updateFrequency>1</sy:updateFrequency>
+      <generator>https://wordpress.org/?v=6.1.4</generator>
+      <item>
+         <title>Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</title>
+         <link>https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=looms-acquisition-what-lies-ahead-for-customer-facing-functions</link>
+         <comments>https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/#respond</comments>
+         <dc:creator><![CDATA[Nayana]]></dc:creator>
+         <pubDate>Fri, 20 Oct 2023 14:14:08 +0000</pubDate>
+         <category><![CDATA[Featured]]></category>
+         <category><![CDATA[Hippo Video]]></category>
+         <category><![CDATA[Video]]></category>
+         <guid isPermaLink="false">https://www.hippovideo.io/blog/?p=49277</guid>
+         <description><![CDATA[<p>Growth of SaaS The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups [&#8230;]</p>
+<p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>]]></description>
+         <content:encoded><![CDATA[<h2>Growth of SaaS</h2>
+<p>The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups and established players alike releasing a plethora of products to address a myriad of challenges faced by their customers.<br><br>Central to this evolution is the project management category. Amidst the clutter of tools and platforms, Atlassian has distinguished itself as a luminary, having carved out a niche with its powerful suite of tools like Jira, Confluence, and Bitbucket. Over the years, Atlassian&#8217;s commitment to facilitating seamless collaboration and streamlining workflows has enabled it to gain a sizable market share and an enviable reputation.</p>
+<p>Parallelly, in the realm of communication tools, Loom emerged in 2015 with a promise to redefine how professionals connect. Offering a novel approach to communication, Loom combined the immediacy of video messaging with the convenience of asynchronous communication, making interactions more personal and efficient. The platform&#8217;s unique value proposition quickly garnered attention, allowing Loom to amass a dedicated user base and establish itself as a formidable player in the SaaS space.</p>
+<h2>Atlassian + Loom</h2>
+<p>The convergence of these two giants&#8217; paths, as evidenced by Atlassian&#8217;s recent acquisition of Loom, brings forth a fascinating chapter in the SaaS narrative, one that underscores the sector&#8217;s dynamic nature and the relentless pursuit of innovation.</p>
+<p>Loom, with its focus on enhancing communication for internal teams via video messaging, has undoubtedly found a fitting home within Atlassian&#8217;s suite. Especially for software developers using Jira, the integration of Loom&#8217;s video tools offers a more interactive way to communicate about bugs, code feedback, and other software development concerns.</p>
+<h2>Hippo Video: Where Video Communication Scales Seamlessly</h2>
+<p>While Loom is a powerhouse for internal communications, <a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&amp;utm_medium=CTA&amp;utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Hippo Video&#8217;s capabilities</a> stretch even further, serving both internal teams and those interacting directly with customers. Hippo Video presents itself as a unique offering in the video market with its AI-powered capabilities and diverse use cases for customer-facing teams of all sizes. For those who have been using Loom, or even those considering Loom specifically for external communications, here&#8217;s a deeper dive into why Hippo Video might be worth your attention.</p>
+<h2>Leading the way with category-first features</h2>
+<p><strong>Ready-to-Use Templates:</strong> Time is of the essence in today&#8217;s fast-paced world. With a library of pre-built templates tailored for diverse scenarios, Hippo Video ensures you&#8217;re never starting from scratch. This accelerates video creation, ensuring you can communicate effectively without unique delay.<br><br><strong>AI-Powered Personalization:</strong> At its core, Hippo Video uses AI to help businesses connect more intimately with their audience. Personalized videos can lead to deeper engagement, ensuring that your message resonates with each individual viewer.</p>
+<figure class="wp-block-video"><video autoplay controls muted preload="auto" src="https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4"></video></figure>
+<p class="has-text-align-center">AI Avatar by Hippo Video</p>
+<p><strong>Pioneering Generative AI Technology:</strong> As one of the early adopters of Generative AI technology in the video tool segment, Hippo Video offers groundbreaking features like the AI Script Generator, AI Editor, and AI Avatars.</p>
+<p><strong><a href="https://www.hippovideo.io/features/ai-video-script-generator.html" target="_blank" rel="noreferrer noopener">AI Script Generator</a>:</strong> Unsure about scripting your video or trying to figure out how to respond to an irate customer? Simply provide some basic prompts, and Hippo Video will generate a script for you. This not only makes video creation simpler but also ensures the content remains engaging.</p>
+<p><strong><a href="https://www.hippovideo.io/features/ai-editor.html" target="_blank" rel="noreferrer noopener">AI Editor</a>:</strong> Video editing can often be a cumbersome process, but with Hippo Video&#8217;s AI Editor, it&#8217;s as simple as editing a document. The tool transcribes your video into text, allowing you to edit it seamlessly. Want to remove those unnecessary &#8220;ums&#8221; and &#8220;ahs&#8221;? Just a click, and they&#8217;re gone!</p>
+<p><strong><a href="https://www.hippovideo.io/features/ai-avatar-video-generator.html" target="_blank" rel="noreferrer noopener">AI Avatar</a>:</strong> For times when an instant video is needed, but you&#8217;re not camera-ready, Hippo Video&#8217;s AI Avatar comes to the rescue. Choose from a range of digital presenters, input your script, pick a voice, and have a polished video ready in mere minutes. </p>
+<h2>Empowering all customer-facing teams with video</h2>
+<p>Hippo Video&#8217;s wide array of features and AI tools make it an invaluable asset for businesses, seamlessly catering to diverse teams and their specific needs.</p>
+<p><strong>Sales:</strong> Hippo Video&#8217;s personalized videos boost prospecting and lead nurturing, making the outreach more memorable and engaging.</p>
+<p><strong>Customer Support: </strong>With Hippo Video, the team can easily create knowledge base videos and product tutorials, simplifying complex topics and improving customer understanding.</p>
+<p><strong>Customer Success:</strong> From onboarding new clients to sharing product updates or quarterly reviews, Hippo Video ensures that the Success Team communicates effectively, enhancing client relations.</p>
+<p><strong>L&amp;D: </strong>&nbsp;Training becomes more dynamic and digestible with Hippo Video, allowing the Learning and Development Team to produce content that resonates with its audience.</p>
+<p><strong>Product Marketing: </strong>The platform empowers the marketing team to create clear and compelling explainer videos, ensuring products are presented in the best light.</p>
+<p><strong>Sales Enablement:</strong> With Hippo Video, sales training becomes more interactive and valuable, enabling teams to grasp concepts faster and apply them in real-world scenarios.</p>
+<p><a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&amp;utm_medium=CTA&amp;utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Try Hippo Video for Free</a></p>
+<h2>Conclusion</h2>
+<p>In summation, while Loom offers robust solutions for internal team communications for those looking to expand their video capabilities externally, Hippo Video brings an array of innovative tools to the table. Its AI-driven features, coupled with ease of use, make it a compelling choice for businesses aiming to elevate their video communication strategy.</p>
+<p><a class="a2a_button_facebook" href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Facebook" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_twitter" href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Twitter" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_linkedin" href="https://www.addtoany.com/add_to/linkedin?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="LinkedIn" rel="nofollow noopener" target="_blank"></a><a class="a2a_dd addtoany_share_save addtoany_share" href="https://www.addtoany.com/share#url=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&#038;title=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" data-a2a-url="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/" data-a2a-title="Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?"></a></p><p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>]]></content:encoded>
+         <wfw:commentRss>https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/feed/</wfw:commentRss>
+         <slash:comments>0</slash:comments>
+         <enclosure url="https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4" length="16292637" type="video/mp4" />
+      </item>
+   </channel>
+</rss>`;
+
+Deno.test('getRSSFeed - FP', async () => {
+  const fetchWithTimeoutSpy = stub(
+    utils,
+    'fetchWithTimeout',
+    returnsNext([
+      new Promise((resolve) => {
+        resolve(new Response(responseHV, { status: 200 }));
+      }),
+    ]),
+  );
+
+  const getFaviconSpy = stub(
+    feedutils,
+    'getFavicon',
+    returnsNext([
+      new Promise((resolve) => {
+        resolve(undefined);
+      }),
+    ]),
+  );
+
+  const uploadSourceIconSpy = stub(
+    feedutils,
+    'uploadSourceIcon',
+    returnsNext([
+      new Promise((resolve) => {
+        resolve(undefined);
+      }),
+    ]),
+  );
+
+  try {
+    const { source, items } = await getRSSFeed(
+      supabaseClient,
+      undefined,
+      mockProfile,
+      {
+        ...mockSource,
+        options: {
+          rss: 'https://www.hippovideo.io/blog/feed/',
+        },
+      },
+    );
+    assertEqualsSource(source, {
+      'id': 'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4',
+      'columnId': 'mycolumn',
+      'userId': 'myuser',
+      'type': 'rss',
+      'title': 'Hippovideo.io',
+      'options': { 'rss': 'https://www.hippovideo.io/blog/feed/' },
+      'link': 'https://www.hippovideo.io/blog',
+    });
+    assertEqualsItems(items, [{
+      'id':
+        'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4-840819f0740d37f9c7a615f26ffcfa5f',
+      'userId': 'myuser',
+      'columnId': 'mycolumn',
+      'sourceId': 'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4',
+      'title':
+        'Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?',
+      'link':
+        'https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=rss&utm_medium=rss&utm_campaign=looms-acquisition-what-lies-ahead-for-customer-facing-functions',
+      'options': {
+        'video':
+          'https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4',
+      },
+      'description':
+        'Growth of SaaS The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups [&#8230;]\nThe post Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions? appeared first on Hippovideo.io.',
+      'author': 'Nayana',
+      'publishedAt': 1697811248,
+    }]);
+  } finally {
+    fetchWithTimeoutSpy.restore();
+    getFaviconSpy.restore();
+    uploadSourceIconSpy.restore();
+  }
+
+  assertSpyCall(fetchWithTimeoutSpy, 0, {
+    args: [
+      'https://www.hippovideo.io/blog/feed/',
+      { method: 'get' },
+      5000,
+    ],
+    returned: new Promise((resolve) => {
+      resolve(new Response(responseHV, { status: 200 }));
+    }),
+  });
+  assertSpyCall(getFaviconSpy, 0, {
+    args: ['https://www.hippovideo.io/blog'],
+    returned: new Promise((resolve) => {
+      resolve(undefined);
+    }),
+  });
+  assertSpyCall(uploadSourceIconSpy, 0, {
+    args: [
+      supabaseClient,
+      {
+        'id': 'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4',
+        'columnId': 'mycolumn',
+        'userId': 'myuser',
+        'type': 'rss',
+        'title': 'Hippovideo.io',
+        'options': { 'rss': 'https://www.hippovideo.io/blog/feed/' },
+        'link': 'https://www.hippovideo.io/blog',
+        icon: undefined,
+      },
+    ],
+    returned: new Promise((resolve) => {
+      resolve(undefined);
+    }),
+  });
+  assertSpyCalls(fetchWithTimeoutSpy, 1);
+  assertSpyCalls(getFaviconSpy, 1);
+  assertSpyCalls(uploadSourceIconSpy, 1);
+});
