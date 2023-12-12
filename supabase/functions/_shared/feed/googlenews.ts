@@ -7,10 +7,9 @@ import { Redis } from 'redis';
 
 import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
-import { getFavicon } from './utils/getFavicon.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 export const getGooglenewsFeed = async (
   _supabaseClient: SupabaseClient,
@@ -63,11 +62,11 @@ export const getGooglenewsFeed = async (
    * Get the RSS for the provided `googlenews` url and parse it. If a feed
    * doesn't contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.googlenews.url, {
+  const response = await utils.fetchWithTimeout(source.options.googlenews.url, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'googlenews',
     requestUrl: source.options.googlenews.url,
     responseStatus: response.status,
@@ -222,7 +221,7 @@ const getMedia = async (
         return cachedMediaURL;
       }
 
-      const favicon = await getFavicon(entry.source?.url);
+      const favicon = await feedutils.getFavicon(entry.source?.url);
       if (favicon && favicon.url.startsWith('https://')) {
         await redisClient.set(cacheKey, favicon.url);
         return favicon.url;

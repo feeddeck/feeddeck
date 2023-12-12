@@ -8,8 +8,7 @@ import { unescape } from 'lodash';
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 const pinterestUrls = [
   'pinterest.at',
@@ -55,19 +54,12 @@ export const isPinterestUrl = (url: string): boolean => {
   return false;
 };
 
-export const getPinterestFeed = async (
-  _supabaseClient: SupabaseClient,
-  _redisClient: Redis | undefined,
-  _profile: IProfile,
-  source: ISource,
-): Promise<{ source: ISource; items: IItem[] }> => {
-  /**
-   * Since the `pinterest` option supports multiple input format we need to
-   * normalize it to a valid Pinterest feed url. If this is not possible we
-   * consider the provided option as invalid.
-   */
-  if (source.options?.pinterest) {
-    const input = source.options.pinterest;
+/**
+ * `parsePinterestOption` parses the provided `input` and returns a valid
+ * Pinterest RSS feed url.
+ */
+export const parsePinterestOption = (input?: string): string => {
+  if (input) {
     /**
      * If the input starts with `@` we assume that a username or board was
      * provided in the form of `@username` or `@username/board`. We then use
@@ -75,13 +67,9 @@ export const getPinterestFeed = async (
      */
     if (input.length > 1 && input[0] === '@') {
       if (input.includes('/')) {
-        source.options.pinterest = `https://www.pinterest.com/${
-          input.substring(1)
-        }.rss`;
+        return `https://www.pinterest.com/${input.substring(1)}.rss`;
       } else {
-        source.options.pinterest = `https://www.pinterest.com/${
-          input.substring(1)
-        }/feed.rss`;
+        return `https://www.pinterest.com/${input.substring(1)}/feed.rss`;
       }
     } else {
       /**
@@ -101,18 +89,16 @@ export const getPinterestFeed = async (
           pinterestDotComUrl.endsWith('.rss') ||
           pinterestDotComUrl.endsWith('/feed.rss')
         ) {
-          source.options.pinterest = pinterestDotComUrl;
+          return pinterestDotComUrl;
         } else {
           const urlParameters = pinterestDotComUrl.replace(
             'https://www.pinterest.com/',
             '',
           ).replace(/\/$/, '');
           if (urlParameters.includes('/')) {
-            source.options.pinterest =
-              `https://www.pinterest.com/${urlParameters}.rss`;
+            return `https://www.pinterest.com/${urlParameters}.rss`;
           } else {
-            source.options.pinterest =
-              `https://www.pinterest.com/${urlParameters}/feed.rss`;
+            return `https://www.pinterest.com/${urlParameters}/feed.rss`;
           }
         }
       } else {
@@ -122,18 +108,27 @@ export const getPinterestFeed = async (
   } else {
     throw new Error('Invalid source options');
   }
+};
+
+export const getPinterestFeed = async (
+  _supabaseClient: SupabaseClient,
+  _redisClient: Redis | undefined,
+  _profile: IProfile,
+  source: ISource,
+): Promise<{ source: ISource; items: IItem[] }> => {
+  const parsedPinterestOption = parsePinterestOption(source.options?.pinterest);
 
   /**
    * Get the RSS for the provided `pinterest` url and parse it. If a feed
    * doesn't contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.pinterest, {
+  const response = await utils.fetchWithTimeout(parsedPinterestOption, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'pinterest',
-    requestUrl: source.options.pinterest,
+    requestUrl: parsedPinterestOption,
     responseStatus: response.status,
   });
   const feed = await parseFeed(xml);
@@ -151,11 +146,12 @@ export const getPinterestFeed = async (
     source.id = generateSourceId(
       source.userId,
       source.columnId,
-      source.options.pinterest,
+      parsedPinterestOption,
     );
   }
   source.type = 'pinterest';
   source.title = feed.title.value;
+  source.options = { pinterest: parsedPinterestOption };
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }
@@ -199,7 +195,7 @@ export const getPinterestFeed = async (
       media: getMedia(entry),
       description: getItemDescription(entry),
       author: `@${
-        source.options.pinterest.replace('https://www.pinterest.com/', '')
+        parsedPinterestOption.replace('https://www.pinterest.com/', '')
           .replace('.rss', '').replace('/feed.rss', '').split('/')[0]
       }`,
       publishedAt: Math.floor(entry.published!.getTime() / 1000),

@@ -7,11 +7,54 @@ import { unescape } from 'lodash';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { Favicon, getFavicon } from './utils/getFavicon.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { Favicon, feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
+
+/**
+ * `faviconFilter` is a filter function for the favicons. It filters out all the
+ * favicons which are not hosted on the Medium CDN.
+ */
+export const faviconFilter = (favicons: Favicon[]): Favicon[] => {
+  return favicons.filter((favicon) => {
+    return favicon.url.startsWith('https://cdn-images');
+  });
+};
+
+/**
+ * `parseMediumOption` parses the provided `medium` option and returns a valid
+ * Medium feed url. The `medium` option can be a Medium url, a Medium tag or a
+ * Medium username. If the provided option is not valid we throw an error.
+ */
+export const parseMediumOption = (input?: string): string => {
+  if (input) {
+    if (input.length > 1 && input[0] === '#') {
+      return `https://medium.com/feed/tag/${input.slice(1)}`;
+    } else if (input.length > 1 && input[0] === '@') {
+      return `https://medium.com/feed/${input}`;
+    } else {
+      const parsedUrl = new URL(input);
+      const parsedHostname = parsedUrl.hostname.split('.');
+      if (
+        parsedHostname.length === 2 && parsedHostname[0] === 'medium' &&
+        parsedHostname[1] === 'com'
+      ) {
+        return `https://medium.com/feed/${
+          input.replace('https://medium.com/', '').replace('feed/', '')
+        }`;
+      } else if (
+        parsedHostname.length === 3 && parsedHostname[1] === 'medium' &&
+        parsedHostname[2] === 'com'
+      ) {
+        return `https://${parsedHostname[0]}.medium.com/feed`;
+      } else {
+        throw new Error('Invalid source options');
+      }
+    }
+  } else {
+    throw new Error('Invalid source options');
+  }
+};
 
 /**
  * `isMediumUrl` checks if the provided `url` is a valid Medium url. A url is
@@ -28,51 +71,19 @@ export const getMediumFeed = async (
   _profile: IProfile,
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
-  /**
-   * Since the `medium` option supports multiple input format we need to
-   * normalize it to a valid Medium feed url. If this is not possible we
-   * consider the provided option as invalid.
-   */
-  if (source.options?.medium) {
-    const input = source.options.medium;
-    if (input.length > 1 && input[0] === '#') {
-      source.options.medium = `https://medium.com/feed/tag/${input.slice(1)}`;
-    } else if (input.length > 1 && input[0] === '@') {
-      source.options.medium = `https://medium.com/feed/${input}`;
-    } else {
-      const parsedUrl = new URL(input);
-      const parsedHostname = parsedUrl.hostname.split('.');
-      if (
-        parsedHostname.length === 2 && parsedHostname[0] === 'medium' &&
-        parsedHostname[1] === 'com'
-      ) {
-        source.options.medium = `https://medium.com/feed/${
-          input.replace('https://medium.com/', '').replace('feed/', '')
-        }`;
-      } else if (
-        parsedHostname.length === 3 && parsedHostname[1] === 'medium' &&
-        parsedHostname[2] === 'com'
-      ) {
-        source.options.medium = `https://${parsedHostname[0]}.medium.com/feed`;
-      } else {
-        throw new Error('Invalid source options');
-      }
-    }
-  } else {
-    throw new Error('Invalid source options');
-  }
+  const parsedMediumOption = parseMediumOption(source.options?.medium);
 
   /**
    * Get the RSS for the provided `medium` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.medium, {
+  const response = await utils.fetchWithTimeout(parsedMediumOption, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'medium',
-    requestUrl: source.options.medium,
+    requestUrl: parsedMediumOption,
     responseStatus: response.status,
   });
   const feed = await parseFeed(xml);
@@ -87,18 +98,11 @@ export const getMediumFeed = async (
    * to try to get the favicon when the source is created the first time.
    */
   if (source.id === '' && feed.links.length > 0) {
-    const favicon = await getFavicon(
-      feed.links[0],
-      (favicons: Favicon[]): Favicon[] => {
-        return favicons.filter((favicon) => {
-          return favicon.url.startsWith('https://cdn-images');
-        });
-      },
-    );
+    const favicon = await feedutils.getFavicon(feed.links[0], faviconFilter);
 
     if (favicon && favicon.url.startsWith('https://')) {
       source.icon = favicon.url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
     }
   }
 
@@ -111,11 +115,12 @@ export const getMediumFeed = async (
     source.id = generateSourceId(
       source.userId,
       source.columnId,
-      source.options.medium,
+      parsedMediumOption,
     );
   }
   source.type = 'medium';
   source.title = feed.title.value;
+  source.options = { medium: parsedMediumOption };
   if (feed.links.length > 0) {
     source.link = feed.links[0];
   }

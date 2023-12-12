@@ -8,8 +8,7 @@ import { unescape } from 'lodash';
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 /**
  * `isRedditUrl` checks if the provided `url` is a valid Reddit url. A url is
@@ -46,11 +45,11 @@ export const getRedditFeed = async (
    * Get the RSS for the provided `youtube` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.reddit, {
+  const response = await utils.fetchWithTimeout(source.options.reddit, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'reddit',
     requestUrl: source.options.reddit,
     responseStatus: response.status,

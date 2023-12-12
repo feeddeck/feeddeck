@@ -8,8 +8,7 @@ import { Redis } from 'redis';
 import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 /**
  * `isTumblrUrl` checks if the provided `url` is a valid Tumblr url. A url is
@@ -50,11 +49,11 @@ export const getTumblrFeed = async (
    * Get the RSS for the provided `tumblr` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.tumblr, {
+  const response = await utils.fetchWithTimeout(source.options.tumblr, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'tumblr',
     requestUrl: source.options.tumblr,
     responseStatus: response.status,

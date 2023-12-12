@@ -8,11 +8,9 @@ import * as cheerio from 'cheerio';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { getFavicon } from './utils/getFavicon.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 export const getRSSFeed = async (
   supabaseClient: SupabaseClient,
@@ -31,7 +29,7 @@ export const getRSSFeed = async (
 
   let feed = await getFeed(source);
   if (!feed) {
-    log(
+    utils.log(
       'debug',
       'Failed to get RSS feed, try to get RSS feed from website',
       { requestUrl: source.options.rss },
@@ -86,7 +84,7 @@ export const getRSSFeed = async (
    */
   if (!source.icon) {
     if (source.link) {
-      const favicon = await getFavicon(source.link);
+      const favicon = await feedutils.getFavicon(source.link);
       if (favicon && favicon.url.startsWith('https://')) {
         source.icon = favicon.url;
       }
@@ -100,7 +98,7 @@ export const getRSSFeed = async (
       }
     }
 
-    source.icon = await uploadSourceIcon(supabaseClient, source);
+    source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -144,6 +142,8 @@ export const getRSSFeed = async (
         ? Math.floor(entry.published.getTime() / 1000)
         : entry.updated
         ? Math.floor(entry.updated.getTime() / 1000)
+        : entry['dc:date']
+        ? getDCDateTimestamp(entry['dc:date'])
         : Math.floor(new Date().getTime() / 1000),
     });
   }
@@ -158,13 +158,13 @@ export const getRSSFeed = async (
  */
 const getFeed = async (source: ISource): Promise<Feed | undefined> => {
   try {
-    const response = await fetchWithTimeout(
+    const response = await utils.fetchWithTimeout(
       source.options!.rss!,
       { method: 'get' },
       5000,
     );
     const xml = await response.text();
-    log('debug', 'Add source', {
+    utils.log('debug', 'Add source', {
       sourceType: 'rss',
       requestUrl: source.options!.rss!,
       responseStatus: response.status,
@@ -194,7 +194,7 @@ const getFeedFromWebsite = async (
   source: ISource,
 ): Promise<Feed | undefined> => {
   try {
-    const response = await fetchWithTimeout(
+    const response = await utils.fetchWithTimeout(
       source.options!.rss!,
       { method: 'get' },
       5000,
@@ -236,7 +236,7 @@ const skipEntry = (
   if (
     !entry.title?.value ||
     (entry.links.length === 0 || !entry.links[0].href) ||
-    (!entry.published && !entry.updated)
+    (!entry.published && !entry.updated && !entry['dc:date'])
   ) {
     return true;
   }
@@ -251,9 +251,27 @@ const skipEntry = (
     Math.floor(entry.updated.getTime() / 1000) <= (sourceUpdatedAt - 10)
   ) {
     return true;
+  } else if (
+    entry['dc:date'] &&
+    getDCDateTimestamp(entry['dc:date']) <= (sourceUpdatedAt - 10)
+  ) {
+    return true;
   }
 
   return false;
+};
+
+/**
+ * `getDCDateTimestamp` is a helper function to get the timestamp of a `dc:date`
+ * tag. The `dc:date` tag can either be a `Date` object or an object with a
+ * `value` property which is a `Date` object.
+ */
+const getDCDateTimestamp = (dcdate: Date | { value: Date }): number => {
+  if (dcdate instanceof Date) {
+    return Math.floor(dcdate.getTime() / 1000);
+  } else {
+    return Math.floor(dcdate.value.getTime() / 1000);
+  }
 };
 
 /**

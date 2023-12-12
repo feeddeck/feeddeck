@@ -7,10 +7,9 @@ import { unescape } from 'lodash';
 
 import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 export const getPodcastFeed = async (
   supabaseClient: SupabaseClient,
@@ -38,11 +37,11 @@ export const getPodcastFeed = async (
    * Get the RSS for the provided `podcast` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.podcast, {
+  const response = await utils.fetchWithTimeout(source.options.podcast, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'podcast',
     requestUrl: source.options.podcast,
     responseStatus: response.status,
@@ -75,12 +74,12 @@ export const getPodcastFeed = async (
   if (!source.icon) {
     if (feed.image?.url) {
       source.icon = feed.image.url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       // deno-lint-ignore no-explicit-any
     } else if ((feed as any)['itunes:image']?.href) {
       // deno-lint-ignore no-explicit-any
       source.icon = (feed as any)['itunes:image'].href;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
     }
   }
 
@@ -173,7 +172,7 @@ const skipEntry = (
  * Podcast id.
  */
 const getRSSFeedFromApplePodcast = async (id: string): Promise<string> => {
-  const resp = await fetchWithTimeout(
+  const resp = await utils.fetchWithTimeout(
     `https://itunes.apple.com/lookup?id=${id}&entity=podcast`,
     { method: 'get' },
     5000,

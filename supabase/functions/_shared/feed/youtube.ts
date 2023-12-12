@@ -7,11 +7,10 @@ import { unescape } from 'lodash';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
 import { FEEDDECK_SOURCE_YOUTUBE_API_KEY } from '../utils/constants.ts';
-import { log } from '../utils/log.ts';
+import { utils } from '../utils/index.ts';
 
 /**
  * `isYoutubeUrl` checks if the provided `url` is a valid Youtube url. A url is
@@ -76,11 +75,11 @@ export const getYoutubeFeed = async (
    * Get the RSS for the provided `youtube` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const response = await fetchWithTimeout(source.options.youtube, {
+  const response = await utils.fetchWithTimeout(source.options.youtube, {
     method: 'get',
   }, 5000);
   const xml = await response.text();
-  log('debug', 'Add source', {
+  utils.log('debug', 'Add source', {
     sourceType: 'youtube',
     requestUrl: source.options.youtube,
     responseStatus: response.status,
@@ -103,7 +102,7 @@ export const getYoutubeFeed = async (
         '',
       ),
     );
-    source.icon = await uploadSourceIcon(supabaseClient, source);
+    source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
   }
 
   /**
@@ -263,7 +262,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
  */
 const getChannelId = async (url: string): Promise<string | undefined> => {
   try {
-    const response = await fetchWithTimeout(url, { method: 'get' }, 5000);
+    const response = await utils.fetchWithTimeout(url, { method: 'get' }, 5000);
     const html = await response.text();
     const match = html.match(
       /"https:\/\/www.youtube.com\/feeds\/videos.xml\?channel_id\=(.*?)"/,
@@ -288,14 +287,9 @@ const getChannelId = async (url: string): Promise<string | undefined> => {
 const getChannelIcon = async (
   channelId: string,
 ): Promise<string | undefined> => {
-  const youtubeApiKey = FEEDDECK_SOURCE_YOUTUBE_API_KEY;
-  if (!youtubeApiKey) {
-    return undefined;
-  }
-
   try {
-    const response = await fetchWithTimeout(
-      `https://www.googleapis.com/youtube/v3/channels?id=${channelId}&part=id%2Csnippet&maxResults=1&key=${youtubeApiKey}`,
+    const response = await utils.fetchWithTimeout(
+      `https://www.googleapis.com/youtube/v3/channels?id=${channelId}&part=id%2Csnippet&maxResults=1&key=${FEEDDECK_SOURCE_YOUTUBE_API_KEY}`,
       { method: 'get' },
       5000,
     );
