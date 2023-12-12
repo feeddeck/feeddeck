@@ -1,4 +1,4 @@
-import { decode, encode } from 'std/hex';
+import { decodeHex, encodeHex } from 'std/hex';
 import {
   FEEDDECK_ENCRYPTION_IV,
   FEEDDECK_ENCRYPTION_KEY,
@@ -20,10 +20,8 @@ export const generateKey = async (): Promise<
   );
   const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', key));
   return {
-    rawKey: new TextDecoder().decode(encode(rawKey)),
-    iv: new TextDecoder().decode(
-      encode(crypto.getRandomValues(new Uint8Array(16))),
-    ),
+    rawKey: encodeHex(rawKey),
+    iv: encodeHex(crypto.getRandomValues(new Uint8Array(16))),
   };
 };
 
@@ -33,9 +31,7 @@ export const generateKey = async (): Promise<
  * using the `generateKey` function.
  */
 export const encrypt = async (plainText: string): Promise<string> => {
-  const rawKey = decode(
-    new TextEncoder().encode(FEEDDECK_ENCRYPTION_KEY),
-  );
+  const rawKey = decodeHex(FEEDDECK_ENCRYPTION_KEY);
   const key = await crypto.subtle.importKey(
     'raw',
     rawKey.buffer,
@@ -43,9 +39,7 @@ export const encrypt = async (plainText: string): Promise<string> => {
     true,
     ['encrypt', 'decrypt'],
   );
-  const iv = decode(
-    new TextEncoder().encode(FEEDDECK_ENCRYPTION_IV),
-  );
+  const iv = decodeHex(FEEDDECK_ENCRYPTION_IV);
 
   const encrypted = await crypto.subtle.encrypt(
     { name: 'AES-CBC', iv },
@@ -53,7 +47,7 @@ export const encrypt = async (plainText: string): Promise<string> => {
     new TextEncoder().encode(plainText),
   );
   const encryptedBytes = new Uint8Array(encrypted);
-  return new TextDecoder().decode(encode(encryptedBytes));
+  return encodeHex(encryptedBytes);
 };
 
 /**
@@ -62,9 +56,7 @@ export const encrypt = async (plainText: string): Promise<string> => {
  * generated using the `generateKey` function.
  */
 export const decrypt = async (encryptedText: string): Promise<string> => {
-  const rawKey = decode(
-    new TextEncoder().encode(FEEDDECK_ENCRYPTION_KEY),
-  );
+  const rawKey = decodeHex(FEEDDECK_ENCRYPTION_KEY);
   const key = await crypto.subtle.importKey(
     'raw',
     rawKey.buffer,
@@ -72,14 +64,12 @@ export const decrypt = async (encryptedText: string): Promise<string> => {
     true,
     ['encrypt', 'decrypt'],
   );
-  const iv = decode(
-    new TextEncoder().encode(FEEDDECK_ENCRYPTION_IV),
-  );
+  const iv = decodeHex(FEEDDECK_ENCRYPTION_IV);
 
   const decrypted = await crypto.subtle.decrypt(
     { name: 'AES-CBC', iv },
     key,
-    decode(new TextEncoder().encode(encryptedText)),
+    decodeHex(encryptedText),
   );
   const decryptedBytes = new Uint8Array(decrypted);
   return new TextDecoder().decode(decryptedBytes);

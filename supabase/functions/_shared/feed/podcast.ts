@@ -1,6 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { parseFeed } from 'rss';
-import { Md5 } from 'std/md5';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -60,7 +59,7 @@ export const getPodcastFeed = async (
    * CDN url.
    */
   if (!source.id) {
-    source.id = generateSourceId(
+    source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.podcast,
@@ -109,9 +108,9 @@ export const getPodcastFeed = async (
      */
     let itemId = '';
     if (entry.id != '') {
-      itemId = generateItemId(source.id, entry.id);
+      itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links && entry.links.length > 0 && entry.links[0].href) {
-      itemId = generateItemId(source.id, entry.links[0].href);
+      itemId = await generateItemId(source.id, entry.links[0].href);
     } else {
       continue;
     }
@@ -194,12 +193,12 @@ const getRSSFeedFromApplePodcast = async (id: string): Promise<string> => {
  * id and the link of the RSS feed. We use the MD5 algorithm for the link to
  * generate the id.
  */
-const generateSourceId = (
+const generateSourceId = async (
   userId: string,
   columnId: string,
   link: string,
-): string => {
-  return `podcast-${userId}-${columnId}-${new Md5().update(link).toString()}`;
+): Promise<string> => {
+  return `podcast-${userId}-${columnId}-${await utils.md5(link)}`;
 };
 
 /**
@@ -207,8 +206,11 @@ const generateSourceId = (
  * identifier of the item. We use the MD5 algorithm for the identifier, which
  * can be the link of the item or the id of the item.
  */
-const generateItemId = (sourceId: string, identifier: string): string => {
-  return `${sourceId}-${new Md5().update(identifier).toString()}`;
+const generateItemId = async (
+  sourceId: string,
+  identifier: string,
+): Promise<string> => {
+  return `${sourceId}-${await utils.md5(identifier)}`;
 };
 
 /**

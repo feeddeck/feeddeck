@@ -2,15 +2,15 @@
   "imports": {
     "std/assert": "https://deno.land/std@0.208.0/assert/mod.ts",
     "std/testing/mock": "https://deno.land/std@0.208.0/testing/mock.ts",
-    "std/server": "https://deno.land/std@0.177.0/http/server.ts",
-    "std/md5": "https://deno.land/std@0.119.0/hash/md5.ts",
-    "std/hex": "https://deno.land/std@0.177.0/encoding/hex.ts",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.7.1",
-    "rss": "https://deno.land/x/rss@0.5.8/mod.ts",
-    "rss/types": "https://deno.land/x/rss@0.5.8/src/types/mod.ts",
+    "std/server": "https://deno.land/std@0.208.0/http/server.ts",
+    "std/hex": "https://deno.land/std@0.208.0/encoding/hex.ts",
+    "std/crypto": "https://deno.land/std@0.208.0/crypto/mod.ts",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0",
+    "rss": "https://deno.land/x/rss@1.0.0/mod.ts",
+    "rss/types": "https://deno.land/x/rss@1.0.0/src/types/mod.ts",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
     "lodash": "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js",
-    "redis": "https://deno.land/x/redis@v0.29.4/mod.ts",
-    "stripe": "https://esm.sh/stripe@12.9.0?target=deno&no-check"
+    "redis": "https://deno.land/x/redis@v0.32.0/mod.ts",
+    "stripe": "https://esm.sh/stripe@14.8.0?target=deno&no-check"
   }
 }

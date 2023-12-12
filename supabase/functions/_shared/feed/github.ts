@@ -1,13 +1,11 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Md5 } from 'std/md5';
 import { Redis } from 'redis';
 
 import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
 import { IProfile } from '../models/profile.ts';
-import { decrypt } from '../utils/encrypt.ts';
-import { fetchWithTimeout } from '../utils/fetchWithTimeout.ts';
-import { uploadSourceIcon } from './utils/uploadFile.ts';
+import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 export const getGithubFeed = async (
   supabaseClient: SupabaseClient,
@@ -22,7 +20,7 @@ export const getGithubFeed = async (
   if (!profile.accountGithub?.token) {
     throw new Error('GitHub token is missing');
   }
-  const token = await decrypt(profile.accountGithub.token);
+  const token = await utils.decrypt(profile.accountGithub.token);
 
   if (
     source.options.github.type === 'notifications' ||
@@ -59,7 +57,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.participating}`;
       source.title = user.login;
       source.icon = user.avatar_url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       notifications.push(...tmpNotifications);
     } else if (
       source.options.github.type === 'repositorynotifications' &&
@@ -89,10 +87,10 @@ export const getGithubFeed = async (
         tmpNotifications[0].repository?.owner?.avatar_url
       ) {
         source.icon = tmpNotifications[0].repository.owner.avatar_url;
-        source.icon = await uploadSourceIcon(supabaseClient, source);
+        source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       } else {
         source.icon = `https://github.com/${owner}.png`;
-        source.icon = await uploadSourceIcon(supabaseClient, source);
+        source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       }
       notifications.push(...tmpNotifications);
     } else {
@@ -169,7 +167,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.user}`;
       source.title = source.options.github.user;
       source.icon = user.avatar_url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${source.options.github.user}`;
 
       events.push(...tmpEvents);
@@ -197,7 +195,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${owner}-${repo}`;
       source.title = `${owner}/${repo}`;
       source.icon = user.avatar_url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${owner}/${repo}`;
 
       events.push(...tmpEvents);
@@ -227,7 +225,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.organization}`;
       source.title = source.options.github.organization;
       source.icon = user.avatar_url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${source.options.github.organization}`;
 
       events.push(...tmpEvents);
@@ -261,7 +259,7 @@ export const getGithubFeed = async (
         `github-${source.userId}-${source.columnId}-${source.options.github.type}-${source.options.github.organization}`;
       source.title = source.options.github.organization;
       source.icon = org.avatar_url;
-      source.icon = await uploadSourceIcon(supabaseClient, source);
+      source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       source.link = `https://github.com/${source.options.github.organization}`;
 
       events.push(...tmpEvents);
@@ -329,9 +327,8 @@ export const getGithubFeed = async (
     );
 
     source.id =
-      `github-${source.userId}-${source.columnId}-${source.options.github.type}-${
-        new Md5().update(source.options.github.query).toString()
-      }`;
+      `github-${source.userId}-${source.columnId}-${source.options.github.type}-${await utils
+        .md5(source.options.github.query)}`;
     source.type = 'github';
     source.title = source.options.github.queryName || 'Search';
     source.icon = undefined;
@@ -378,7 +375,7 @@ const request = async (
   url: string,
   options: { token: string; params?: Record<string, string> },
 ) => {
-  const res = await fetchWithTimeout(
+  const res = await utils.fetchWithTimeout(
     `https://api.github.com${url}${
       options.params ? `?${new URLSearchParams(options.params).toString()}` : ''
     }`,

@@ -1,7 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
-import { Md5 } from 'std/md5';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
 
@@ -58,7 +57,7 @@ export const getStackoverflowFeed = async (
    * `stackoverflow` and set the title and link for the source.
    */
   if (source.id === '') {
-    source.id = generateSourceId(
+    source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.stackoverflow.url,
@@ -86,7 +85,7 @@ export const getStackoverflowFeed = async (
      * Create the item object and add it to the `items` array.
      */
     items.push({
-      id: generateItemId(source.id, entry.id),
+      id: await generateItemId(source.id, entry.id),
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
@@ -142,14 +141,12 @@ const skipEntry = (
  * id and the link of the RSS feed. We use the MD5 algorithm for the link to
  * generate the id.
  */
-const generateSourceId = (
+const generateSourceId = async (
   userId: string,
   columnId: string,
   link: string,
-): string => {
-  return `stackoverflow-${userId}-${columnId}-${
-    new Md5().update(link).toString()
-  }`;
+): Promise<string> => {
+  return `stackoverflow-${userId}-${columnId}-${await utils.md5(link)}`;
 };
 
 /**
@@ -157,6 +154,9 @@ const generateSourceId = (
  * identifier of the item. We use the MD5 algorithm for the identifier, which
  * can be the link of the item or the id of the item.
  */
-const generateItemId = (sourceId: string, identifier: string): string => {
-  return `${sourceId}-${new Md5().update(identifier).toString()}`;
+const generateItemId = async (
+  sourceId: string,
+  identifier: string,
+): Promise<string> => {
+  return `${sourceId}-${await utils.md5(identifier)}`;
 };
