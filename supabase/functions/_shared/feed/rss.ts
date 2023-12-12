@@ -125,6 +125,11 @@ export const getRSSFeed = async (
     }
 
     /**
+     * If the entry contains a video we add it to the item options.
+     */
+    const video = getVideo(entry);
+
+    /**
      * Create the item object and add it to the `items` array.
      */
     items.push({
@@ -135,6 +140,7 @@ export const getRSSFeed = async (
       title: entry.title!.value!,
       link: entry.links[0].href!,
       media: getMedia(entry),
+      options: video ? { video: video } : undefined,
       description: getItemDescription(entry),
       author: entry.author?.name,
       publishedAt: entry.published
@@ -402,6 +408,26 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       !matches[1].endsWith('.svg')
     ) {
       return matches[1];
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * `getVideo` checks if the attachments of the feed entry contains a video. If
+ * that is the case we return the url of the video.
+ */
+const getVideo = (entry: FeedEntry): string | undefined => {
+  if (entry.attachments && entry.attachments.length > 0) {
+    for (const attachment of entry.attachments) {
+      if (
+        attachment.mimeType && attachment.mimeType.startsWith('video/') &&
+        attachment.url &&
+        attachment.url.startsWith('https://')
+      ) {
+        return attachment.url;
+      }
     }
   }
 
