@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { unescape } from 'lodash';
 import { Redis } from 'redis';
@@ -8,6 +7,7 @@ import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
 import { IProfile } from '../models/profile.ts';
 import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 /**
  * `isTumblrUrl` checks if the provided `url` is a valid Tumblr url. A url is
@@ -25,19 +25,19 @@ export const getTumblrFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.tumblr) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   const parsedUrl = new URL(source.options.tumblr);
   const hostnameParts = parsedUrl.hostname.split('.');
   if (hostnameParts.length != 3) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (hostnameParts[0] === 'www') {
     const pathParts = parsedUrl.pathname.split('/');
     if (pathParts.length < 2) {
-      throw new Error('Invalid source options');
+      throw new feedutils.FeedValidationError('Invalid source options');
     }
     source.options.tumblr = `https://${pathParts[1]}.tumblr.com/rss`;
   } else {
@@ -46,18 +46,9 @@ export const getTumblrFeed = async (
 
   /**
    * Get the RSS for the provided `tumblr` url and parse it. If a feed doesn't
-   * contains an item we return an error.
+   * contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(source.options.tumblr, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'tumblr',
-    requestUrl: source.options.tumblr,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(source.options.tumblr, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

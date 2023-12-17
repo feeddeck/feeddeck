@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -17,7 +16,7 @@ export const getMastodonFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.mastodon || source.options.mastodon.length === 0) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (source.options.mastodon[0] === '@') {
@@ -35,24 +34,13 @@ export const getMastodonFeed = async (
   ) {
     source.options.mastodon = `${source.options.mastodon}.rss`;
   } else {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   /**
    * Get the RSS for the provided Mastodon username, hashtag or url.
    */
-  const response = await utils.fetchWithTimeout(
-    source.options.mastodon,
-    { method: 'get' },
-    5000,
-  );
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'mastodon',
-    requestUrl: source.options.mastodon,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(source.options.mastodon, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

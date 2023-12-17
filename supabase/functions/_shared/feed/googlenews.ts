@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { unescape } from 'lodash';
 import { Redis } from 'redis';
@@ -17,7 +16,7 @@ export const getGooglenewsFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.googlenews || !source.options?.googlenews?.type) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (
@@ -54,23 +53,17 @@ export const getGooglenewsFeed = async (
     source.options.googlenews.url =
       `https://news.google.com/rss/search?q=${source.options.googlenews.search}&hl=${source.options.googlenews.hl}&gl=${source.options.googlenews.gl}&ceid=${source.options.googlenews.ceid}`;
   } else {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   /**
    * Get the RSS for the provided `googlenews` url and parse it. If a feed
-   * doesn't contains an item we return an error.
+   * doesn't contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(source.options.googlenews.url, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'googlenews',
-    requestUrl: source.options.googlenews.url,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(
+    source.options.googlenews.url,
+    source,
+  );
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

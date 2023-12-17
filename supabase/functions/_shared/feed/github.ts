@@ -14,7 +14,7 @@ export const getGithubFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.github || !source.options?.github.type) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (!profile.accountGithub?.token) {
@@ -94,7 +94,7 @@ export const getGithubFeed = async (
       }
       notifications.push(...tmpNotifications);
     } else {
-      throw new Error('Invalid source options');
+      throw new feedutils.FeedValidationError('Invalid source options');
     }
 
     source.type = 'github';
@@ -264,7 +264,7 @@ export const getGithubFeed = async (
 
       events.push(...tmpEvents);
     } else {
-      throw new Error('Invalid source options');
+      throw new feedutils.FeedValidationError('Invalid source options');
     }
 
     source.type = 'github';
@@ -365,7 +365,7 @@ export const getGithubFeed = async (
     return { source, items };
   }
 
-  throw new Error('Invalid source options');
+  throw new feedutils.FeedValidationError('Invalid source options');
 };
 
 /**

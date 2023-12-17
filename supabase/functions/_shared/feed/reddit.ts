@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -8,6 +7,7 @@ import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
 import { IProfile } from '../models/profile.ts';
 import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 /**
  * `isRedditUrl` checks if the provided `url` is a valid Reddit url. A url is
@@ -25,7 +25,7 @@ export const getRedditFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.reddit) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (
@@ -44,16 +44,7 @@ export const getRedditFeed = async (
    * Get the RSS for the provided `youtube` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const response = await utils.fetchWithTimeout(source.options.reddit, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'reddit',
-    requestUrl: source.options.reddit,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(source.options.reddit, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

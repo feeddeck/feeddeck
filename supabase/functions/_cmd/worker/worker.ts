@@ -73,43 +73,51 @@ const listenForSources = async (
         'profile': redisProfile.id,
       });
 
-      /**
-       * Fetch the feed for the source using the created Supabase client, Redis
-       * client and the source and profile data from Redis.
-       */
-      const { source, items } = await getFeed(
-        supabaseClient,
-        redisClient,
-        redisProfile,
-        redisSource,
-      );
+      try {
+        /**
+         * Fetch the feed for the source using the created Supabase client, Redis
+         * client and the source and profile data from Redis.
+         */
+        const { source, items } = await getFeed(
+          supabaseClient,
+          redisClient,
+          redisProfile,
+          redisSource,
+        );
 
-      /**
-       * Update the source and items in the Supabase database, when the
-       * returned list of items contains at least one item. We have to use
-       * `upsert` instead of `update` to update do bulk "updates" for all
-       * sources and items.
-       */
-      if (items.length > 0) {
-        const { error: sourceError } = await supabaseClient.from('sources')
-          .upsert(
-            source,
-          );
-        if (sourceError) {
-          log('error', 'Failed to save sources', { 'error': sourceError });
+        /**
+         * Update the source and items in the Supabase database, when the
+         * returned list of items contains at least one item. We have to use
+         * `upsert` instead of `update` to update do bulk "updates" for all
+         * sources and items.
+         */
+        if (items.length > 0) {
+          const { error: sourceError } = await supabaseClient.from('sources')
+            .upsert(
+              source,
+            );
+          if (sourceError) {
+            log('error', 'Failed to save sources', { 'error': sourceError });
+          }
+
+          const { error: itemsError } = await supabaseClient.from('items')
+            .upsert(
+              items,
+            );
+          if (itemsError) {
+            log('error', 'Failed to save items', { 'error': itemsError });
+          }
+
+          log('info', 'Updated source', {
+            'source': redisSource.id,
+            'profile': redisProfile.id,
+          });
         }
-
-        const { error: itemsError } = await supabaseClient.from('items')
-          .upsert(
-            items,
-          );
-        if (itemsError) {
-          log('error', 'Failed to save items', { 'error': itemsError });
-        }
-
-        log('info', 'Updated source', {
-          'source': redisSource.id,
+      } catch (err) {
+        log('error', 'Failed to fetch feed', {
+          source: redisSource,
           'profile': redisProfile.id,
+          'error': err.toString(),
         });
       }
     }

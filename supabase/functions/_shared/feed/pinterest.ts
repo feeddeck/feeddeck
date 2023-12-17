@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -8,6 +7,7 @@ import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
 import { IProfile } from '../models/profile.ts';
 import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 const pinterestUrls = [
   'pinterest.at',
@@ -101,11 +101,11 @@ export const parsePinterestOption = (input?: string): string => {
           }
         }
       } else {
-        throw new Error('Invalid source options');
+        throw new feedutils.FeedValidationError('Invalid source options');
       }
     }
   } else {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 };
 
@@ -119,18 +119,9 @@ export const getPinterestFeed = async (
 
   /**
    * Get the RSS for the provided `pinterest` url and parse it. If a feed
-   * doesn't contains an item we return an error.
+   * doesn't contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(parsedPinterestOption, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'pinterest',
-    requestUrl: parsedPinterestOption,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(parsedPinterestOption, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

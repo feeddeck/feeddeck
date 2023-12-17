@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -47,11 +46,11 @@ export const parseMediumOption = (input?: string): string => {
       ) {
         return `https://${parsedHostname[0]}.medium.com/feed`;
       } else {
-        throw new Error('Invalid source options');
+        throw new feedutils.FeedValidationError('Invalid source options');
       }
     }
   } else {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 };
 
@@ -74,18 +73,9 @@ export const getMediumFeed = async (
 
   /**
    * Get the RSS for the provided `medium` url and parse it. If a feed doesn't
-   * contains an item we return an error.
+   * contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(parsedMediumOption, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'medium',
-    requestUrl: parsedMediumOption,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(parsedMediumOption, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

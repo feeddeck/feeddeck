@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -29,7 +28,7 @@ export const getYoutubeFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.youtube) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (source.options.youtube.startsWith('https://www.youtube.com/channel/')) {
@@ -64,26 +63,20 @@ export const getYoutubeFeed = async (
       source.options.youtube =
         `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
     } else {
-      throw new Error('Invalid source options');
+      throw new feedutils.FeedValidationError('Invalid source options');
     }
   } else {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   /**
    * Get the RSS for the provided `youtube` url and parse it. If a feed doesn't
-   * contains an item we return an error.
+   * contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(source.options.youtube, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'youtube',
-    requestUrl: source.options.youtube,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(
+    source.options.youtube,
+    source,
+  );
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');
