@@ -29,11 +29,15 @@ export const getNitterFeed = async (
    * Get the RSS for the provided `nitter` username or search term. If a feed
    * doesn't contains a title we return an error.
    */
-  const feed = await feedutils.getAndParseFeed(nitterOptions.feedUrl, source, {
-    headers: nitterOptions.isCustomInstance ? undefined : {
-      'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
+  const feed = await feedutils.getAndParseFeed(
+    nitterOptions.feedUrl,
+    source,
+    nitterOptions.isCustomInstance ? undefined : {
+      headers: {
+        'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
+      },
     },
-  });
+  );
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');
