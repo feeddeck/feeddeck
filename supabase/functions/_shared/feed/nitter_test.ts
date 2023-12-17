@@ -304,7 +304,6 @@ Deno.test('getNitterFeed - Tag', async () => {
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: ['https://nitter.net/search/rss?f=tweets&q=kubernetes', {
-      headers: undefined,
       method: 'get',
     }, 5000],
     returned: new Promise((resolve) => {
@@ -424,7 +423,6 @@ Deno.test('getNitterFeed - User', async () => {
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: ['https://nitter.net/rico_berger/rss', {
-      headers: undefined,
       method: 'get',
     }, 5000],
     returned: new Promise((resolve) => {
