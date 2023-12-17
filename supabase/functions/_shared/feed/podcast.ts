@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -17,7 +16,7 @@ export const getPodcastFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.podcast) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   /**
@@ -34,18 +33,9 @@ export const getPodcastFeed = async (
 
   /**
    * Get the RSS for the provided `podcast` url and parse it. If a feed doesn't
-   * contains an item we return an error.
+   * contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(source.options.podcast, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'podcast',
-    requestUrl: source.options.podcast,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(source.options.podcast, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

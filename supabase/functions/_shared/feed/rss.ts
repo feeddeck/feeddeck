@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Feed, parseFeed } from 'rss';
+import { Feed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -23,7 +23,7 @@ export const getRSSFeed = async (
    * feed.
    */
   if (!source.options?.rss) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   let feed = await getFeed(source);
@@ -163,18 +163,7 @@ export const getRSSFeed = async (
  */
 const getFeed = async (source: ISource): Promise<Feed | undefined> => {
   try {
-    const response = await utils.fetchWithTimeout(
-      source.options!.rss!,
-      { method: 'get' },
-      5000,
-    );
-    const xml = await response.text();
-    utils.log('debug', 'Add source', {
-      sourceType: 'rss',
-      requestUrl: source.options!.rss!,
-      responseStatus: response.status,
-    });
-    const feed = await parseFeed(xml);
+    const feed = await feedutils.getAndParseFeed(source.options!.rss!, source);
     return feed;
   } catch (_) {
     return undefined;

@@ -1,18 +1,17 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
-import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
 import {
   FEEDDECK_SOURCE_NITTER_BASIC_AUTH,
   FEEDDECK_SOURCE_NITTER_INSTANCE,
 } from '../utils/constants.ts';
 import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 export const getNitterFeed = async (
   supabaseClient: SupabaseClient,
@@ -21,32 +20,20 @@ export const getNitterFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.nitter || source.options.nitter.length === 0) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   const nitterOptions = parseNitterOptions(source.options.nitter);
 
   /**
    * Get the RSS for the provided `nitter` username or search term. If a feed
-   * doesn't contains an item we return an error.
+   * doesn't contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(
-    nitterOptions.feedUrl,
-    {
-      headers: nitterOptions.isCustomInstance ? undefined : {
-        'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
-      },
-      method: 'get',
+  const feed = await feedutils.getAndParseFeed(nitterOptions.feedUrl, source, {
+    headers: nitterOptions.isCustomInstance ? undefined : {
+      'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
     },
-    5000,
-  );
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'nitter',
-    requestUrl: nitterOptions.feedUrl,
-    responseStatus: response.status,
   });
-  const feed = await parseFeed(xml);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

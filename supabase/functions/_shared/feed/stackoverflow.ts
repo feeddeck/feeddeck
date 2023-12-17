@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -8,6 +7,7 @@ import { ISource } from '../models/source.ts';
 import { IItem } from '../models/item.ts';
 import { IProfile } from '../models/profile.ts';
 import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 export const getStackoverflowFeed = async (
   _supabaseClient: SupabaseClient,
@@ -16,7 +16,7 @@ export const getStackoverflowFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.stackoverflow || !source.options?.stackoverflow?.type) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   if (source.options.stackoverflow.type === 'tag') {
@@ -25,27 +25,17 @@ export const getStackoverflowFeed = async (
   }
 
   if (!source.options?.stackoverflow.url) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   /**
    * Get the RSS for the provided `stackoverflow` url and parse it. If a feed
-   * doesn't contains an item we return an error.
+   * doesn't contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(
+  const feed = await feedutils.getAndParseFeed(
     source.options.stackoverflow.url,
-    {
-      method: 'get',
-    },
-    5000,
+    source,
   );
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'stackoverflow',
-    requestUrl: source.options.stackoverflow.url,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

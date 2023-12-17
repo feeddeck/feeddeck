@@ -5,7 +5,8 @@ import { corsHeaders } from '../_shared/utils/cors.ts';
 import { getFeed } from '../_shared/feed/feed.ts';
 import { ISourceOptions, TSourceType } from '../_shared/models/source.ts';
 import { IProfile } from '../_shared/models/profile.ts';
-import { log } from '../_shared/utils/log.ts';
+import { utils } from '../_shared/utils/index.ts';
+import { feedutils } from '../_shared/feed/utils/index.ts';
 import {
   FEEDDECK_SUPABASE_ANON_KEY,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
@@ -88,7 +89,7 @@ serve(async (req) => {
       )
       .select('*').eq('id', user.id);
     if (profileError || profile?.length !== 1) {
-      log('error', 'Failed to get user profile', {
+      utils.log('error', 'Failed to get user profile', {
         'user': user,
         'error': profileError,
       });
@@ -121,7 +122,7 @@ serve(async (req) => {
         { count: 'exact' },
       ).eq('userId', user.id);
     if (countError || sourcesCount === null) {
-      log('error', 'Failed to get sources', { 'error': countError });
+      utils.log('error', 'Failed to get sources', { 'error': countError });
       return new Response(
         JSON.stringify({ error: 'Failed to get sources' }),
         {
@@ -135,7 +136,7 @@ serve(async (req) => {
     }
 
     if (profile[0].tier === 'free' && sourcesCount >= 10) {
-      log(
+      utils.log(
         'warning',
         'User is on the free tier and has reached the maximum number of sources',
       );
@@ -155,7 +156,7 @@ serve(async (req) => {
     }
 
     if (profile[0].tier === 'premium' && sourcesCount >= 1000) {
-      log(
+      utils.log(
         'warning',
         'User is on the premium tier and has reached the maximum number of sources',
       );
@@ -210,7 +211,7 @@ serve(async (req) => {
         source,
       );
     if (sourceError) {
-      log('error', 'Failed to save sources', { 'error': sourceError });
+      utils.log('error', 'Failed to save sources', { 'error': sourceError });
       return new Response(JSON.stringify({ error: 'Failed to save sources' }), {
         headers: {
           ...corsHeaders,
@@ -226,7 +227,7 @@ serve(async (req) => {
           items,
         );
       if (itemsError) {
-        log('error', 'Failed to save items', { 'error': itemsError });
+        utils.log('error', 'Failed to save items', { 'error': itemsError });
         return new Response(JSON.stringify({ error: 'Failed to save items' }), {
           headers: {
             ...corsHeaders,
@@ -245,16 +246,48 @@ serve(async (req) => {
       status: 200,
     });
   } catch (err) {
-    log('error', 'An unexpected error occured', { 'error': err.toString() });
-    return new Response(
-      JSON.stringify({ error: 'An unexpected error occured' }),
-      {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+    if (err instanceof feedutils.FeedValidationError) {
+      utils.log('error', 'FeedValidationError', {
+        'error': err.toString(),
+      });
+      return new Response(
+        JSON.stringify({ error: err.message }),
+        {
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+          status: 400,
         },
-        status: 400,
-      },
-    );
+      );
+    } else if (err instanceof feedutils.FeedGetAndParseError) {
+      utils.log('error', 'FeedGetAndParseError', {
+        'error': err.toString(),
+      });
+      return new Response(
+        JSON.stringify({ error: err.message }),
+        {
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+          status: 400,
+        },
+      );
+    } else {
+      utils.log('error', 'An unexpected error occured', {
+        'error': err.toString(),
+      });
+      return new Response(
+        JSON.stringify({ error: 'An unexpected error occured' }),
+        {
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+          status: 400,
+        },
+      );
+    }
   }
 });

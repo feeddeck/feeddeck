@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { parseFeed } from 'rss';
 import { FeedEntry } from 'rss/types';
 import { Redis } from 'redis';
 import { unescape } from 'lodash';
@@ -8,6 +7,7 @@ import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
 import { IProfile } from '../models/profile.ts';
 import { utils } from '../utils/index.ts';
+import { feedutils } from './utils/index.ts';
 
 /**
  * `instances` contains a list of known Lemmy instances. This list is used to
@@ -121,7 +121,7 @@ export const getLemmyFeed = async (
   source: ISource,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.lemmy) {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   const parsedUrl = new URL(source.options.lemmy);
@@ -140,23 +140,14 @@ export const getLemmyFeed = async (
   } else if (parsedUrl.pathname === '' || parsedUrl.pathname === '/') {
     source.options.lemmy = `${parsedUrl.origin}/feeds/all.xml?sort=New`;
   } else {
-    throw new Error('Invalid source options');
+    throw new feedutils.FeedValidationError('Invalid source options');
   }
 
   /**
    * Get the RSS for the provided `lemmy` url and parse it. If a feed doesn't
-   * contains an item we return an error.
+   * contains a title we return an error.
    */
-  const response = await utils.fetchWithTimeout(source.options.lemmy, {
-    method: 'get',
-  }, 5000);
-  const xml = await response.text();
-  utils.log('debug', 'Add source', {
-    sourceType: 'lemmy',
-    requestUrl: source.options.lemmy,
-    responseStatus: response.status,
-  });
-  const feed = await parseFeed(xml);
+  const feed = await feedutils.getAndParseFeed(source.options.lemmy, source);
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

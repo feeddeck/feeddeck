@@ -3,6 +3,7 @@ import { Redis } from 'redis';
 
 import { IItem } from '../models/item.ts';
 import { ISource } from '../models/source.ts';
+import { feedutils } from './utils/index.ts';
 import { getLemmyFeed, isLemmyUrl } from './lemmy.ts';
 import { getMediumFeed, isMediumUrl } from './medium.ts';
 import { getPinterestFeed, isPinterestUrl } from './pinterest.ts';
@@ -129,6 +130,6 @@ export const getFeed = async (
     case 'youtube':
       return await getYoutubeFeed(supabaseClient, redisClient, profile, source);
     default:
-      throw new Error('Invalid source type');
+      throw new feedutils.FeedValidationError('Invalid source options');
   }
 };
