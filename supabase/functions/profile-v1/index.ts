@@ -1,4 +1,3 @@
-import { serve } from 'std/server';
 import { createClient } from '@supabase/supabase-js';
 
 import { corsHeaders } from '../_shared/utils/cors.ts';
@@ -16,7 +15,7 @@ import {
  * DEPRECATED: This function is deprecated and will be removed in the future.
  * Please use the new `profile-v2` function.
  */
-serve(async (req) => {
+Deno.serve(async (req) => {
   /**
    * We need to handle the preflight request for CORS as it is described in the
    * Supabase documentation: https://supabase.com/docs/guides/functions/cors

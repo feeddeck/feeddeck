@@ -1,4 +1,3 @@
-import { serve } from 'std/server';
 import { createClient } from '@supabase/supabase-js';
 
 import { corsHeaders } from '../_shared/utils/cors.ts';
@@ -15,7 +14,7 @@ import {
  * column id, source type and options. The function will return the source
  * object as it was added to the database.
  */
-serve(async (req) => {
+Deno.serve(async (req) => {
   /**
    * We need to handle the preflight request for CORS as it is described in the
    * Supabase documentation: https://supabase.com/docs/guides/functions/cors

@@ -1,5 +1,3 @@
-import { serve } from 'std/server';
-
 import { FEEDDECK_SUPABASE_SITE_URL } from '../_shared/utils/constants.ts';
 import { log } from '../_shared/utils/log.ts';
 import { fetchWithTimeout } from '../_shared/utils/fetchWithTimeout.ts';
@@ -14,7 +12,7 @@ const imageCorsHeaders = {
  * The `image-proxy-v1` edge function is used to proxy images from external
  * sources. This is required to avoid CORS errors in the web app.
  */
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: imageCorsHeaders });
   }
