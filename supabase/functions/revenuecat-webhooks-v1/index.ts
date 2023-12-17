@@ -1,4 +1,3 @@
-import { serve } from 'std/server';
 import { createClient } from '@supabase/supabase-js';
 
 import { log } from '../_shared/utils/log.ts';
@@ -114,7 +113,7 @@ export const manageSubscriptionStatusChange = async (
  * webhooks. When we a receive a new event, we have to change the users account
  * tier to `premium` or to `free`, depending on the received event.
  */
-serve(async (req) => {
+Deno.serve(async (req) => {
   try {
     /**
      * If the request method is not POST, we return a 403 Forbidden error. This

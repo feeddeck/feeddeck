@@ -2,7 +2,6 @@
   "imports": {
     "std/assert": "https://deno.land/std@0.208.0/assert/mod.ts",
     "std/testing/mock": "https://deno.land/std@0.208.0/testing/mock.ts",
-    "std/server": "https://deno.land/std@0.208.0/http/server.ts",
     "std/hex": "https://deno.land/std@0.208.0/encoding/hex.ts",
     "std/crypto": "https://deno.land/std@0.208.0/crypto/mod.ts",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0",

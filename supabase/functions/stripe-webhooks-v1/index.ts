@@ -1,4 +1,3 @@
-import { serve } from 'std/server';
 import Stripe from 'stripe';
 
 import { log } from '../_shared/utils/log.ts';
@@ -23,7 +22,7 @@ const relevantEvents = new Set([
  *   stripe login
  *   stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhooks-v1
  */
-serve(async (req) => {
+Deno.serve(async (req) => {
   try {
     const signature = req.headers.get('Stripe-Signature');
     const body = await req.text();

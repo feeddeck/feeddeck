@@ -1,4 +1,3 @@
-import { serve } from 'std/server';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 
 import { corsHeaders } from '../_shared/utils/cors.ts';
@@ -73,7 +72,7 @@ const getProfile = async (
  * related to the users profile. This means that the function can be used to get
  * the users profile and to handle the users connected accounts.
  */
-serve(async (req) => {
+Deno.serve(async (req) => {
   const { url, method } = req;
 
   /**
