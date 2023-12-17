@@ -230,6 +230,18 @@ cd supabase/functions/_cmd
 docker-compose up --build
 ```
 
+To build the Docker image, the following commands can be run:
+
+```sh
+docker build -f supabase/functions/_cmd/Dockerfile -t ghcr.io/feeddeck/feeddeck:dev supabase/functions
+
+# To build the Docker image for another platform use the following:
+docker buildx build --platform linux/amd64 -f supabase/functions/_cmd/Dockerfile -t ghcr.io/feeddeck/feeddeck:dev supabase/functions
+
+# The Docker image can then be used to run the scheduler, worker or tools, e.g.
+docker run ghcr.io/feeddeck/feeddeck:dev tools get-feed '{"type": "reddit", "options": {"reddit": "/r/kubernetes"}}'
+```
+
 To run the tests for our code, the following command can be used:
 
 ```sh

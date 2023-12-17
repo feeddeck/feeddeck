@@ -1,79 +1,80 @@
-const base64URL = (value: string) => {
-  return globalThis.btoa(value).replace(/[=]/g, '').replace(/[+]/g, '-')
-    .replace(/[\/]/g, '_');
-};
+import { createClient } from '@supabase/supabase-js';
 
-const stringToArrayBuffer = (value: string): ArrayBuffer => {
-  const buf = new ArrayBuffer(value.length);
-  const bufView = new Uint8Array(buf);
-  for (let i = 0; i < value.length; i++) {
-    bufView[i] = value.charCodeAt(i);
-  }
-  return buf;
-};
+import { generateKey } from '../../_shared/utils/encrypt.ts';
+import { log } from '../../_shared/utils/log.ts';
+import { generateAppleSecretKey } from './apple-secret-key.ts';
+import { getFeed } from '../../_shared/feed/feed.ts';
 
-const arrayBufferToString = (buf: ArrayBuffer): string => {
-  return String.fromCharCode(...new Uint8Array(buf));
-};
-
-export const generateAppleSecretKey = async (
-  kid: string,
-  iss: string,
-  sub: string,
-  file: string,
-): Promise<{ kid: string; jwt: string; exp: number }> => {
-  const contents = await Deno.readTextFile(file);
-
+export const runTools = async (args: string[]): Promise<void> => {
+  /**
+   * The "tools generate-key" command can be invoked via the following command:
+   *   deno run --no-lock --allow-net --allow-env --import-map=./supabase/functions/import_map.json ./supabase/functions/_cmd/cmd.ts tools generate-key
+   */
   if (
-    !contents.match(/^\s*-+BEGIN PRIVATE KEY-+[^-]+-+END PRIVATE KEY-+\s*$/i)
+    args.length === 2 && args[0] === 'tools' &&
+    args[1] === 'generate-key'
   ) {
-    throw new Error(
-      `Chosen file does not appear to be a PEM encoded PKCS8 private key file.`,
-    );
+    const data = await generateKey();
+    log('info', 'Encryption key was generated', {
+      key: data.rawKey,
+      iv: data.iv,
+    });
+    return;
   }
 
-  // remove PEM headers and spaces
-  const pkcs8 = stringToArrayBuffer(
-    globalThis.atob(contents.replace(/-+[^-]+-+/g, '').replace(/\s+/g, '')),
-  );
+  /**
+   * The "tools generate-apple-secret-key" command can be invoked via the
+   * following command:
+   *   deno run --no-lock --allow-env --allow-read --import-map=./supabase/functions/import_map.json ./supabase/functions/_cmd/cmd.ts tools generate-apple-secret-key <KEY-ID> <TEAM-ID> <SERVICE-ID> <FILE>
+   */
+  if (
+    args.length === 6 && args[0] === 'tools' &&
+    args[1] === 'generate-apple-secret-key'
+  ) {
+    const data = await generateAppleSecretKey(
+      args[2],
+      args[3],
+      args[4],
+      args[5],
+    );
+    log('info', 'Encryption key was generated', {
+      kid: data.kid,
+      exp: new Date(data.exp * 1000).toString(),
+      jwt: data.jwt,
+    });
+    return;
+  }
 
-  const privateKey = await globalThis.crypto.subtle.importKey(
-    'pkcs8',
-    pkcs8,
-    {
-      name: 'ECDSA',
-      namedCurve: 'P-256',
-    },
-    true,
-    ['sign'],
-  );
-
-  const iat = Math.floor(Date.now() / 1000);
-  const exp = iat + 180 * 24 * 60 * 60;
-
-  const jwt = [
-    base64URL(JSON.stringify({ typ: 'JWT', kid, alg: 'ES256' })),
-    base64URL(
-      JSON.stringify({
-        iss,
-        sub,
-        iat,
-        exp,
-        aud: 'https://appleid.apple.com',
-      }),
-    ),
-  ];
-
-  const signature = await globalThis.crypto.subtle.sign(
-    {
-      name: 'ECDSA',
-      hash: 'SHA-256',
-    },
-    privateKey,
-    stringToArrayBuffer(jwt.join('.')),
-  );
-
-  jwt.push(base64URL(arrayBufferToString(signature)));
-
-  return { kid, jwt: jwt.join('.'), exp };
+  /**
+   * The "tools get-feed" command can be invoked via the following command:
+   *   deno run --no-lock --allow-env --allow-read --allow-net --import-map=./supabase/functions/import_map.json ./supabase/functions/_cmd/cmd.ts tools get-feed <SOURCE>
+   *
+   * The command gets a source and the items for a provided source. The provided
+   * source must contain the type and options to get a feed. All other required
+   * properties for a source are added by the function.
+   *
+   * Example:
+   *   deno run --no-lock --allow-env --allow-read --allow-net --import-map=./supabase/functions/import_map.json ./supabase/functions/_cmd/cmd.ts tools get-feed '{"type": "reddit", "options": {"reddit": "/r/kubernetes"}}'
+   */
+  if (
+    args.length === 3 && args[0] === 'tools' &&
+    args[1] === 'get-feed'
+  ) {
+    const { source, items } = await getFeed(
+      createClient('http://localhost:54321', 'test123'),
+      undefined,
+      { id: '', tier: 'free', createdAt: 0, updatedAt: 0 },
+      {
+        ...JSON.parse(args[2]),
+        id: '',
+        columnId: 'mycolumn',
+        userId: 'myuser',
+      },
+    );
+    log('info', 'Add source', {
+      source: source,
+      items: items,
+    });
+    return;
+  }
 };

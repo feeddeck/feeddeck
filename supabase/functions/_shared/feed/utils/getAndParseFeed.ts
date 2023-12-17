@@ -32,7 +32,7 @@ export const getAndParseFeed = async (
     } else {
       utils.log('error', 'Failed to get feed', {
         source: source,
-        error: err,
+        error: err.toString(),
       });
       throw new feedutils.FeedGetAndParseError('Failed to get feed');
     }
@@ -55,8 +55,8 @@ const _parseFeed = async (
       requestUrl: requestUrl,
       responseStatus: response.status,
       responseBody: xml,
-      responseHeaders: response.headers,
-      error: err,
+      responseHeaders: Object.fromEntries(response.headers.entries()),
+      error: err.toString(),
     });
     throw new feedutils.FeedGetAndParseError('Failed to parse feed');
   }
