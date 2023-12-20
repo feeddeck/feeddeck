@@ -245,14 +245,14 @@ docker run ghcr.io/feeddeck/feeddeck:dev tools get-feed '{"type": "reddit", "opt
 To run the tests for our code, the following command can be used:
 
 ```sh
-deno test --import-map=supabase/functions/import_map.json supabase/functions
+deno test --allow-env --import-map=supabase/functions/import_map.json supabase/functions
 ```
 
 To check the test coverage the `--coverage` flag can be added to the command and
 an HTML report can be generated:
 
 ```sh
-deno test --import-map=supabase/functions/import_map.json supabase/functions --coverage=coverage_deno
+deno test --allow-env --import-map=supabase/functions/import_map.json supabase/functions --coverage=coverage_deno
 
 # To generate the HTML report lcov is required, which can be installed via Homebrew:
 brew install lcov
