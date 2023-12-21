@@ -141,7 +141,7 @@ class ItemsRepository with ChangeNotifier {
       /// selected source which is stored in the [_filters.sourceIdFilter]
       /// field.
       if (_filters.sourceIdFilter != '') {
-        filter = filter.eq('sourceId', sourceIdFilter);
+        filter = filter.eq('sourceId', _filters.sourceIdFilter);
       }
 
       filter = filter.lte('createdAt', _filters.createdAtFilter);
@@ -305,7 +305,7 @@ class ItemsRepository with ChangeNotifier {
       for (var i = 0; i < chunks.length; i++) {
         await Supabase.instance.client
             .from('items')
-            .update({'isRead': read}).in_('id', chunks[i]);
+            .update({'isRead': read}).inFilter('id', chunks[i]);
         for (var j = 0; j < _items.length; j++) {
           if (chunks[i].contains(_items[j].id)) {
             _items[j].isRead = read;

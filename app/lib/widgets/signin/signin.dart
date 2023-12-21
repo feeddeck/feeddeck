@@ -12,6 +12,7 @@ import 'package:feeddeck/repositories/settings_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/utils/desktop_login_manager.dart';
 import 'package:feeddeck/utils/fd_icons.dart';
+import 'package:feeddeck/utils/sign_in_with_apple.dart';
 import 'package:feeddeck/widgets/deck/deck_layout.dart';
 import 'package:feeddeck/widgets/general/elevated_button_progress_indicator.dart';
 import 'package:feeddeck/widgets/general/logo.dart';
@@ -65,7 +66,7 @@ class _SignInState extends State<SignIn> {
         );
 
         await supabase.Supabase.instance.client.auth.signInWithIdToken(
-          provider: supabase.Provider.google,
+          provider: supabase.OAuthProvider.google,
           idToken: idToken,
         );
 
@@ -90,17 +91,17 @@ class _SignInState extends State<SignIn> {
         );
       } else if (!kIsWeb &&
           (Platform.isLinux || Platform.isMacOS || Platform.isWindows)) {
-        /// On Linux, macOS and Windows we have to use the [DesktopLoginManager]
-        /// to handle the login via the users Google account. Once the sing in
-        /// process is finished we have to call the init method of the
-        /// [AppRepository] to load the users data.
+        /// On Linux, macOS and Windows we have to use the
+        /// [DesktopSignInManager] to handle the login via the users Google
+        /// account. Once the sing in process is finished we have to call the
+        /// init method of the [AppRepository] to load the users data.
         setState(() {
           _isLoading = true;
           _error = '';
         });
 
-        await DesktopLoginManager(
-          provider: supabase.Provider.google,
+        await DesktopSignInManager(
+          provider: supabase.OAuthProvider.google,
           queryParams: {
             'access_type': 'offline',
             'prompt': 'consent',
@@ -134,7 +135,7 @@ class _SignInState extends State<SignIn> {
         /// method of the [AppRepository] is automatically called. On iOS
         /// the authentication is the handled via the `singin-callback` route.
         await supabase.Supabase.instance.client.auth.signInWithOAuth(
-          supabase.Provider.google,
+          supabase.OAuthProvider.google,
           queryParams: {
             'access_type': 'offline',
             'prompt': 'consent',
@@ -165,7 +166,7 @@ class _SignInState extends State<SignIn> {
           _error = '';
         });
 
-        await supabase.Supabase.instance.client.auth.signInWithApple();
+        await signInWithApple();
 
         if (!mounted) return;
         await Provider.of<AppRepository>(
@@ -187,7 +188,7 @@ class _SignInState extends State<SignIn> {
           (route) => false,
         );
       } else if (!kIsWeb && (Platform.isLinux || Platform.isWindows)) {
-        /// On Linux and Windows we have to use the [DesktopLoginManager] to
+        /// On Linux and Windows we have to use the [DesktopSignInManager] to
         /// handle the login via the users Apple account. Once the sing in
         /// process is finished we have to call the init method of the
         /// [AppRepository] to load the users data.
@@ -196,8 +197,8 @@ class _SignInState extends State<SignIn> {
           _error = '';
         });
 
-        await DesktopLoginManager(
-          provider: supabase.Provider.apple,
+        await DesktopSignInManager(
+          provider: supabase.OAuthProvider.apple,
           queryParams: null,
         ).signIn();
 
@@ -228,7 +229,7 @@ class _SignInState extends State<SignIn> {
         /// method of the [AppRepository] is automatically called. On Android
         /// the authentication is the handled via the `singin-callback` route.
         await supabase.Supabase.instance.client.auth.signInWithOAuth(
-          supabase.Provider.apple,
+          supabase.OAuthProvider.apple,
           redirectTo:
               kIsWeb ? null : 'app.feeddeck.feeddeck://signin-callback/',
         );
