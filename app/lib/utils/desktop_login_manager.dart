@@ -56,15 +56,15 @@ const _htmlAuthFinished = '''
 </html>
 ''';
 
-/// The [DesktopLoginManager] is used to authenticate a user with the provided
+/// The [DesktopSignInManager] is used to authenticate a user with the provided
 /// OAuth [provider] on desktop platforms.
-class DesktopLoginManager {
-  final supabase.Provider provider;
+class DesktopSignInManager {
+  final supabase.OAuthProvider provider;
   final Map<String, String>? queryParams;
 
   HttpServer? redirectServer;
 
-  DesktopLoginManager({
+  DesktopSignInManager({
     required this.provider,
     required this.queryParams,
   });

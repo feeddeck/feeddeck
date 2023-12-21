@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart' as cni;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:feeddeck/repositories/settings_repository.dart';
 
@@ -14,7 +13,7 @@ import 'package:feeddeck/repositories/settings_repository.dart';
 String getImageUrl(String imageUrl) {
   if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
     if (kIsWeb) {
-      return '${Supabase.instance.client.functionsUrl}/image-proxy-v1?media=${Uri.encodeQueryComponent(imageUrl)}';
+      return '${SettingsRepository().supabaseUrl}/functions/v1/image-proxy-v1?media=${Uri.encodeQueryComponent(imageUrl)}';
     }
 
     return imageUrl;
