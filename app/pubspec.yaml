@@ -38,13 +38,13 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   app_links: ^3.4.3
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.1
   carousel_slider: ^4.2.1
   collection: ^1.17.0
   crypto: ^3.0.3
   flutter_cache_manager: ^3.3.1
   flutter_markdown: ^0.6.14
-  flutter_native_splash: ^2.3.5
+  flutter_native_splash: ^2.3.9
   html: ^0.15.4
   html2md: ^1.2.6
   intl: ^0.18.1
