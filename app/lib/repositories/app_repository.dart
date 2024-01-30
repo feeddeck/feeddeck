@@ -376,21 +376,33 @@ class AppRepository with ChangeNotifier {
   }
 
   /// [addSource] is called to add a source to the column with the provided
-  /// [columnId]. The function takes a [source] as parameter. The function calls
-  /// the `add-source-v1` edge function via the Supabase client to create the
-  /// source. When the source was created the newly returned source is added to
-  /// the list of sources of the column with the provided [columnId].
+  /// [columnId]. Next to [columnId] a user must also provide the [type] and
+  /// [options] for the source. The function calls the `add-or-update-source-v1`
+  /// edge function via the Supabase client to create the source. When the
+  /// source was created the newly returned source is added to the list of
+  /// sources of the column with the provided [columnId].
+  ///
+  /// The optional [feedData] parameter is used to provide the feed data for the
+  /// source. This is can be used to scrape the source data via the client (app)
+  /// instead of the server (scheduler / worker).
   Future<void> addSource(
     String columnId,
     FDSourceType type,
-    FDSourceOptions options,
-  ) async {
+    FDSourceOptions options, [
+    String? feedData,
+  ]) async {
     final result = await Supabase.instance.client.functions.invoke(
-      'add-source-v1',
+      'add-or-update-source-v1',
       body: {
-        'columnId': columnId,
-        'type': type.toShortString(),
-        'options': options.toJson(),
+        'source': {
+          'id': '',
+          'columnId': columnId,
+          'userId': '',
+          'type': type.toShortString(),
+          'title': '',
+          'options': options.toJson(),
+        },
+        'feedData': feedData,
       },
     );
 

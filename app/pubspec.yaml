@@ -47,6 +47,7 @@ dependencies:
   flutter_native_splash: ^2.3.5
   html: ^0.15.4
   html2md: ^1.2.6
+  http: ^1.1.2
   intl: ^0.18.1
   just_audio: ^0.9.32
   just_audio_background: ^0.0.1-beta.10

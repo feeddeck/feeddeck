@@ -13,6 +13,7 @@ export const getXFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  _feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.x || source.options.x.length === 0) {
     throw new feedutils.FeedValidationError('Invalid source options');

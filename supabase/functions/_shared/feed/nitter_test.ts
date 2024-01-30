@@ -225,6 +225,7 @@ Deno.test('getNitterFeed - Tag', async () => {
           nitter: 'https://nitter.net/search/rss?f=tweets&q=kubernetes',
         },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e',
@@ -344,6 +345,7 @@ Deno.test('getNitterFeed - User', async () => {
         ...mockSource,
         options: { nitter: 'https://nitter.net/rico_berger/rss' },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90',

@@ -142,6 +142,7 @@ Deno.test('getMastodonFeed - Tag', async () => {
         ...mockSource,
         options: { mastodon: 'https://hachyderm.io/tags/Kubernetes' },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'mastodon-myuser-mycolumn-91151e10882e4fff432ff509b8c6b027',
@@ -248,6 +249,7 @@ Deno.test('getMastodonFeed - User', async () => {
       undefined,
       mockProfile,
       { ...mockSource, options: { mastodon: '@ricoberger@hachyderm.io' } },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'mastodon-myuser-mycolumn-5673bdae9d06a0744e93d647fe5cef2e',

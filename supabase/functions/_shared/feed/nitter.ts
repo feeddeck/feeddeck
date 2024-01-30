@@ -18,6 +18,7 @@ export const getNitterFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.nitter || source.options.nitter.length === 0) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -32,6 +33,7 @@ export const getNitterFeed = async (
   const feed = await feedutils.getAndParseFeed(
     nitterOptions.feedUrl,
     source,
+    feedData,
     nitterOptions.isCustomInstance ? undefined : {
       headers: {
         'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,

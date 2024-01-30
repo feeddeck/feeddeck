@@ -14,6 +14,7 @@ export const getStackoverflowFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.stackoverflow || !source.options?.stackoverflow?.type) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -35,6 +36,7 @@ export const getStackoverflowFeed = async (
   const feed = await feedutils.getAndParseFeed(
     source.options.stackoverflow.url,
     source,
+    feedData,
   );
 
   if (!feed.title.value) {

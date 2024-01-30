@@ -9,10 +9,8 @@ import {
 } from '../_shared/utils/constants.ts';
 
 /**
- * The `add-source-v1` edge function is used to add a new source and it's
- * corresponding items to the database. It expects a POST request with the
- * column id, source type and options. The function will return the source
- * object as it was added to the database.
+ * The `generate-magic-link-v1` edge function is used to generate a magic link
+ * for the currently signed in user.
  */
 Deno.serve(async (req) => {
   /**

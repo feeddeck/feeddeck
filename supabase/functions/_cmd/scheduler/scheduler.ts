@@ -157,7 +157,6 @@ const scheduleSources = async (
             'profile': profile.id,
           });
           await redisClient.rpush(
-            // source.id,
             'sources',
             JSON.stringify({
               source: source,
