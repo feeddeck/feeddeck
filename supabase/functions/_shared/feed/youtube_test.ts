@@ -256,6 +256,7 @@ Deno.test('getYoutubeFeed', async () => {
           youtube: 'https://youtube.com/@tagesschau?si=24jF6sxXvaU7Jv7D',
         },
       },
+      undefined,
     );
     assertEqualsSource(source, {
       'id': 'youtube-myuser-mycolumn-66638d79d1f4c862ef3a54be04469f22',

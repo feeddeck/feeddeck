@@ -133,6 +133,7 @@ Deno.test('getRedditFeed', async () => {
         ...mockSource,
         options: { reddit: '/r/kubernetes' },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',

@@ -30,83 +30,123 @@ export const getFeed = async (
   redisClient: Redis | undefined,
   profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   switch (source.type) {
     case 'github':
-      return await getGithubFeed(supabaseClient, redisClient, profile, source);
+      return await getGithubFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'googlenews':
       return await getGooglenewsFeed(
         supabaseClient,
         redisClient,
         profile,
         source,
+        feedData,
       );
     case 'lemmy':
-      return await getLemmyFeed(supabaseClient, redisClient, profile, source);
+      return await getLemmyFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'mastodon':
       return await getMastodonFeed(
         supabaseClient,
         redisClient,
         profile,
         source,
+        feedData,
       );
     case 'medium':
-      return await getMediumFeed(supabaseClient, redisClient, profile, source);
+      return await getMediumFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'nitter':
-      return await getNitterFeed(supabaseClient, redisClient, profile, source);
+      return await getNitterFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'pinterest':
       return await getPinterestFeed(
         supabaseClient,
         redisClient,
         profile,
         source,
+        feedData,
       );
     case 'podcast':
-      return await getPodcastFeed(supabaseClient, redisClient, profile, source);
+      return await getPodcastFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'reddit':
-      return await getRedditFeed(supabaseClient, redisClient, profile, source);
+      return await getRedditFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'rss':
       try {
         if (source.options?.rss && isLemmyUrl(source.options.rss)) {
           return await getLemmyFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { lemmy: source.options.rss },
-          });
+          }, feedData);
         }
 
         if (source.options?.rss && isMediumUrl(source.options.rss)) {
           return await getMediumFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { medium: source.options.rss },
-          });
+          }, feedData);
         }
 
         if (source.options?.rss && isPinterestUrl(source.options.rss)) {
           return await getPinterestFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { pinterest: source.options.rss },
-          });
+          }, feedData);
         }
 
         if (source.options?.rss && isRedditUrl(source.options.rss)) {
           return await getTumblrFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { reddit: source.options.reddit },
-          });
+          }, feedData);
         }
 
         if (source.options?.rss && isTumblrUrl(source.options.rss)) {
           return await getTumblrFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { tumblr: source.options.rss },
-          });
+          }, feedData);
         }
 
         if (source.options?.rss && isYoutubeUrl(source.options.rss)) {
           return await getYoutubeFeed(supabaseClient, redisClient, profile, {
             ...source,
             options: { youtube: source.options.rss },
-          });
+          }, feedData);
         }
       } catch (_) {
         /**
@@ -115,20 +155,39 @@ export const getFeed = async (
          */
       }
 
-      return await getRSSFeed(supabaseClient, redisClient, profile, source);
+      return await getRSSFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'stackoverflow':
       return await getStackoverflowFeed(
         supabaseClient,
         redisClient,
         profile,
         source,
+        feedData,
       );
     case 'tumblr':
-      return await getTumblrFeed(supabaseClient, redisClient, profile, source);
-    // case "x":
-    //   return await getXFeed(supabaseClient, redisClient, profile, source);
+      return await getTumblrFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
+    // case 'x':
+    //   return await getXFeed(supabaseClient, redisClient, profile, source, data);
     case 'youtube':
-      return await getYoutubeFeed(supabaseClient, redisClient, profile, source);
+      return await getYoutubeFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     default:
       throw new feedutils.FeedValidationError('Invalid source options');
   }

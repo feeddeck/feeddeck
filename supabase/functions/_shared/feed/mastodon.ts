@@ -14,6 +14,7 @@ export const getMastodonFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.mastodon || source.options.mastodon.length === 0) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -40,7 +41,11 @@ export const getMastodonFeed = async (
   /**
    * Get the RSS for the provided Mastodon username, hashtag or url.
    */
-  const feed = await feedutils.getAndParseFeed(source.options.mastodon, source);
+  const feed = await feedutils.getAndParseFeed(
+    source.options.mastodon,
+    source,
+    feedData,
+  );
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

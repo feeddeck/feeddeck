@@ -114,6 +114,7 @@ Deno.test('getPinterestFeed - User', async () => {
         ...mockSource,
         options: { pinterest: 'https://www.pinterest.de/pinterestde' },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab',

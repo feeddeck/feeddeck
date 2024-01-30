@@ -23,6 +23,7 @@ export const getRedditFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.reddit) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -44,7 +45,11 @@ export const getRedditFeed = async (
    * Get the RSS for the provided `youtube` url and parse it. If a feed doesn't
    * contains an item we return an error.
    */
-  const feed = await feedutils.getAndParseFeed(source.options.reddit, source);
+  const feed = await feedutils.getAndParseFeed(
+    source.options.reddit,
+    source,
+    feedData,
+  );
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

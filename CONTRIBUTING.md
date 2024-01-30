@@ -283,6 +283,7 @@ supabase secrets set --env-file supabase/.env
 supabase secrets list
 
 # Deploy all functions
+supabase functions deploy add-or-update-source-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy add-source-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy delete-user-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy generate-magic-link-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json

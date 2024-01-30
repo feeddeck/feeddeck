@@ -26,6 +26,7 @@ export const getYoutubeFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.youtube) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -76,6 +77,7 @@ export const getYoutubeFeed = async (
   const feed = await feedutils.getAndParseFeed(
     source.options.youtube,
     source,
+    feedData,
   );
 
   if (!feed.title.value) {

@@ -113,6 +113,7 @@ Deno.test('getGooglenewsFeed - Url', async () => {
           },
         },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'googlenews-myuser-mycolumn-8c1368ef1bc9e52356bffba3ce60cd48',
@@ -204,6 +205,7 @@ Deno.test('getGooglenewsFeed - Search', async () => {
           },
         },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'googlenews-myuser-mycolumn-5ef472fe226393772d05c92261df68e1',

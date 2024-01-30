@@ -98,6 +98,7 @@ Deno.test('getTumblrFeed', async () => {
         ...mockSource,
         options: { tumblr: 'https://www.tumblr.com/todayontumblr' },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'tumblr-myuser-mycolumn-8ce77e730a91955cd991349d0d6bfb6c',

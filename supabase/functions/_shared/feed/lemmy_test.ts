@@ -223,6 +223,7 @@ Deno.test('getLemmyFeed - User', async () => {
       undefined,
       mockProfile,
       { ...mockSource, options: { lemmy: 'https://lemmy.world/u/lwCET' } },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4',
@@ -297,6 +298,7 @@ Deno.test('getLemmyFeed - Community', async () => {
       undefined,
       mockProfile,
       { ...mockSource, options: { lemmy: 'https://lemmy.world/c/lemmyworld' } },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42',
@@ -373,6 +375,7 @@ Deno.test('getLemmyFeed - Community - IIC', async () => {
         ...mockSource,
         options: { lemmy: 'https://lemmy.world/feeds/c/idiotsincars.xml' },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
