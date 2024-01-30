@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    assignees:
+      - "@feeddeck/maintainers"
     groups:
       github-actions:
         patterns:
@@ -13,6 +15,8 @@ updates:
     directory: "/app"
     schedule:
       interval: "monthly"
+    assignees:
+      - "@feeddeck/maintainers"
     groups:
       pub:
         patterns:
@@ -22,6 +26,8 @@ updates:
     directory: "/supabase/functions/_cmd"
     schedule:
       interval: "monthly"
+    assignees:
+      - "@feeddeck/maintainers"
     groups:
       docker:
         patterns:
@@ -31,6 +37,8 @@ updates:
     directory: "/landing"
     schedule:
       interval: "monthly"
+    assignees:
+      - "@feeddeck/maintainers"
     groups:
       npm-landing:
         patterns:
@@ -40,6 +48,8 @@ updates:
     directory: "/supabase/email-templates"
     schedule:
       interval: "monthly"
+    assignees:
+      - "@feeddeck/maintainers"
     groups:
       npm-email-templates:
         patterns:
