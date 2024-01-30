@@ -230,7 +230,7 @@ jobs:
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: feeddeck-macos-universal.zip
           path: app/build/macos/Build/Products/Release/feeddeck-macos-universal.zip
@@ -297,7 +297,7 @@ jobs:
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: feeddeck-linux-x86_64.tar.gz
           path: app/build/feeddeck-linux-x86_64.tar.gz
@@ -352,7 +352,7 @@ jobs:
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: feeddeck-windows-x86_64.zip
           path: app/build/feeddeck-windows-x86_64.zip
