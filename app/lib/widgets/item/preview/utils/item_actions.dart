@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:feeddeck/utils/openurl.dart';
 import 'package:feeddeck/models/item.dart';
 import 'package:feeddeck/repositories/items_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
@@ -59,6 +60,14 @@ class _ItemActionsState extends State<ItemActions> {
         context,
         listen: false,
       ).updateReadState(widget.item.id, !widget.item.isRead);
+    } catch (_) {}
+  }
+
+  /// [_openUrl] opens the item url in the default browser of the current
+  /// device.
+  Future<void> _openUrl() async {
+    try {
+      await openUrl(widget.item.link);
     } catch (_) {}
   }
 
@@ -126,6 +135,15 @@ class _ItemActionsState extends State<ItemActions> {
                 : const Text('Add Bookmark'),
           ),
         ),
+        const PopupMenuItem(
+          value: 'openlink',
+          child: ListTile(
+            leading: Icon(
+              Icons.launch,
+            ),
+            title: Text('Open Link'),
+          ),
+        ),
       ],
     );
 
@@ -138,6 +156,11 @@ class _ItemActionsState extends State<ItemActions> {
       case 'bookmark':
         if (mounted) {
           await _bookmark(context);
+        }
+        break;
+      case 'openlink':
+        if (mounted) {
+          await _openUrl();
         }
         break;
     }
@@ -210,6 +233,20 @@ class _ItemActionsState extends State<ItemActions> {
                 title: widget.item.isBookmarked
                     ? const Text('Remove Bookmark')
                     : const Text('Add Bookmark'),
+              ),
+              const Divider(
+                color: Constants.dividerColor,
+                height: 1,
+                thickness: 1,
+              ),
+              ListTile(
+                mouseCursor: SystemMouseCursors.click,
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  _openUrl();
+                },
+                leading: const Icon(Icons.launch),
+                title: const Text('Open Link'),
               ),
             ],
           ),
