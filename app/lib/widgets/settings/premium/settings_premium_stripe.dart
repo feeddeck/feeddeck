@@ -87,62 +87,67 @@ class _SettingsPremiumStripeState extends State<SettingsPremiumStripe> {
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: _futureFetchCheckoutSessionLink,
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<String> snapshot,
-        ) {
-          return Column(
-            children: [
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(Constants.spacingMiddle),
-                  child: SingleChildScrollView(
-                    child: MarkdownBody(
-                      selectable: true,
-                      data: _settingsPremiumStripeText,
+      body: SafeArea(
+        child: FutureBuilder(
+          future: _futureFetchCheckoutSessionLink,
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<String> snapshot,
+          ) {
+            return Column(
+              children: [
+                const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(Constants.spacingMiddle),
+                    child: SingleChildScrollView(
+                      child: MarkdownBody(
+                        selectable: true,
+                        data: _settingsPremiumStripeText,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: Constants.spacingSmall,
-              ),
-              const Divider(
-                color: Constants.dividerColor,
-                height: 1,
-                thickness: 1,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(Constants.spacingMiddle),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Constants.primary,
-                    foregroundColor: Constants.onPrimary,
-                    maximumSize: const Size.fromHeight(
-                      Constants.elevatedButtonSize,
-                    ),
-                    minimumSize: const Size.fromHeight(
-                      Constants.elevatedButtonSize,
-                    ),
-                  ),
-                  label: const Text('Subscribe to FeedDeck Premium'),
-                  onPressed: snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.hasError
-                      ? null
-                      : () => _openUrl(snapshot.data),
-                  icon: snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.hasError
-                      ? const ElevatedButtonProgressIndicator()
-                      : const Icon(FDIcons.feeddeck),
+                const SizedBox(
+                  height: Constants.spacingSmall,
                 ),
-              ),
-            ],
-          );
-        },
+                const Divider(
+                  color: Constants.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(Constants.spacingMiddle),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.primary,
+                      foregroundColor: Constants.onPrimary,
+                      maximumSize: const Size.fromHeight(
+                        Constants.elevatedButtonSize,
+                      ),
+                      minimumSize: const Size.fromHeight(
+                        Constants.elevatedButtonSize,
+                      ),
+                    ),
+                    label: const Text('Subscribe to FeedDeck Premium'),
+                    onPressed:
+                        snapshot.connectionState == ConnectionState.none ||
+                                snapshot.connectionState ==
+                                    ConnectionState.waiting ||
+                                snapshot.hasError
+                            ? null
+                            : () => _openUrl(snapshot.data),
+                    icon: snapshot.connectionState == ConnectionState.none ||
+                            snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.hasError
+                        ? const ElevatedButtonProgressIndicator()
+                        : const Icon(FDIcons.feeddeck),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
