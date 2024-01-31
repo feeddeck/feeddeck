@@ -308,10 +308,10 @@ packages:
     dependency: transitive
     description:
       name: gotrue
-      sha256: "879ac3e981bf5f9b3af156e421688b53823b7af17de7af0d2a37894a8e5f6532"
+      sha256: f40610bacf1074723354b0856a4f586508ffb075b799f72466f34e843133deb9
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.1"
+    version: "2.5.0"
   gtk:
     dependency: transitive
     description:
@@ -749,10 +749,10 @@ packages:
     dependency: "direct main"
     description:
       name: purchases_flutter
-      sha256: "68803f4fa52b7e1eabfb8194493b8d2776b451521bdfb44b661f32164bd647f0"
+      sha256: "27bef8c37c9863a0d280ed4668950fc1a17f36807f80c596c280795c8613ee07"
       url: "https://pub.dev"
     source: hosted
-    version: "6.18.0"
+    version: "6.19.0"
   realtime_client:
     dependency: transitive
     description:
@@ -978,10 +978,10 @@ packages:
     dependency: transitive
     description:
       name: storage_client
-      sha256: b49ff2e1e6738c0ef445546d6ec77040829947f0c7ef0b115acb125656127c83
+      sha256: bf5589d5de61a2451edb1b8960a0e673d4bb5c42ecc4dddf7c051a93789ced34
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   stream_channel:
     dependency: transitive
     description:
@@ -1002,18 +1002,18 @@ packages:
     dependency: transitive
     description:
       name: supabase
-      sha256: f299614f6f44ee26ff1bd293869272fab79a7b087320c3b40572792b32ded06c
+      sha256: "4bce9c49f264f4cd44b4ffc895647af2dca0c40125c169045be9f708fd2a2a40"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.6"
+    version: "2.0.7"
   supabase_flutter:
     dependency: "direct main"
     description:
       name: supabase_flutter
-      sha256: a1af1749389100f6214dd4437a8faf610a00ca40522a5687920b6308f3cc073f
+      sha256: "32597ffe9993bc47bc5a2020421b1940e634ea4293cff80385fa67fb9fff46d6"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   synchronized:
     dependency: transitive
     description:
