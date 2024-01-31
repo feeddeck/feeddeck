@@ -208,7 +208,7 @@ class ItemDetails extends StatelessWidget {
                     Constants.elevatedButtonSize,
                   ),
                 ),
-                label: const Text('Open link'),
+                label: const Text('Open Link'),
                 onPressed: () => _openUrl(item.link),
                 icon: const Icon(Icons.launch),
               ),
