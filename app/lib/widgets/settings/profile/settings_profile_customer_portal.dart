@@ -180,60 +180,65 @@ class _SettingsProfileCustomerPortalModalState
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: _futureFetchCustomerPortalLink,
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<String> snapshot,
-        ) {
-          return Column(
-            children: [
-              const Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(Constants.spacingMiddle),
-                  child: SingleChildScrollView(
-                    child: MarkdownBody(
-                      selectable: true,
-                      data: _settingsProfileCustomerPortalText,
+      body: SafeArea(
+        child: FutureBuilder(
+          future: _futureFetchCustomerPortalLink,
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<String> snapshot,
+          ) {
+            return Column(
+              children: [
+                const Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(Constants.spacingMiddle),
+                    child: SingleChildScrollView(
+                      child: MarkdownBody(
+                        selectable: true,
+                        data: _settingsProfileCustomerPortalText,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: Constants.spacingSmall,
-              ),
-              const Divider(
-                color: Constants.dividerColor,
-                height: 1,
-                thickness: 1,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(Constants.spacingMiddle),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    maximumSize: const Size.fromHeight(
-                      Constants.elevatedButtonSize,
-                    ),
-                    minimumSize: const Size.fromHeight(
-                      Constants.elevatedButtonSize,
-                    ),
-                  ),
-                  label: const Text('Open Customer Portal'),
-                  onPressed: snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.hasError
-                      ? null
-                      : () => _openUrl(snapshot.data),
-                  icon: snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.hasError
-                      ? const ElevatedButtonProgressIndicator()
-                      : const Icon(Icons.receipt),
+                const SizedBox(
+                  height: Constants.spacingSmall,
                 ),
-              ),
-            ],
-          );
-        },
+                const Divider(
+                  color: Constants.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(Constants.spacingMiddle),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      maximumSize: const Size.fromHeight(
+                        Constants.elevatedButtonSize,
+                      ),
+                      minimumSize: const Size.fromHeight(
+                        Constants.elevatedButtonSize,
+                      ),
+                    ),
+                    label: const Text('Open Customer Portal'),
+                    onPressed:
+                        snapshot.connectionState == ConnectionState.none ||
+                                snapshot.connectionState ==
+                                    ConnectionState.waiting ||
+                                snapshot.hasError
+                            ? null
+                            : () => _openUrl(snapshot.data),
+                    icon: snapshot.connectionState == ConnectionState.none ||
+                            snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.hasError
+                        ? const ElevatedButtonProgressIndicator()
+                        : const Icon(Icons.receipt),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

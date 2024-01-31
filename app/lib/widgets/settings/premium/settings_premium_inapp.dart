@@ -166,28 +166,29 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: _futureFetchOfferings,
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<Offering?> snapshot,
-        ) {
-          return Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(Constants.spacingMiddle),
-                  child: SingleChildScrollView(
-                    child: snapshot.connectionState == ConnectionState.none ||
-                            snapshot.connectionState ==
-                                ConnectionState.waiting ||
-                            snapshot.hasError ||
-                            snapshot.data == null ||
-                            snapshot.data?.monthly == null
-                        ? const Text('Loading ...')
-                        : MarkdownBody(
-                            selectable: true,
-                            data: '''
+      body: SafeArea(
+        child: FutureBuilder(
+          future: _futureFetchOfferings,
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<Offering?> snapshot,
+          ) {
+            return Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(Constants.spacingMiddle),
+                    child: SingleChildScrollView(
+                      child: snapshot.connectionState == ConnectionState.none ||
+                              snapshot.connectionState ==
+                                  ConnectionState.waiting ||
+                              snapshot.hasError ||
+                              snapshot.data == null ||
+                              snapshot.data?.monthly == null
+                          ? const Text('Loading ...')
+                          : MarkdownBody(
+                              selectable: true,
+                              data: '''
 You are currently using the free version of FeedDeck, which allows you to add up
 to 10 sources for the first 7 days. After that trial period your sources will
 not be updated anymore.
@@ -197,57 +198,61 @@ upgrade to a premium account. The premium account costs
 ${snapshot.data?.monthly?.storeProduct.priceString} per month and can be
 canceled at any time.
 ''',
-                          ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: Constants.spacingSmall,
-              ),
-              const Divider(
-                color: Constants.dividerColor,
-                height: 1,
-                thickness: 1,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(Constants.spacingMiddle),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Constants.primary,
-                    foregroundColor: Constants.onPrimary,
-                    maximumSize: const Size.fromHeight(
-                      Constants.elevatedButtonSize,
-                    ),
-                    minimumSize: const Size.fromHeight(
-                      Constants.elevatedButtonSize,
+                            ),
                     ),
                   ),
-                  label: Text(
-                    snapshot.data?.monthly?.storeProduct.priceString != null
-                        ? 'Subscribe to FeedDeck Premium for ${snapshot.data?.monthly?.storeProduct.priceString}'
-                        : 'Subscribe to FeedDeck Premium',
-                  ),
-                  onPressed: snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.hasError ||
-                          snapshot.data == null ||
-                          snapshot.data?.monthly == null ||
-                          _isLoading
-                      ? null
-                      : () => _purchase(snapshot.data!.monthly!),
-                  icon: snapshot.connectionState == ConnectionState.none ||
-                          snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.hasError ||
-                          snapshot.data == null ||
-                          snapshot.data?.monthly == null ||
-                          _isLoading
-                      ? const ElevatedButtonProgressIndicator()
-                      : const Icon(FDIcons.feeddeck),
                 ),
-              ),
-            ],
-          );
-        },
+                const SizedBox(
+                  height: Constants.spacingSmall,
+                ),
+                const Divider(
+                  color: Constants.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(Constants.spacingMiddle),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.primary,
+                      foregroundColor: Constants.onPrimary,
+                      maximumSize: const Size.fromHeight(
+                        Constants.elevatedButtonSize,
+                      ),
+                      minimumSize: const Size.fromHeight(
+                        Constants.elevatedButtonSize,
+                      ),
+                    ),
+                    label: Text(
+                      snapshot.data?.monthly?.storeProduct.priceString != null
+                          ? 'Subscribe to FeedDeck Premium for ${snapshot.data?.monthly?.storeProduct.priceString}'
+                          : 'Subscribe to FeedDeck Premium',
+                    ),
+                    onPressed:
+                        snapshot.connectionState == ConnectionState.none ||
+                                snapshot.connectionState ==
+                                    ConnectionState.waiting ||
+                                snapshot.hasError ||
+                                snapshot.data == null ||
+                                snapshot.data?.monthly == null ||
+                                _isLoading
+                            ? null
+                            : () => _purchase(snapshot.data!.monthly!),
+                    icon: snapshot.connectionState == ConnectionState.none ||
+                            snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.hasError ||
+                            snapshot.data == null ||
+                            snapshot.data?.monthly == null ||
+                            _isLoading
+                        ? const ElevatedButtonProgressIndicator()
+                        : const Icon(FDIcons.feeddeck),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
