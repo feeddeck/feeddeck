@@ -22,12 +22,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (6.18.0):
+  - purchases_flutter (6.19.0):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 9.2.0)
-  - PurchasesHybridCommon (9.2.0):
-    - RevenueCat (= 4.32.2)
-  - RevenueCat (4.32.2)
+    - PurchasesHybridCommon (= 9.3.0)
+  - PurchasesHybridCommon (9.3.0):
+    - RevenueCat (= 4.33.0)
+  - RevenueCat (4.33.0)
   - screen_brightness_macos (0.1.0):
     - FlutterMacOS
   - screen_retriever (0.0.1):
@@ -126,9 +126,9 @@ SPEC CHECKSUMS:
   media_kit_video: c75b07f14d59706c775778e4dd47dd027de8d1e5
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  purchases_flutter: 46c356df43f76d58902f90751ba9d1d5978d9d56
-  PurchasesHybridCommon: e6c4550d06ecdfc61a228a0e17b2f125b3bd14c2
-  RevenueCat: 298f40f434e6675ea51744cfca5945f09f7c5a07
+  purchases_flutter: f9e17bbb58861b14c682598b555f123c30a112b1
+  PurchasesHybridCommon: 809461dbc8ff23b4dd0d5260c005b4017d6205b6
+  RevenueCat: 1512a074bebd78b7efb341ce1c33bfc8d292c53a
   screen_brightness_macos: 2d6d3af2165592d9a55ffcd95b7550970e41ebda
   screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
