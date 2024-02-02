@@ -316,11 +316,11 @@ const generateItemId = async (
  */
 const getItemDescription = (entry: FeedEntry): string | undefined => {
   if (entry.description?.value) {
-    return unescape(entry.description?.value.replace(/(<([^>]+)>)/ig, ''));
+    return unescape(entry.description?.value);
   }
 
   if (entry.content?.value) {
-    return unescape(entry.content?.value.replace(/(<([^>]+)>)/ig, ''));
+    return unescape(entry.content?.value);
   }
 
   return undefined;
