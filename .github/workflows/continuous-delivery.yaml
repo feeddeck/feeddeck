@@ -196,7 +196,7 @@ jobs:
   # runs for pull requests and when a new release is published.
   macos:
     name: macOS
-    runs-on: macos-latest
+    runs-on: macos-14
     if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: write
@@ -371,7 +371,7 @@ jobs:
   # app works. The artifact of the build isn't uploaded / used.
   ios:
     name: iOS
-    runs-on: macos-latest
+    runs-on: macos-14
     if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
     defaults:
       run:
