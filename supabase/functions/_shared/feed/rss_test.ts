@@ -1313,7 +1313,7 @@ Deno.test('getRSSFeed - FP', async () => {
       'media':
         'https://www.freiepresse.de/DYNIMG/72/08/13067208_W740C2040x1360o0x0.jpg',
       'description':
-        'Es ist nicht lange still geblieben um Werner Haas. Der Regisseur und Chorleiter trennte sich im Sommer im Streit vom Verein zur Belebung der Küchwaldbühne. Er hatte den Verein gegründet und leitete die Laientheatergruppe, die fast jährlich auf der Freilichtbühne spielte. Für 2023 hatte sich der Vereinsvorstand aber mehrheitlich gegen eine Premiere entschieden. Haas habe kein tragfähiges Konzept da...',
+        '<img src="https://www.freiepresse.de/DYNIMG/72/08/13067208_W740C2040x1360o0x0.jpg" />Es ist nicht lange still geblieben um Werner Haas. Der Regisseur und Chorleiter trennte sich im Sommer im Streit vom Verein zur Belebung der Küchwaldbühne. Er hatte den Verein gegründet und leitete die Laientheatergruppe, die fast jährlich auf der Freilichtbühne spielte. Für 2023 hatte sich der Vereinsvorstand aber mehrheitlich gegen eine Premiere entschieden. Haas habe kein tragfähiges Konzept da...',
       'publishedAt': 1702404000,
     }, {
       'id':
@@ -1328,7 +1328,7 @@ Deno.test('getRSSFeed - FP', async () => {
       'media':
         'https://www.freiepresse.de/DYNIMG/73/46/13067346_W740C2040x1360o0x0.jpg',
       'description':
-        'Der Beginn der Verhandlung war auf 9 Uhr am Montag angesetzt, als die Vernehmung der ersten Zeugin begann, war es 13 Uhr. Sie sollte unter anderem den Weg skizzieren, den die mutmaßlichen Täter am Tattag zu den Tatorten genommen hatten. Vier Angeklagte mit je einem Vertreter auf der einen Seite, Staatsanwalt und drei Nebenkläger-Vertreter auf der anderen. Der Vorsitzende Richter Jürgen Zöllner lie...',
+        '<img src="https://www.freiepresse.de/DYNIMG/73/46/13067346_W740C2040x1360o0x0.jpg" />Der Beginn der Verhandlung war auf 9 Uhr am Montag angesetzt, als die Vernehmung der ersten Zeugin begann, war es 13 Uhr. Sie sollte unter anderem den Weg skizzieren, den die mutmaßlichen Täter am Tattag zu den Tatorten genommen hatten. Vier Angeklagte mit je einem Vertreter auf der einen Seite, Staatsanwalt und drei Nebenkläger-Vertreter auf der anderen. Der Vorsitzende Richter Jürgen Zöllner lie...',
       'publishedAt': 1702400400,
     }]);
   } finally {
@@ -1503,7 +1503,7 @@ Deno.test('getRSSFeed - HV', async () => {
           'https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4',
       },
       'description':
-        'Growth of SaaS The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups [&#8230;]\nThe post Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions? appeared first on Hippovideo.io.',
+        '<p>Growth of SaaS The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups [&#8230;]</p>\n<p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>',
       'author': 'Nayana',
       'publishedAt': 1697811248,
     }]);
