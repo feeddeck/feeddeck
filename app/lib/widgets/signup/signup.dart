@@ -62,8 +62,14 @@ class _SignUpState extends State<SignUp> {
       return 'Password is required';
     }
 
-    if (value.length < 6) {
-      return 'Password must be a least 6 characters long';
+    if (value.length < 8) {
+      return 'Password must be a least 8 characters long';
+    }
+
+    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+    RegExp regExp = RegExp(pattern);
+    if (!regExp.hasMatch(value)) {
+      return 'Password must contain at least one upper case letter, one lower case letter and one number';
     }
 
     return null;
