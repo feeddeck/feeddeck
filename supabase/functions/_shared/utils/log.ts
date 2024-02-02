@@ -1,9 +1,36 @@
+import { FEEDDECK_LOG_LEVEL } from './constants.ts';
+
 export const log = (
   level: 'debug' | 'info' | 'warning' | 'error',
   message: string,
   // deno-lint-ignore no-explicit-any
   fields?: Record<string, any>,
 ) => {
+  /**
+   * Check that the provided log level is within the configured log level
+   * (FEEDDECK_LOG_LEVEL). If this is the case the log line will be printed to
+   * the console, otherwise it will be ignored.
+   */
+  switch (FEEDDECK_LOG_LEVEL) {
+    case 'info':
+      if (level === 'debug') {
+        return;
+      }
+      break;
+    case 'warning':
+      if (level === 'debug' || level === 'info') {
+        return;
+      }
+      break;
+    case 'error':
+      if (level === 'error' || level === 'warning' || level === 'info') {
+        return;
+      }
+      break;
+    default:
+      break;
+  }
+
   const output = JSON.stringify({
     'time': new Date().toUTCString(),
     'level': level,

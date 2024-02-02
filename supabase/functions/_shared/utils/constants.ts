@@ -1,3 +1,6 @@
+export const FEEDDECK_LOG_LEVEL = Deno.env.get('FEEDDECK_LOG_LEVEL') ??
+  'info';
+
 /**
  * Supabase Configuration
  * - FEEDDECK_SUPABASE_SITE_URL is the site url of the Supabase project as it

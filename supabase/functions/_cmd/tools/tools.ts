@@ -70,6 +70,7 @@ export const runTools = async (args: string[]): Promise<void> => {
         columnId: 'mycolumn',
         userId: 'myuser',
       },
+      undefined,
     );
     log('info', 'Add source', {
       source: source,

@@ -3,6 +3,7 @@ import { Feed, parseFeed } from 'rss';
 import { utils } from '../../utils/index.ts';
 import { feedutils } from './index.ts';
 import { ISource } from '../../models/source.ts';
+import { FEEDDECK_LOG_LEVEL } from '../../utils/constants.ts';
 
 export const getAndParseFeed = async (
   requestUrl: string,
@@ -59,8 +60,10 @@ const _parseFeed = async (
       source: source,
       requestUrl: requestUrl,
       responseStatus: response.status,
-      responseBody: feedData,
-      responseHeaders: Object.fromEntries(response.headers.entries()),
+      responseBody: FEEDDECK_LOG_LEVEL === 'debug' ? feedData : '',
+      responseHeaders: FEEDDECK_LOG_LEVEL === 'debug'
+        ? Object.fromEntries(response.headers.entries())
+        : '',
       error: err.toString(),
     });
     throw new feedutils.FeedGetAndParseError('Failed to parse feed');
@@ -77,7 +80,7 @@ const _parseFeedData = async (
   } catch (err) {
     utils.log('error', 'Failed to parse feed', {
       source: source,
-      xml: feedData,
+      feedData: FEEDDECK_LOG_LEVEL === 'debug' ? feedData : '',
       error: err.toString(),
     });
     throw new feedutils.FeedGetAndParseError('Failed to parse feed');
