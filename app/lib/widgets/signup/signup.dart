@@ -56,7 +56,9 @@ class _SignUpState extends State<SignUp> {
 
   /// [_validatePassword] validates the email address provided via the
   /// [TextField] of the [_passwordController]. The password field can not be
-  /// empty and must have a minimum length of 6 characters.
+  /// empty and must have a minimum length of 8 characters. The password must
+  /// also contain at least one upper case letter, one lower case letter and one
+  /// number.
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';

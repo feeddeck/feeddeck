@@ -47,16 +47,13 @@ class _SignInWithFeedDeckState extends State<SignInWithFeedDeck> {
     return null;
   }
 
-  /// [_validatePassword] validates the email address provided via the
-  /// [TextField] of the [_passwordController]. The password field can not be
-  /// empty and must have a minimum length of 6 characters.
+  /// [_validatePassword] validates the password provided via the [TextField] of
+  /// the [_passwordController]. In opposite to the sign up, reset password and
+  /// change password validations, we just check that the password field is not
+  /// empty.
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
-    }
-
-    if (value.length < 6) {
-      return 'Password must be a least 6 characters long';
     }
 
     return null;
