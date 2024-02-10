@@ -65,7 +65,8 @@ class _ItemYoutubeVideoNativeState extends State<ItemYoutubeVideoNative> {
         if (snapshot.connectionState == ConnectionState.none ||
             snapshot.connectionState == ConnectionState.waiting ||
             snapshot.hasError ||
-            snapshot.data == null) {
+            snapshot.data == null ||
+            snapshot.data!.isEmpty) {
           return ItemMedia(itemMedia: widget.imageUrl);
         }
 
