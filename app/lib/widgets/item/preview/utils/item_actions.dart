@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:feeddeck/utils/openurl.dart';
 import 'package:feeddeck/models/item.dart';
 import 'package:feeddeck/repositories/items_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
+import 'package:feeddeck/utils/openurl.dart';
 
 /// The [ItemActions] widget provides an actions menu for an item, which can be
 /// used to quickly mark an item as read or unread and to add or remove a

@@ -1,4 +1,3 @@
-import 'package:feeddeck/utils/get_feed.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +9,7 @@ import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/repositories/app_repository.dart';
 import 'package:feeddeck/utils/api_exception.dart';
 import 'package:feeddeck/utils/constants.dart';
+import 'package:feeddeck/utils/get_feed.dart';
 import 'package:feeddeck/utils/openurl.dart';
 import 'package:feeddeck/widgets/source/add/add_source_form.dart';
 

@@ -1,6 +1,7 @@
+import 'package:http/http.dart' as http;
+
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/api_exception.dart';
-import 'package:http/http.dart' as http;
 
 /// [getFeed] returns the feed for the provided [sourceType] and [options]. It
 /// can be used to fetch the feed for a source on the client side (app) instead
