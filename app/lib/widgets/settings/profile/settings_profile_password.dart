@@ -24,14 +24,22 @@ class _SettingsProfilePasswordState extends State<SettingsProfilePassword> {
 
   /// [_validatePassword] validates the email address provided via the
   /// [TextField] of the [_newPasswordController]. The password field can not be
-  /// empty and must have a minimum length of 6 characters.
+  /// empty and must have a minimum length of 8 characters. The password must
+  /// also contain at least one upper case letter, one lower case letter and one
+  /// number.
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
     }
 
-    if (value.length < 6) {
-      return 'Password must be a least 6 characters long';
+    if (value.length < 8) {
+      return 'Password must be a least 8 characters long';
+    }
+
+    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+    RegExp regExp = RegExp(pattern);
+    if (!regExp.hasMatch(value)) {
+      return 'Password must contain at least one upper case letter, one lower case letter and one number';
     }
 
     return null;
