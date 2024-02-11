@@ -1,14 +1,16 @@
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 const Download = dynamic(() => import("@/components/download"), { ssr: false });
-import { generalMetadata } from "@/helpers/metadata";
+import { generalMetadata, generalViewport } from "@/helpers/metadata";
 
 export const metadata: Metadata = {
   ...generalMetadata,
   title: "FeedDeck - Follow your RSS and Social Media Feeds",
 };
+
+export const viewport: Viewport = generalViewport;
 
 export default function Home() {
   return (
@@ -47,6 +49,7 @@ export default function Home() {
               src="/hero-1.webp"
               width="616"
               height="616"
+              style={{ width: "auto", height: "auto" }}
               className="object-cover"
               alt="Hero"
               loading="eager"
@@ -83,33 +86,37 @@ export default function Home() {
         <Feature
           title="Deck View"
           description="View all your RSS and social media feeds in a deck layout."
-          image="/feature-1.webp"
+          imageDesktop="/feature-1-desktop.webp"
+          imageMobile="/feature-1-mobile.webp"
         />
         <Feature
           title="Details View"
           description="View the details of all your RSS and social media items."
-          image="/feature-2.webp"
+          imageDesktop="/feature-2-desktop.webp"
+          imageMobile="/feature-2-mobile.webp"
         />
         <Feature
           title="YouTube"
           description="Follow and view your favorite YouTube channels."
-          image="/feature-3.webp"
+          imageDesktop="/feature-3-desktop.webp"
+          imageMobile="/feature-3-mobile.webp"
         />
         <Feature
           title="Podcasts"
           description="Follow and listen to your favorite podcasts, via the built-in podcast player."
-          image="/feature-4.webp"
+          imageDesktop="/feature-4-desktop.webp"
+          imageMobile="/feature-4-mobile.webp"
         />
         <Feature
           title="GitHub"
           description="View your GitHub notifications and activities of your favorite repositories."
-          image="/feature-5.webp"
+          imageDesktop="/feature-5-desktop.webp"
+          imageMobile="/feature-5-mobile.webp"
         />
-        <Feature
+        <FeatureNoBg
           title="Available on all Platforms"
           description="The same experience on all your devices."
           image="/feature-6.webp"
-          noBg={true}
         />
       </div>
 
@@ -133,11 +140,11 @@ export default function Home() {
 }
 
 const Feature = (
-  { title, description, image, noBg }: {
+  { title, description, imageDesktop, imageMobile }: {
     title: string;
     description: string;
-    image: string;
-    noBg?: boolean;
+    imageDesktop: string;
+    imageMobile: string;
   },
 ) => (
   <div className="container mx-auto flex flex-col justify-center p-16 items-center text-center">
@@ -147,7 +154,39 @@ const Feature = (
     <div className="mb-5 font-light text-gray-400 sm:text-xl">
       {description}
     </div>
-    <div className={noBg ? "p-2 rounded-lg" : "p-2 bg-secondary rounded-lg"}>
+    <div className="p-2 bg-secondary rounded-lg">
+      <picture>
+        <source media="(max-width: 640px)" srcSet={imageMobile} />
+        <source media="(min-width: 640px)" srcSet={imageDesktop} />
+        <Image
+          src={imageDesktop}
+          width={0}
+          height={0}
+          style={{ width: "100%", height: "auto" }}
+          className="object-cover"
+          alt="Feature"
+          loading="eager"
+        />
+      </picture>
+    </div>
+  </div>
+);
+
+const FeatureNoBg = (
+  { title, description, image }: {
+    title: string;
+    description: string;
+    image: string;
+  },
+) => (
+  <div className="container mx-auto flex flex-col justify-center p-16 items-center text-center">
+    <div className="mb-2 text-4xl tracking-tight font-extrabold">
+      {title}
+    </div>
+    <div className="mb-5 font-light text-gray-400 sm:text-xl">
+      {description}
+    </div>
+    <div className="p-2 rounded-lg">
       <Image
         src={image}
         width={0}

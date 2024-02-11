@@ -1,15 +1,17 @@
 import { ReactNode, useState } from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { generalMetadata } from "@/helpers/metadata";
+import { generalMetadata, generalViewport } from "@/helpers/metadata";
 import GetStartedEntry from "@/components/getstartedentry";
 
 export const metadata: Metadata = {
   ...generalMetadata,
   title: "FeedDeck - Support",
 };
+
+export const viewport: Viewport = generalViewport;
 
 export default function Support() {
   return (

@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
-import { generalMetadata } from "@/helpers/metadata";
+import { generalMetadata, generalViewport } from "@/helpers/metadata";
 
 export const metadata: Metadata = {
   ...generalMetadata,
   title: "FeedDeck - Privacy Policy",
 };
+
+export const viewport: Viewport = generalViewport;
 
 export default function PrivacyPolicy() {
   return (
