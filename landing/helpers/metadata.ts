@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 export const generalMetadata: Metadata = {
   description: "Follow your RSS and Social Media Feeds",
@@ -7,12 +7,11 @@ export const generalMetadata: Metadata = {
     name: "Rico Berger",
   },
   keywords: ["FeedDeck", "RSS", "Social Media", "Feeds"],
-  themeColor: "#1f2229",
   metadataBase: process.env.NEXT_PUBLIC_METADATA_BASE
     ? new URL(process.env.NEXT_PUBLIC_METADATA_BASE)
     : process.env.NODE_ENV === "development"
-    ? new URL("http://localhost:3000")
-    : new URL("https://feeddeck.app"),
+      ? new URL("http://localhost:3000")
+      : new URL("https://feeddeck.app"),
   icons: [
     {
       rel: "apple-touch-icon",
@@ -112,3 +111,7 @@ export const generalMetadata: Metadata = {
     "msApplication-PackageFamilyName": "26077RicoBerger.FeedDeck_2w82je6nmmv2c",
   },
 };
+
+export const generalViewport: Viewport = {
+  themeColor: "#1f2229",
+}

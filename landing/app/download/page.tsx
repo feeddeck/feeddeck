@@ -1,12 +1,14 @@
 import { downloads } from "@/helpers/helpers";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
-import { generalMetadata } from "@/helpers/metadata";
+import { generalMetadata, generalViewport } from "@/helpers/metadata";
 
 export const metadata: Metadata = {
   ...generalMetadata,
   title: "FeedDeck - Download",
 };
+
+export const viewport: Viewport = generalViewport;
 
 export default function Download() {
   return (
