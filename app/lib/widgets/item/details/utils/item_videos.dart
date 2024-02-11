@@ -51,6 +51,9 @@ class ItemVideoQuality {
 /// by the user. It should be used in combination with the [ItemVideos] widget
 /// and is responsible for the actual implementation of the video player.
 ///
+/// If the provided [video] doesn't contain the audio stream it can be passed
+/// via the [audio] parameter.
+///
 /// The optional [qualities] parameter can be used to display a list of
 /// different qualities for the video, so that a user can select a lower quality
 /// if the video is not loading fast enough.
@@ -58,10 +61,12 @@ class ItemVideoPlayer extends StatefulWidget {
   const ItemVideoPlayer({
     super.key,
     required this.video,
+    this.audio,
     this.qualities,
   });
 
   final String video;
+  final String? audio;
   final List<ItemVideoQuality>? qualities;
 
   @override
@@ -114,12 +119,9 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                         return [
                           ListTile(
                             mouseCursor: SystemMouseCursors.click,
-                            onTap: () {
+                            onTap: () async {
                               Navigator.of(context).pop();
-                              player.open(
-                                Media(quality.value.video),
-                                play: true,
-                              );
+                              await _playerOpen(quality.value.video);
                             },
                             title: Text(quality.value.quality),
                           ),
@@ -129,12 +131,9 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                       return [
                         ListTile(
                           mouseCursor: SystemMouseCursors.click,
-                          onTap: () {
+                          onTap: () async {
                             Navigator.of(context).pop();
-                            player.open(
-                              Media(quality.value.video),
-                              play: true,
-                            );
+                            await _playerOpen(quality.value.video);
                           },
                           title: Text(quality.value.quality),
                         ),
@@ -205,13 +204,32 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
     ];
   }
 
+  /// [_playerOpen] opens the video player with the provided [video] and sets
+  /// the audio track if it is provided via the [audio] parameter.
+  Future<void> _playerOpen(String video) async {
+    await player.open(
+      Media(video),
+      play: false,
+    );
+
+    /// Load an external audio track when it is provided via the [audio]
+    /// parameter.
+    /// See: https://github.com/media-kit/media-kit?tab=readme-ov-file#load-external-audio-track
+    if (widget.audio != null) {
+      await player.setAudioTrack(
+        AudioTrack.uri(
+          widget.audio!,
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    player.open(
-      Media(widget.video),
-      play: false,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _playerOpen(widget.video);
+    });
   }
 
   @override
