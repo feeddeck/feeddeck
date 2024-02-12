@@ -126,7 +126,8 @@ const scheduleSources = async (
     log('info', 'Fetched profiles', { profilesCount: profiles.length });
     for (const profile of profiles) {
       /**
-       * Fetch all sources for the current user profile which where not updated in the last hour.
+       * Fetch all sources for the current user profile which where not updated
+       * in the last hour.
        */
       const { data: sources, error: sourcesError } = await supabaseClient
         .from(
@@ -146,6 +147,27 @@ const scheduleSources = async (
           sourcesCount: sources.length,
         });
         for (const source of sources) {
+          /**
+           * Skip "reddit" and "nitter" sources for users on the free tier, when
+           * the source was already updated in the last 24 hours. This is done
+           * to avoid hitting the rate limits of the Reddit and Nitter APIs.
+           */
+          if (
+            profile.tier === 'free' &&
+            (source.type === 'reddit' || source.type === 'nitter')
+          ) {
+            if (
+              source.updatedAt > Math.floor(new Date().getTime() / 1000) -
+                  (60 * 60 * 24)
+            ) {
+              log('debug', 'Skip source', {
+                'source': source.id,
+                'profile': profile.id,
+              });
+              continue;
+            }
+          }
+
           /**
            * Schedule the current source for the worker. The scheduled "job"
            * contains the source and the users profile since it is possible that
