@@ -36,19 +36,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (!req.headers.get('referer')?.includes(FEEDDECK_SUPABASE_SITE_URL)) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid referer' }),
-        {
-          headers: {
-            ...imageCorsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          status: 400,
-        },
-      );
-    }
-
     let response = await fetchWithTimeout(media, { method: 'get' }, 5000);
     response = new Response(response.body, response);
     response.headers.set(
