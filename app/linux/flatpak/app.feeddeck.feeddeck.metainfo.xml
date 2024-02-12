@@ -50,6 +50,69 @@
   </categories>
 
   <releases>
+    <release version="v1.3.0" date="2024-02-12">
+      <description>
+        <p>Added</p>
+        <ul>
+          <li>#136: [nitter] Add Support for Piped Videos @ricoberger</li>
+          <li>#137: [landing] Add Feature Images for Mobile Screens @ricoberger</li>
+          <li>#135: [mastodon] Add Support for YouTube Videos @ricoberger</li>
+          <li>#134: [reddit] Add Support for YouTube Videos @ricoberger</li>
+          <li>#132: [core] Add Continuous Delivery Workflow for Linux arm64 @ricoberger</li>
+          <li>#128: [core] Make Log Level Configurable @ricoberger</li>
+          <li>#125: [core] Add Open Link Action @ricoberger</li>
+          <li>#118: [core] Add Client Side Scraping of Sources @ricoberger</li>
+          <li>#105: [core] Refactor Tools and add get-feed Tool @ricoberger</li>
+          <li>#101: [rss] Show Videos from RSS Feeds @ricoberger</li>
+          <li>#98: [core] Add Tests for Sources @ricoberger</li>
+          <li>#97: [core] Add Test Setup for Deno @ricoberger</li>
+          <li>#94: [lemmy] Add Support for Lemmy @ricoberger</li>
+          <li>#87: [core] Add Test Setup for Flutter @ricoberger</li>
+        </ul>
+
+        <p>Fixed</p>
+        <ul>
+          <li>#133: [core] Fix Password Validations @ricoberger</li>
+          <li>#124: [core] Add Missing SafeArea Widget @ricoberger</li>
+          <li>#96: [core] Fix Converting of HTML to Plain Text in Description @ricoberger</li>
+          <li>#93: [core] Fix Index Reset for Tabs in Small Deck Layout @ricoberger</li>
+        </ul>
+
+        <p>Changed</p>
+        <ul>
+          <li>#138: [core] Increase Update Interval for Reddit and Nitter @ricoberger</li>
+          <li>#131: [core] Update macOS GitHub Action Runners @ricoberger</li>
+          <li>#130: [core] Forbid Weak Passwords @ricoberger</li>
+          <li>#129: [rss] Do Not Remove HTML Tags @ricoberger</li>
+          <li>#127: Bump the docker group in /supabase/functions/_cmd with 1 update @dependabot</li>
+          <li>#126: Bump the npm-landing group in /landing with 2 updates @dependabot</li>
+          <li>#121: Bump the pub group in /app with 2 updates @dependabot</li>
+          <li>#120: Bump the npm-landing group in /landing with 1 update @dependabot</li>
+          <li>#123: [landing] Add Lemmy Icon @ricoberger</li>
+          <li>#122: [core] Fix Naming of Files @ricoberger</li>
+          <li>#119: Bump the pub group in /app with 9 updates @dependabot</li>
+          <li>#114: Bump the docker group in /supabase/functions/_cmd with 1 update @dependabot</li>
+          <li>#110: Bump the github-actions group with 4 updates @dependabot</li>
+          <li>#116: Bump the npm-landing group in /landing with 11 updates @dependabot</li>
+          <li>#113: [core] Add Assignees to Dependabot Configuration @ricoberger</li>
+          <li>#112: [core] Add Additional Headers for Web Deployment @ricoberger</li>
+          <li>#106: Update Flutter to Version 3.16.5 @ricoberger</li>
+          <li>#104: [core] Replace Deprecated serve Function @ricoberger</li>
+          <li>#103: [core] Improve Error Handling for Feed Edge Functions @ricoberger</li>
+          <li>#102: [core] Disable Right Click for Item Actions on Web @ricoberger</li>
+          <li>#100: [core] Update Deno Modules @ricoberger</li>
+          <li>#99: [rss] Parse Atom and RDF Feeds from Websites @ricoberger</li>
+          <li>#95: [core] Improve ItemVideoPlayer Widget @ricoberger</li>
+          <li>#89: Bump the npm-email-templates group in /supabase/email-templates with 1 update @dependabot</li>
+          <li>#90: Bump the pub group in /app with 1 update @dependabot</li>
+          <li>#91: Bump the npm-landing group in /landing with 7 updates @dependabot</li>
+          <li>#92: Bump the docker group in /supabase/functions/_cmd with 1 update @dependabot</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.2.1</url>
+    </release>
+
     <release version="v1.2.1" date="2023-11-30">
       <description>
         <p>Fixed</p>

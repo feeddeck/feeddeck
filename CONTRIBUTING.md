@@ -385,21 +385,8 @@ Android, macOS, Windows and Linux if you do not want to use the official ones.
 5. Build the app for Web by running `flutter build web`. The build can be found
    at `app/build/web` and must be uploaded to your hosting provider.
 
-6. Build the app for Linux by running `flutter build linux --release`. To build
-   the `arm64` version the following commands can be run on a Raspberry Pi. Once
-   the `feeddeck-linux-arm64.tar.gz` archive was created it can be uploaded to
-   the GitHub release.
-
-   ```sh
-   cp linux/flatpak/app.feeddeck.feeddeck.desktop build/linux/arm64/release/bundle/
-   cp linux/flatpak/app.feeddeck.feeddeck.metainfo.xml build/linux/arm64/release/bundle/
-   cp linux/flatpak/app.feeddeck.feeddeck.svg build/linux/arm64/release/bundle/
-   cd build
-   cp -r linux/arm64/release/bundle/ feeddeck-linux-arm64
-   tar -czf feeddeck-linux-arm64.tar.gz feeddeck-linux-arm64
-   ```
-
-   Update the `app.feeddeck.feeddeck.yml` file at
+6. Build the app for Linux by running `flutter build linux --release`. Update
+   the `app.feeddeck.feeddeck.yml` file at
    [github.com/flathub/app.feeddeck.feeddeck](https://github.com/flathub/app.feeddeck.feeddeck)
    with the new release.
 
