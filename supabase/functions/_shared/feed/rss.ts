@@ -340,7 +340,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     for (const media of entry['media:content']) {
       if (
         media.medium && media.medium === 'image' && media.url &&
-        media.url.startsWith('https://') && !media.url.endsWith('.svg')
+        (media.url.startsWith('https://') || media.url.startsWith('http://')) &&
+        !media.url.endsWith('.svg')
       ) {
         return media.url;
       }
@@ -349,7 +350,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
 
   if (
     entry['media:thumbnails'] && entry['media:thumbnails'].url &&
-    entry['media:thumbnails'].url.startsWith('https://')
+    (entry['media:thumbnails'].url.startsWith('https://') ||
+      entry['media:thumbnails'].url.startsWith('http://'))
   ) {
     return entry['media:thumbnails'].url;
   }
@@ -361,7 +363,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
           if (
             mediaContent.medium && mediaContent.medium === 'image' &&
             mediaContent.url &&
-            mediaContent.url.startsWith('https://') &&
+            (mediaContent.url.startsWith('https://') ||
+              mediaContent.url.startsWith('http://')) &&
             !mediaContent.url.endsWith('.svg')
           ) {
             return mediaContent.url;
@@ -376,7 +379,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       if (
         attachment.mimeType && attachment.mimeType.startsWith('image/') &&
         attachment.url &&
-        attachment.url.startsWith('https://') &&
+        (attachment.url.startsWith('https://') ||
+          attachment.url.startsWith('http://')) &&
         !attachment.url.endsWith('.svg')
       ) {
         return attachment.url;
@@ -389,7 +393,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       unescape(entry.description.value),
     );
     if (
-      matches && matches.length == 2 && matches[1].startsWith('https://') &&
+      matches && matches.length == 2 &&
+      (matches[1].startsWith('https://') || matches[1].startsWith('http://')) &&
       !matches[1].endsWith('.svg')
     ) {
       return matches[1];
@@ -401,7 +406,8 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       unescape(entry.content.value),
     );
     if (
-      matches && matches.length == 2 && matches[1].startsWith('https://') &&
+      matches && matches.length == 2 &&
+      (matches[1].startsWith('https://') || matches[1].startsWith('http://')) &&
       !matches[1].endsWith('.svg')
     ) {
       return matches[1];
@@ -421,7 +427,8 @@ const getVideo = (entry: FeedEntry): string | undefined => {
       if (
         attachment.mimeType && attachment.mimeType.startsWith('video/') &&
         attachment.url &&
-        attachment.url.startsWith('https://')
+        (attachment.url.startsWith('https://') ||
+          attachment.url.startsWith('http://'))
       ) {
         return attachment.url;
       }
