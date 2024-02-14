@@ -4,6 +4,7 @@ import 'package:feeddeck/models/item.dart';
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_description.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_media.dart';
+import 'package:feeddeck/widgets/item/details/utils/item_piped/item_piped_video.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_subtitle.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_title.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_videos.dart';
@@ -47,6 +48,14 @@ class ItemDetailsLemmy extends StatelessWidget {
           item.media!.startsWith('https://www.youtube.com/watch?') ||
           item.media!.startsWith('https://m.youtube.com/watch?')) {
         return ItemYoutubeVideo(
+          null,
+          item.media!,
+        );
+      }
+
+      if (item.media!.startsWith('https://piped.video/watch?v=') ||
+          item.media!.startsWith('https://piped.video/')) {
+        return ItemPipedVideo(
           null,
           item.media!,
         );

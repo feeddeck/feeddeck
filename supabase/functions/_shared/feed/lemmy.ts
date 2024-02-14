@@ -310,7 +310,12 @@ const getMedia = (entry: FeedEntry): string | undefined => {
        */
       entry.links[0].href.startsWith('https://youtu.be/') ||
       entry.links[0].href.startsWith('https://www.youtube.com/watch?') ||
-      entry.links[0].href.startsWith('https://m.youtube.com/watch?')
+      entry.links[0].href.startsWith('https://m.youtube.com/watch?') ||
+      /**
+       * Piped
+       */
+      entry.links[0].href.startsWith('https://piped.video/watch?v=') ||
+      entry.links[0].href.startsWith('https://piped.video/')
     ) {
       return entry.links[0].href;
     }
