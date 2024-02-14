@@ -1,4 +1,3 @@
-import 'package:feeddeck/widgets/item/preview/item_preview_fourchan.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:feeddeck/models/item.dart';
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/repositories/items_repository.dart';
+import 'package:feeddeck/widgets/item/preview/item_preview_fourchan.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_github.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_googlenews.dart';
 import 'package:feeddeck/widgets/item/preview/item_preview_lemmy.dart';
