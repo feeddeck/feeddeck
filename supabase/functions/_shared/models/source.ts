@@ -3,6 +3,7 @@ import { ISourceOptionsGoogleNews } from './sources/googlenews.ts';
 import { ISourceOptionsStackOverflow } from './sources/stackoverflow.ts';
 
 export type TSourceType =
+  | 'fourchan'
   | 'github'
   | 'googlenews'
   | 'lemmy'
@@ -32,6 +33,7 @@ export interface ISource {
 }
 
 export interface ISourceOptions {
+  fourchan?: string;
   github?: ISourceOptionsGithub;
   googlenews?: ISourceOptionsGoogleNews;
   lemmy?: string;

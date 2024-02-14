@@ -8,6 +8,7 @@ import 'package:feeddeck/utils/fd_icons.dart';
 
 /// [FDSourceType] is a enum value which defines the source type. A source can
 /// have one of the following types:
+/// - [fourchan]
 /// - [github]
 /// - [googlenews]
 /// - [lemmy]
@@ -28,6 +29,7 @@ import 'package:feeddeck/utils/fd_icons.dart';
 /// the list, so that we can loop though the types in a ListView / GridView
 /// builder via `FDSourceType.values.length - 1`.
 enum FDSourceType {
+  fourchan,
   github,
   googlenews,
   lemmy,
@@ -57,6 +59,8 @@ extension FDSourceTypeExtension on FDSourceType {
   /// [toLocalizedString] returns a localized string for a source type.
   String toLocalizedString() {
     switch (this) {
+      case FDSourceType.fourchan:
+        return '4chan';
       case FDSourceType.github:
         return 'GitHub';
       case FDSourceType.googlenews:
@@ -93,6 +97,8 @@ extension FDSourceTypeExtension on FDSourceType {
   /// [icon] returns the icon for a source.
   IconData get icon {
     switch (this) {
+      case FDSourceType.fourchan:
+        return FDIcons.fourchan;
       case FDSourceType.github:
         return FDIcons.github;
       case FDSourceType.googlenews:
@@ -129,6 +135,8 @@ extension FDSourceTypeExtension on FDSourceType {
   /// [bgColor] returns the background color for the source icon.
   Color get bgColor {
     switch (this) {
+      case FDSourceType.fourchan:
+        return const Color(0xff880000);
       case FDSourceType.github:
         return const Color(0xff000000);
       case FDSourceType.googlenews:
@@ -166,6 +174,8 @@ extension FDSourceTypeExtension on FDSourceType {
   /// used toether with the [bgColor].
   Color get fgColor {
     switch (this) {
+      case FDSourceType.fourchan:
+        return const Color(0xffffffff);
       case FDSourceType.github:
         return const Color(0xffffffff);
       case FDSourceType.googlenews:
@@ -268,6 +278,7 @@ class FDSource {
 /// [FDSourceOptions] defines all options for the different source types which
 /// are available.
 class FDSourceOptions {
+  String? fourchan;
   FDGitHubOptions? github;
   FDGoogleNewsOptions? googlenews;
   String? lemmy;
@@ -284,6 +295,7 @@ class FDSourceOptions {
   String? youtube;
 
   FDSourceOptions({
+    this.fourchan,
     this.github,
     this.googlenews,
     this.lemmy,
@@ -302,6 +314,10 @@ class FDSourceOptions {
 
   factory FDSourceOptions.fromJson(Map<String, dynamic> responseData) {
     return FDSourceOptions(
+      fourchan: responseData.containsKey('fourchan') &&
+              responseData['fourchan'] != null
+          ? responseData['fourchan']
+          : null,
       github:
           responseData.containsKey('github') && responseData['github'] != null
               ? FDGitHubOptions.fromJson(responseData['github'])
@@ -360,6 +376,7 @@ class FDSourceOptions {
 
   Map<String, dynamic> toJson() {
     return {
+      'fourchan': fourchan,
       'github': github?.toJson(),
       'googlenews': googlenews?.toJson(),
       'lemmy': lemmy,
