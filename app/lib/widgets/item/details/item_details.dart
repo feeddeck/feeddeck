@@ -1,3 +1,4 @@
+import 'package:feeddeck/widgets/item/details/item_details_fourchan.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -61,6 +62,12 @@ class ItemDetails extends StatelessWidget {
 
   Widget _buildDetails() {
     switch (source.type) {
+      case FDSourceType.fourchan:
+        return ItemDetailsFourChan(
+          item: item,
+          source: source,
+        );
+
       /// Sources with type [FDSourceType.github] do not provide a details view,
       /// because we directly open the link, when the user clicks on the
       /// corresponding preview item.

@@ -1,3 +1,4 @@
+import 'package:feeddeck/widgets/item/preview/item_preview_fourchan.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -44,6 +45,11 @@ class ItemPreview extends StatelessWidget {
     /// Based on the [source.type] we display a different preview. The preview
     /// for each source type is implemented in a separate widget.
     switch (source.type) {
+      case FDSourceType.fourchan:
+        return ItemPreviewFourChan(
+          item: item,
+          source: source,
+        );
       case FDSourceType.github:
         return ItemPreviewGithub(
           item: item,

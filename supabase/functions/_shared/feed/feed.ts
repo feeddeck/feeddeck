@@ -18,6 +18,7 @@ import { getGithubFeed } from './github.ts';
 import { IProfile } from '../models/profile.ts';
 import { getNitterFeed } from './nitter.ts';
 import { getMastodonFeed } from './mastodon.ts';
+import { getFourChanFeed } from './fourchan.ts';
 // import { getXFeed } from './x.ts';
 
 /**
@@ -33,6 +34,14 @@ export const getFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   switch (source.type) {
+    case 'fourchan':
+      return await getFourChanFeed(
+        supabaseClient,
+        redisClient,
+        profile,
+        source,
+        feedData,
+      );
     case 'github':
       return await getGithubFeed(
         supabaseClient,

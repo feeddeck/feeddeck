@@ -1,3 +1,4 @@
+import 'package:feeddeck/widgets/source/add/add_source_fourchan.dart';
 import 'package:flutter/material.dart';
 
 import 'package:feeddeck/models/column.dart';
@@ -45,6 +46,10 @@ class _AddSourceState extends State<AddSource> {
   /// user selected a source type, the functions returns the form for the
   /// selected source type.
   Widget _buildBody() {
+    if (_sourceType == FDSourceType.fourchan) {
+      return AddSourceFourChan(column: widget.column);
+    }
+
     if (_sourceType == FDSourceType.github) {
       return AddSourceGitHub(column: widget.column);
     }
