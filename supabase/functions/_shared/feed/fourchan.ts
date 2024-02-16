@@ -9,6 +9,102 @@ import { feedutils } from './utils/index.ts';
 import { IProfile } from '../models/profile.ts';
 import { utils } from '../utils/index.ts';
 
+/**
+ * `isBoard` checks if the provided `board` is a valid 4chan board.
+ * The list of boards must be synced with the list of boards in the
+ * `add_source_fourchan.dart` file in the Flutter app.
+ */
+const isBoard = (board: string): boolean => {
+  const boards = [
+    'a',
+    'c',
+    'w',
+    'm',
+    'cgl',
+    'cm',
+    'f',
+    'n',
+    'jp',
+    'vt',
+    'v',
+    'vg',
+    'vm',
+    'vmg',
+    'vp',
+    'vr',
+    'vrpg',
+    'vst',
+    'co',
+    'g',
+    'tv',
+    'k',
+    'o',
+    'an',
+    'tg',
+    'sp',
+    'xs',
+    'pw',
+    'sci',
+    'his',
+    'int',
+    'out',
+    'toy',
+    'i',
+    'po',
+    'p',
+    'ck',
+    'ic',
+    'wg',
+    'lit',
+    'mu',
+    'fa',
+    '3',
+    'gd',
+    'diy',
+    'wsg',
+    'qst',
+    'biz',
+    'trv',
+    'fit',
+    'x',
+    'adv',
+    'lgbt',
+    'mlp',
+    'news',
+    'wsr',
+    'vip',
+    'b',
+    'r9k',
+    'pol',
+    'bant',
+    'soc',
+    's4s',
+    's',
+    'hc',
+    'hm',
+    'h',
+    'e',
+    'u',
+    'd',
+    'y',
+    't',
+    'hr',
+    'gif',
+    'aco',
+    'r',
+  ];
+
+  return boards.includes(board);
+};
+
+/**
+ * `isFourChan` checks if the provided `url` is a valid 4chan url. A url is
+ * considered valid if it starts with `https://boards.4chan.org/`.
+ */
+export const isFourChanUrl = (url: string): boolean => {
+  return url.startsWith('https://boards.4chan.org/');
+};
+
 export const getFourChanFeed = async (
   _supabaseClient: SupabaseClient,
   _redisClient: Redis | undefined,
@@ -25,8 +121,24 @@ export const getFourChanFeed = async (
     throw new feedutils.FeedValidationError('Invalid source options');
   }
 
+  if (
+    source.options.fourchan.startsWith('https://boards.4chan.org/') &&
+    source.options.fourchan.endsWith('/index.rss')
+  ) {
+    /**
+     * Do nothing since the provided options are already an 4chan RSS feed.
+     */
+  } else if (source.options.fourchan.startsWith('https://boards.4chan.org/')) {
+    source.options.fourchan = `${source.options.fourchan}index.rss`;
+  } else if (isBoard(source.options.fourchan)) {
+    source.options.fourchan =
+      `https://boards.4chan.org/${source.options.fourchan}/index.rss`;
+  } else {
+    throw new feedutils.FeedValidationError('Invalid source options');
+  }
+
   const feed = await feedutils.getAndParseFeed(
-    `https://boards.4chan.org/${source.options.fourchan}/index.rss`,
+    source.options.fourchan,
     source,
     feedData,
   );
