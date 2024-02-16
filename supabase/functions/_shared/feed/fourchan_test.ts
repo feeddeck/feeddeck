@@ -75,23 +75,23 @@ Deno.test('getFourChanFeed', async () => {
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'fourchan-myuser-mycolumn-9e3669d19b675bd57058fd4664205d2a',
+      'id': 'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261',
       'columnId': 'mycolumn',
       'userId': 'myuser',
       'type': 'fourchan',
       'title': '/v/ - Video Games',
       'options': {
-        'fourchan': 'v',
+        'fourchan': 'https://boards.4chan.org/v/index.rss',
       },
       'link': 'http://boards.4chan.org/v/./',
     });
     feedutils.assertEqualsItems(items, [
       {
         'id':
-          'fourchan-myuser-mycolumn-9e3669d19b675bd57058fd4664205d2a-4cedc3982b91056cf239c4a546aceca7',
+          'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261-4cedc3982b91056cf239c4a546aceca7',
         'userId': 'myuser',
         'columnId': 'mycolumn',
-        'sourceId': 'fourchan-myuser-mycolumn-9e3669d19b675bd57058fd4664205d2a',
+        'sourceId': 'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261',
         'title':
           'Will the Cyberpunk sequel manage to get to the level of hype...',
         'link': 'http://boards.4chan.org/v/thread/666978687#666978687',
@@ -103,10 +103,10 @@ Deno.test('getFourChanFeed', async () => {
       },
       {
         'id':
-          'fourchan-myuser-mycolumn-9e3669d19b675bd57058fd4664205d2a-2d682afe971ddf86fb31f588bbc9b808',
+          'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261-2d682afe971ddf86fb31f588bbc9b808',
         'userId': 'myuser',
         'columnId': 'mycolumn',
-        'sourceId': 'fourchan-myuser-mycolumn-9e3669d19b675bd57058fd4664205d2a',
+        'sourceId': 'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261',
         'title': "new games can't have this feel",
         'link': 'http://boards.4chan.org/v/thread/666978663#666978663',
         'media': 'http://i.4cdn.org/v/1707857926060804s.jpg',

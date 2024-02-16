@@ -18,7 +18,7 @@ import { getGithubFeed } from './github.ts';
 import { IProfile } from '../models/profile.ts';
 import { getNitterFeed } from './nitter.ts';
 import { getMastodonFeed } from './mastodon.ts';
-import { getFourChanFeed } from './fourchan.ts';
+import { getFourChanFeed, isFourChanUrl } from './fourchan.ts';
 // import { getXFeed } from './x.ts';
 
 /**
@@ -116,6 +116,13 @@ export const getFeed = async (
       );
     case 'rss':
       try {
+        if (source.options?.rss && isFourChanUrl(source.options.rss)) {
+          return await getFourChanFeed(supabaseClient, redisClient, profile, {
+            ...source,
+            options: { fourchan: source.options.rss },
+          }, feedData);
+        }
+
         if (source.options?.rss && isLemmyUrl(source.options.rss)) {
           return await getLemmyFeed(supabaseClient, redisClient, profile, {
             ...source,
