@@ -51,13 +51,7 @@ dependencies:
   intl: ^0.19.0
   just_audio: ^0.9.32
   just_audio_background: ^0.0.1-beta.10
-  # We use our own fork of the "just_audio_media_kit" package, where we
-  # replaced the "media_kit_libs_windows_audio" with
-  # "media_kit_libs_windows_video" package, so that we can play video files on
-  # Windows via the "media_kit" package.
-  just_audio_media_kit:
-    git:
-      url: https://github.com/feeddeck/just_audio_media_kit.git
+  just_audio_media_kit: ^2.0.1
   media_kit: ^1.1.10+1
   media_kit_video: ^1.2.4
   media_kit_libs_video: ^1.0.4

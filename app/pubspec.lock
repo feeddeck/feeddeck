@@ -435,12 +435,11 @@ packages:
   just_audio_media_kit:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "5980ceac7cc385baf2269eda2dcb024d3e5203cc"
-      url: "https://github.com/feeddeck/just_audio_media_kit.git"
-    source: git
-    version: "1.0.0"
+      name: just_audio_media_kit
+      sha256: "7827b40f1532e93453b0e9f4e32e9a4b45a0e5782e5454b98f0c2edceac8cd4a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   just_audio_platform_interface:
     dependency: transitive
     description:
