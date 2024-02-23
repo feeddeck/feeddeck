@@ -55,6 +55,15 @@ class ItemDescription extends StatelessWidget {
           codeblockDecoration: const BoxDecoration(
             color: Constants.secondary,
           ),
+          blockquoteDecoration: const BoxDecoration(
+            color: Constants.secondary,
+            border: Border(
+              left: BorderSide(
+                color: Constants.primary,
+                width: 1,
+              ),
+            ),
+          ),
         ),
         onTapLink: (text, href, title) {
           if (href != null) {
