@@ -232,78 +232,80 @@ class _SettingsAccountsGithubAddState extends State<SettingsAccountsGithubAdd> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(Constants.spacingMiddle),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MarkdownBody(
-                        selectable: true,
-                        data: _helpText,
-                        onTapLink: (text, href, title) {
-                          try {
-                            if (href != null) {
-                              openUrl(href);
-                            }
-                          } catch (_) {}
-                        },
-                      ),
-                      const SizedBox(
-                        height: Constants.spacingMiddle,
-                      ),
-                      TextFormField(
-                        controller: _tokenController,
-                        keyboardType: TextInputType.text,
-                        autocorrect: false,
-                        enableSuggestions: true,
-                        maxLines: 1,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Token',
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(Constants.spacingMiddle),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MarkdownBody(
+                          selectable: true,
+                          data: _helpText,
+                          onTapLink: (text, href, title) {
+                            try {
+                              if (href != null) {
+                                openUrl(href);
+                              }
+                            } catch (_) {}
+                          },
                         ),
-                        validator: (value) => _validateToken(value),
-                        onFieldSubmitted: (value) => _addAccount(),
-                      ),
-                    ],
+                        const SizedBox(
+                          height: Constants.spacingMiddle,
+                        ),
+                        TextFormField(
+                          controller: _tokenController,
+                          keyboardType: TextInputType.text,
+                          autocorrect: false,
+                          enableSuggestions: true,
+                          maxLines: 1,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Token',
+                          ),
+                          validator: (value) => _validateToken(value),
+                          onFieldSubmitted: (value) => _addAccount(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: Constants.spacingSmall,
-          ),
-          const Divider(
-            color: Constants.dividerColor,
-            height: 1,
-            thickness: 1,
-          ),
-          _buildError(),
-          Padding(
-            padding: const EdgeInsets.all(Constants.spacingMiddle),
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                maximumSize: const Size.fromHeight(
-                  Constants.elevatedButtonSize,
-                ),
-                minimumSize: const Size.fromHeight(
-                  Constants.elevatedButtonSize,
-                ),
-              ),
-              label: const Text('Add Account'),
-              onPressed: _isLoading ? null : _addAccount,
-              icon: _isLoading
-                  ? const ElevatedButtonProgressIndicator()
-                  : const Icon(Icons.add),
+            const SizedBox(
+              height: Constants.spacingSmall,
             ),
-          ),
-        ],
+            const Divider(
+              color: Constants.dividerColor,
+              height: 1,
+              thickness: 1,
+            ),
+            _buildError(),
+            Padding(
+              padding: const EdgeInsets.all(Constants.spacingMiddle),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  maximumSize: const Size.fromHeight(
+                    Constants.elevatedButtonSize,
+                  ),
+                  minimumSize: const Size.fromHeight(
+                    Constants.elevatedButtonSize,
+                  ),
+                ),
+                label: const Text('Add Account'),
+                onPressed: _isLoading ? null : _addAccount,
+                icon: _isLoading
+                    ? const ElevatedButtonProgressIndicator()
+                    : const Icon(Icons.add),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

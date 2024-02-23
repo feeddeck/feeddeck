@@ -7,8 +7,13 @@ import { ISource } from '../../models/source.ts';
 export const getAndParseFeed = async (
   requestUrl: string,
   source: ISource,
+  feedData: string | undefined,
   requestOptions?: RequestInit,
 ): Promise<Feed> => {
+  if (feedData) {
+    return await _parseFeedData(source, feedData);
+  }
+
   try {
     utils.log('debug', 'Get and parse feed', {
       sourceType: source.type,
@@ -44,18 +49,35 @@ const _parseFeed = async (
   source: ISource,
   response: Response,
 ): Promise<Feed> => {
-  const xml = await response.text();
+  const feedData = await response.text();
 
   try {
-    const feed = await parseFeed(xml);
+    const feed = await parseFeed(feedData);
     return feed;
   } catch (err) {
     utils.log('error', 'Failed to parse feed', {
       source: source,
       requestUrl: requestUrl,
       responseStatus: response.status,
-      responseBody: xml,
+      responseBody: feedData,
       responseHeaders: Object.fromEntries(response.headers.entries()),
+      error: err.toString(),
+    });
+    throw new feedutils.FeedGetAndParseError('Failed to parse feed');
+  }
+};
+
+const _parseFeedData = async (
+  source: ISource,
+  feedData: string,
+): Promise<Feed> => {
+  try {
+    const feed = await parseFeed(feedData);
+    return feed;
+  } catch (err) {
+    utils.log('error', 'Failed to parse feed', {
+      source: source,
+      xml: feedData,
       error: err.toString(),
     });
     throw new feedutils.FeedGetAndParseError('Failed to parse feed');

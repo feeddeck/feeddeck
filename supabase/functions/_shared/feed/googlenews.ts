@@ -14,6 +14,7 @@ export const getGooglenewsFeed = async (
   redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.googlenews || !source.options?.googlenews?.type) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -63,6 +64,7 @@ export const getGooglenewsFeed = async (
   const feed = await feedutils.getAndParseFeed(
     source.options.googlenews.url,
     source,
+    feedData,
   );
 
   if (!feed.title.value) {

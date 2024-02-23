@@ -23,6 +23,7 @@ export const getTumblrFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.tumblr) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -48,7 +49,11 @@ export const getTumblrFeed = async (
    * Get the RSS for the provided `tumblr` url and parse it. If a feed doesn't
    * contains a title we return an error.
    */
-  const feed = await feedutils.getAndParseFeed(source.options.tumblr, source);
+  const feed = await feedutils.getAndParseFeed(
+    source.options.tumblr,
+    source,
+    feedData,
+  );
 
   if (!feed.title.value) {
     throw new Error('Invalid feed');

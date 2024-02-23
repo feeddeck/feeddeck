@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { corsHeaders } from '../_shared/utils/cors.ts';
 import { getFeed } from '../_shared/feed/feed.ts';
-import { ISourceOptions, TSourceType } from '../_shared/models/source.ts';
+import { ISource } from '../_shared/models/source.ts';
 import { IProfile } from '../_shared/models/profile.ts';
 import { utils } from '../_shared/utils/index.ts';
 import { feedutils } from '../_shared/feed/utils/index.ts';
@@ -13,8 +13,11 @@ import {
 } from '../_shared/utils/constants.ts';
 
 /**
- * DEPRECATED: This function is deprecated and will be removed in the future.
- * Please use the new `add-or-update-source-v1` function.
+ * The `add-or-update-source-v1` edge function is used to add a new source and
+ * it's corresponding items to the database. It expects a POST request with the
+ * source and an optional `feedData` field. If this field is provide the edge
+ * function can also be used to update a source and it's items. The function
+ * will return the source object as it was added to the database.
  */
 Deno.serve(async (req) => {
   /**
@@ -175,25 +178,15 @@ Deno.serve(async (req) => {
      * Get the column, source typ and options from the request. Based on this
      * information, we get the source and items from the `getFeed` function.
      */
-    const { columnId, type, options }: {
-      columnId: string;
-      type: TSourceType;
-      options: ISourceOptions;
-    } = await req.json();
+    const reqData: { source: ISource; feedData?: string } = await req.json();
+    reqData.source.userId = user.id;
 
     const { source, items } = await getFeed(
       adminSupabaseClient,
       undefined,
       profile[0] as IProfile,
-      {
-        id: '',
-        userId: user.id,
-        columnId: columnId,
-        type: type,
-        options: options,
-        title: '',
-      },
-      undefined,
+      reqData.source,
+      reqData.feedData,
     );
 
     /**

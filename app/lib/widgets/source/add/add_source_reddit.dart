@@ -1,3 +1,5 @@
+import 'package:feeddeck/utils/get_feed.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -52,12 +54,29 @@ class _AddSourceRedditState extends State<AddSourceReddit> {
 
     try {
       AppRepository app = Provider.of<AppRepository>(context, listen: false);
+
+      /// To avoid getting rate limited by Reddit, we already fetch the feed
+      /// here and send it to the Supabase edge function within the [data]
+      /// field.
+      /// Since this only works for the desktop and mobile clients, we have to
+      /// check if the user is on the web, so that we can still try to fetch the
+      /// feed in the edge function.
+      final feedData = kIsWeb
+          ? null
+          : await getFeed(
+              FDSourceType.reddit,
+              FDSourceOptions(
+                reddit: _redditController.text,
+              ),
+            );
+
       await app.addSource(
         widget.column.id,
         FDSourceType.reddit,
         FDSourceOptions(
           reddit: _redditController.text,
         ),
+        feedData,
       );
       setState(() {
         _isLoading = false;

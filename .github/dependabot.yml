@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "@feeddeck/maintainers"
+      - "ricoberger"
     groups:
       github-actions:
         patterns:
@@ -16,7 +16,7 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "@feeddeck/maintainers"
+      - "ricoberger"
     groups:
       pub:
         patterns:
@@ -27,7 +27,7 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "@feeddeck/maintainers"
+      - "ricoberger"
     groups:
       docker:
         patterns:
@@ -38,7 +38,7 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "@feeddeck/maintainers"
+      - "ricoberger"
     groups:
       npm-landing:
         patterns:
@@ -49,7 +49,7 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "@feeddeck/maintainers"
+      - "ricoberger"
     groups:
       npm-email-templates:
         patterns:

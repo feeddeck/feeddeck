@@ -16,6 +16,7 @@ export const getRSSFeed = async (
   _redisClient: Redis | undefined,
   _profile: IProfile,
   source: ISource,
+  feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   /**
    * To get a RSS feed the `source` must have a `rss` option. This option is
@@ -26,7 +27,7 @@ export const getRSSFeed = async (
     throw new feedutils.FeedValidationError('Invalid source options');
   }
 
-  let feed = await getFeed(source);
+  let feed = await getFeed(source, feedData);
   if (!feed) {
     utils.log(
       'debug',
@@ -161,9 +162,16 @@ export const getRSSFeed = async (
  * the feed or undefined if the request failed or the returned response could
  * not be parsed as a feed.
  */
-const getFeed = async (source: ISource): Promise<Feed | undefined> => {
+const getFeed = async (
+  source: ISource,
+  feedData: string | undefined,
+): Promise<Feed | undefined> => {
   try {
-    const feed = await feedutils.getAndParseFeed(source.options!.rss!, source);
+    const feed = await feedutils.getAndParseFeed(
+      source.options!.rss!,
+      source,
+      feedData,
+    );
     return feed;
   } catch (_) {
     return undefined;
@@ -208,7 +216,7 @@ const getFeedFromWebsite = async (
     }
     source.options!.rss = new URL(rssLink, source.options!.rss!).href;
 
-    return getFeed(source);
+    return getFeed(source, undefined);
   } catch (_) {
     return undefined;
   }

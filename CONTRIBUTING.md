@@ -57,16 +57,16 @@ check your installed version:
 ```sh
 $ flutter --version
 
-Flutter 3.16.5 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision 78666c8dc5 (2 days ago) • 2023-12-19 16:14:14 -0800
-Engine • revision 3f3e560236
-Tools • Dart 3.2.3 • DevTools 2.28.4
+Flutter 3.16.9 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 41456452f2 (6 days ago) • 2024-01-25 10:06:23 -0800
+Engine • revision f40e976bed
+Tools • Dart 3.2.6 • DevTools 2.28.5
 
 $ deno --version
 
-deno 1.36.4 (release, aarch64-apple-darwin)
-v8 11.6.189.12
-typescript 5.1.6
+deno 1.40.2 (release, aarch64-apple-darwin)
+v8 12.1.285.6
+typescript 5.3.3
 ```
 
 ### Working with Flutter
@@ -283,6 +283,7 @@ supabase secrets set --env-file supabase/.env
 supabase secrets list
 
 # Deploy all functions
+supabase functions deploy add-or-update-source-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy add-source-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy delete-user-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
 supabase functions deploy generate-magic-link-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json

@@ -138,6 +138,7 @@ Deno.test('getStackoverflowFeed', async () => {
           stackoverflow: { type: 'tag', tag: 'kubernetes', sort: 'newest' },
         },
       },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       'id': 'stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7',

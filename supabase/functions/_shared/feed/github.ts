@@ -12,6 +12,7 @@ export const getGithubFeed = async (
   _redisClient: Redis | undefined,
   profile: IProfile,
   source: ISource,
+  _feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.github || !source.options?.github.type) {
     throw new feedutils.FeedValidationError('Invalid source options');
@@ -441,13 +442,13 @@ const formatDescription = (notification: any): string | undefined => {
     case 'mention':
       return 'You were specifically @mentioned in the content.';
     case 'review_requested':
-      return 'You, or a team you\'re a member of, were requested to review a pull request.';
+      return "You, or a team you're a member of, were requested to review a pull request.";
     case 'security_alert':
       return 'GitHub discovered a security vulnerability in your repository.';
     case 'state_change':
       return 'You changed the thread state (for example, closing an issue or merging a pull request).';
     case 'subscribed':
-      return 'You\'re watching the repository.';
+      return "You're watching the repository.";
     case 'team_mention':
       return 'You were on a team that was mentioned.';
     default:

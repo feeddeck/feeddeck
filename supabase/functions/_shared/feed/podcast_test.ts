@@ -133,6 +133,7 @@ Deno.test('getPodcastFeed - RSS', async () => {
         ...mockSource,
         options: { podcast: 'https://kubernetespodcast.com/feeds/audio.xml' },
       },
+      undefined,
     );
     assertEqualsSource(source, {
       'id': 'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef',
@@ -412,6 +413,7 @@ Deno.test('getPodcastFeed - Apple', async () => {
             'https://podcasts.apple.com/de/podcast/go-time-golang-software-engineering/id1120964487',
         },
       },
+      undefined,
     );
     assertEqualsSource(source, {
       'id': 'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163',

@@ -202,6 +202,7 @@ Deno.test('getMediumFeed - Tag', async () => {
       undefined,
       mockProfile,
       { ...mockSource, options: { medium: '#kubernetes' } },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       id: 'medium-myuser-mycolumn-40f28b0a56743a117745ac7dfd785111',
@@ -295,6 +296,7 @@ Deno.test('getMediumFeed - User', async () => {
       undefined,
       mockProfile,
       { ...mockSource, options: { medium: '@YuriShkuro' } },
+      undefined,
     );
     feedutils.assertEqualsSource(source, {
       id: 'medium-myuser-mycolumn-77107c9209365c6c6c601a9f018a05f4',

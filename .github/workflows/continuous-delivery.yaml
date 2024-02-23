@@ -87,11 +87,12 @@ jobs:
 
           supabase db push
 
-          supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy add-or-update-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          # supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy profile-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          # supabase functions deploy profile-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy profile-v2 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
@@ -109,6 +110,7 @@ jobs:
 
           supabase db push
 
+          supabase functions deploy add-or-update-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
@@ -166,7 +168,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'
+          flutter-version: '3.16.9'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
@@ -209,7 +211,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'
+          flutter-version: '3.16.9'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
@@ -230,7 +232,7 @@ jobs:
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: feeddeck-macos-universal.zip
           path: app/build/macos/Build/Products/Release/feeddeck-macos-universal.zip
@@ -271,7 +273,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'
+          flutter-version: '3.16.9'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
@@ -297,7 +299,7 @@ jobs:
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: feeddeck-linux-x86_64.tar.gz
           path: app/build/feeddeck-linux-x86_64.tar.gz
@@ -329,7 +331,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'
+          flutter-version: '3.16.9'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
@@ -352,7 +354,7 @@ jobs:
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: feeddeck-windows-x86_64.zip
           path: app/build/feeddeck-windows-x86_64.zip
@@ -382,7 +384,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'
+          flutter-version: '3.16.9'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
@@ -414,7 +416,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'
+          flutter-version: '3.16.9'
           channel: 'stable'
           cache: true
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
