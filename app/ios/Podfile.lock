@@ -8,9 +8,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_native_splash (0.0.1):
     - Flutter
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
   - just_audio (0.0.1):
     - Flutter
   - media_kit_libs_ios_video (1.0.4):
@@ -24,12 +21,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (6.19.0):
+  - purchases_flutter (6.21.1):
     - Flutter
-    - PurchasesHybridCommon (= 9.3.0)
-  - PurchasesHybridCommon (9.3.0):
-    - RevenueCat (= 4.33.0)
-  - RevenueCat (4.33.0)
+    - PurchasesHybridCommon (= 9.7.2)
+  - PurchasesHybridCommon (9.7.2):
+    - RevenueCat (= 4.36.3)
+  - RevenueCat (4.36.3)
   - screen_brightness_ios (0.1.0):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -39,7 +36,7 @@ PODS:
     - Flutter
   - sqflite (0.0.3):
     - Flutter
-    - FMDB (>= 2.7.5)
+    - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
   - volume_controller (0.0.1):
@@ -63,14 +60,13 @@ DEPENDENCIES:
   - screen_brightness_ios (from `.symlinks/plugins/screen_brightness_ios/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - volume_controller (from `.symlinks/plugins/volume_controller/ios`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 SPEC REPOS:
   trunk:
-    - FMDB
     - PurchasesHybridCommon
     - RevenueCat
 
@@ -106,7 +102,7 @@ EXTERNAL SOURCES:
   sign_in_with_apple:
     :path: ".symlinks/plugins/sign_in_with_apple/ios"
   sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
+    :path: ".symlinks/plugins/sqflite/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   volume_controller:
@@ -120,21 +116,20 @@ SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   media_kit_libs_ios_video: a5fe24bc7875ccd6378a0978c13185e1344651c1
   media_kit_native_event_loop: e6b2ab20cf0746eb1c33be961fcf79667304fa2a
   media_kit_video: 5da63f157170e5bf303bf85453b7ef6971218a2e
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  purchases_flutter: 72d49bdd40138037da9e0cf29a0a355ff0bbed80
-  PurchasesHybridCommon: 809461dbc8ff23b4dd0d5260c005b4017d6205b6
-  RevenueCat: 1512a074bebd78b7efb341ce1c33bfc8d292c53a
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  purchases_flutter: 89e44b643ec23dc2904c067b2b6ef4b2a6a009d4
+  PurchasesHybridCommon: 9250db8073ad8ad7e84e4544c1f7b8ef6cd969af
+  RevenueCat: 7be0d7bde9efb2fc1ebd1888522c55bb4f9feb18
   screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
-  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
-  sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
+  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
+  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
   volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
 
