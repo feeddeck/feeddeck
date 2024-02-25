@@ -6,9 +6,6 @@ PODS:
   - audio_session (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
   - just_audio (0.0.1):
     - FlutterMacOS
   - media_kit_libs_macos_video (1.0.4):
@@ -22,12 +19,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (6.19.0):
+  - purchases_flutter (6.21.1):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 9.3.0)
-  - PurchasesHybridCommon (9.3.0):
-    - RevenueCat (= 4.33.0)
-  - RevenueCat (4.33.0)
+    - PurchasesHybridCommon (= 9.7.2)
+  - PurchasesHybridCommon (9.7.2):
+    - RevenueCat (= 4.36.3)
+  - RevenueCat (4.36.3)
   - screen_brightness_macos (0.1.0):
     - FlutterMacOS
   - screen_retriever (0.0.1):
@@ -37,9 +34,9 @@ PODS:
     - FlutterMacOS
   - sign_in_with_apple (0.0.1):
     - FlutterMacOS
-  - sqflite (0.0.2):
+  - sqflite (0.0.3):
+    - Flutter
     - FlutterMacOS
-    - FMDB (>= 2.7.5)
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
   - wakelock_plus (0.0.1):
@@ -63,14 +60,13 @@ DEPENDENCIES:
   - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos`)
-  - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/macos`)
+  - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
 SPEC REPOS:
   trunk:
-    - FMDB
     - PurchasesHybridCommon
     - RevenueCat
 
@@ -106,7 +102,7 @@ EXTERNAL SOURCES:
   sign_in_with_apple:
     :path: Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos
   sqflite:
-    :path: Flutter/ephemeral/.symlinks/plugins/sqflite/macos
+    :path: Flutter/ephemeral/.symlinks/plugins/sqflite/darwin
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   wakelock_plus:
@@ -119,21 +115,20 @@ SPEC CHECKSUMS:
   audio_service: b88ff778e0e3915efd4cd1a5ad6f0beef0c950a9
   audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   just_audio: 9b67ca7b97c61cfc9784ea23cd8cc55eb226d489
   media_kit_libs_macos_video: b3e2bbec2eef97c285f2b1baa7963c67c753fb82
   media_kit_native_event_loop: 81fd5b45192b72f8b5b69eaf5b540f45777eb8d5
   media_kit_video: c75b07f14d59706c775778e4dd47dd027de8d1e5
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  purchases_flutter: f9e17bbb58861b14c682598b555f123c30a112b1
-  PurchasesHybridCommon: 809461dbc8ff23b4dd0d5260c005b4017d6205b6
-  RevenueCat: 1512a074bebd78b7efb341ce1c33bfc8d292c53a
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  purchases_flutter: 1e3706325ba600a7cf2b7c4efd9d190194b6e07c
+  PurchasesHybridCommon: 9250db8073ad8ad7e84e4544c1f7b8ef6cd969af
+  RevenueCat: 7be0d7bde9efb2fc1ebd1888522c55bb4f9feb18
   screen_brightness_macos: 2d6d3af2165592d9a55ffcd95b7550970e41ebda
   screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
-  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sign_in_with_apple: a9e97e744e8edc36aefc2723111f652102a7a727
-  sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
+  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
   wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
   window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
