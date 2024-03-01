@@ -40,17 +40,6 @@ updates:
     assignees:
       - "ricoberger"
     groups:
-      npm-landing:
-        patterns:
-          - "*"
-
-  - package-ecosystem: "npm"
-    directory: "/supabase/email-templates"
-    schedule:
-      interval: "monthly"
-    assignees:
-      - "ricoberger"
-    groups:
-      npm-email-templates:
+      npm:
         patterns:
           - "*"
