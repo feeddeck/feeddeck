@@ -764,10 +764,10 @@ packages:
     dependency: "direct main"
     description:
       name: provider
-      sha256: "9a96a0a19b594dbc5bf0f1f27d2bc67d5f95957359b461cd9feb44ed6ae75096"
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   pub_semver:
     dependency: transitive
     description:
@@ -780,10 +780,10 @@ packages:
     dependency: "direct main"
     description:
       name: purchases_flutter
-      sha256: "0cd388a9d6bffedf79be76b6226778820495409acdf2a9cb3e80b172915934e4"
+      sha256: "83d1c0e752d3b351e993037892eb8008a2a40e3ff090acc1b1e3732ce463a834"
       url: "https://pub.dev"
     source: hosted
-    version: "6.21.1"
+    version: "6.22.0"
   realtime_client:
     dependency: transitive
     description:
@@ -940,10 +940,10 @@ packages:
     dependency: "direct main"
     description:
       name: sign_in_with_apple
-      sha256: "0975c23b9f8b30a80e27d5659a75993a093d4cb5f4eb7d23a9ccc586fea634e0"
+      sha256: "3dcc472f6d3ef6915828b4aa536da14df20a6d1fee65c02eaa7e75b5c4f3f599"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "6.0.0"
   sign_in_with_apple_platform_interface:
     dependency: transitive
     description:
@@ -956,10 +956,10 @@ packages:
     dependency: transitive
     description:
       name: sign_in_with_apple_web
-      sha256: "44b66528f576e77847c14999d5e881e17e7223b7b0625a185417829e5306f47a"
+      sha256: ffe74793bc31e7e7cc7e149fe14711a59e50a9cbbb3198e1f67fda92492f7b54
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "2.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
