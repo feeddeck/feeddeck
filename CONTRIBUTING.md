@@ -57,8 +57,8 @@ check your installed version:
 ```sh
 $ flutter --version
 
-Flutter 3.19.1 • channel stable • https://github.com/flutter/flutter.git
-Framework • revision abb292a07e (5 days ago) • 2024-02-20 14:35:05 -0800
+Flutter 3.19.2 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 7482962148 (4 days ago) • 2024-02-27 16:51:22 -0500
 Engine • revision 04817c99c9
 Tools • Dart 3.3.0 • DevTools 2.31.1
 
