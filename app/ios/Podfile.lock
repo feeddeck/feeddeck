@@ -21,12 +21,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (6.22.0):
+  - purchases_flutter (6.24.0):
     - Flutter
-    - PurchasesHybridCommon (= 9.8.0)
-  - PurchasesHybridCommon (9.8.0):
-    - RevenueCat (= 4.37.0)
-  - RevenueCat (4.37.0)
+    - PurchasesHybridCommon (= 10.2.0)
+  - PurchasesHybridCommon (10.2.0):
+    - RevenueCat (= 4.39.0)
+  - RevenueCat (4.39.0)
   - screen_brightness_ios (0.1.0):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -111,27 +111,27 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
-  app_links: 5ef33d0d295a89d9d16bb81b0e3b0d5f70d6c875
+  app_links: e70ca16b4b0f88253b3b3660200d4a10b4ea9795
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
+  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   media_kit_libs_ios_video: a5fe24bc7875ccd6378a0978c13185e1344651c1
   media_kit_native_event_loop: e6b2ab20cf0746eb1c33be961fcf79667304fa2a
   media_kit_video: 5da63f157170e5bf303bf85453b7ef6971218a2e
-  package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
+  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
-  purchases_flutter: 9c9aa146fe1846ae262740930d8f43ee6c0e8889
-  PurchasesHybridCommon: 42fe7946cc2828b1d54b1c80068d6042e4d3d5d1
-  RevenueCat: b4fb058d7ced6a37327f6bc9636752dbc4a7235b
+  purchases_flutter: 4f17e7fe3ade95422789d1f62103b09b887b5b42
+  PurchasesHybridCommon: f161942f40eb37372c78d7c6524254b0b32ac752
+  RevenueCat: b552a07693b061ff7ea42c8c224f0613755aafe1
   screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
   volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
-  wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
+  wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
 
 PODFILE CHECKSUM: 016564c560c4c9dbcb210e12c7aa6039072645f1
 
