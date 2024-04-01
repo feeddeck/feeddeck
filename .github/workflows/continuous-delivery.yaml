@@ -484,6 +484,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Java
+        run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
