@@ -77,7 +77,6 @@ export default function Home() {
             <RSS />
             <StackOverflow />
             <Tumblr />
-            <X />
             <YouTube />
           </div>
         </div>
@@ -420,24 +419,6 @@ const Tumblr = () => (
       </g>
     </svg>
     <div className="pt-4">Tumblr</div>
-  </div>
-);
-
-const X = () => (
-  <div className="flex flex-col items-center justify-center">
-    <svg
-      width="32px"
-      height="32px"
-      viewBox="0 0 4096 4096"
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-    >
-      <g id="X" transform="matrix(8.90048,0,0,8.90048,-238.533,-230.522)">
-        <path d="M389.2,48L459.8,48L305.6,224.2L487,464L345,464L233.7,318.6L106.5,464L35.8,464L200.7,275.5L26.8,48L172.4,48L272.9,180.9L389.2,48ZM364.4,421.8L403.5,421.8L151.1,88L109.1,88L364.4,421.8Z" />
-      </g>
-    </svg>
-    <div className="pt-4">X</div>
   </div>
 );
 

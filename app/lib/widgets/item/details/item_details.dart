@@ -129,11 +129,6 @@ class ItemDetails extends StatelessWidget {
           item: item,
           source: source,
         );
-      // case FDSourceType.x:
-      //   return ItemDetailsX(
-      //     item: item,
-      //     source: source,
-      //   );
       case FDSourceType.youtube:
         return ItemDetailsYoutube(
           item: item,
