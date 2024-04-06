@@ -98,10 +98,6 @@ class _AddSourceState extends State<AddSource> {
       return AddSourceTumblr(column: widget.column);
     }
 
-    // if (_sourceType == FDSourceType.x) {
-    //   return AddSourceX(column: widget.column);
-    // }
-
     if (_sourceType == FDSourceType.youtube) {
       return AddSourceYouTube(column: widget.column);
     }

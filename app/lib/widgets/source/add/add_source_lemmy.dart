@@ -22,7 +22,7 @@ The Lemmy source can be used to follow your favorite Lemmy communities.
   of this instance (e.g. `https://lemmy.world`).
 ''';
 
-/// The [AddSourceLemmy] widget is used to display the form to add a new Reddit
+/// The [AddSourceLemmy] widget is used to display the form to add a new Lemmy
 /// source.
 class AddSourceLemmy extends StatefulWidget {
   const AddSourceLemmy({
@@ -42,8 +42,8 @@ class _AddSourceLemmyState extends State<AddSourceLemmy> {
   bool _isLoading = false;
   String _error = '';
 
-  /// [_addSource] adds a new Reddit source. The user can provide a subreddit or
-  /// a user. It is also possible to provide the complete RSS feed url.
+  /// [_addSource] adds a new Lemmy source. The user can provide a Lemmy url,
+  /// which could be be a community or user or the corresponding RSS feed.
   Future<void> _addSource() async {
     setState(() {
       _isLoading = true;

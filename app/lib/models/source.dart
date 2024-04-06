@@ -21,7 +21,6 @@ import 'package:feeddeck/utils/fd_icons.dart';
 /// - [rss]
 /// - [stackoverflow]
 /// - [tumblr]
-/// - [x]
 /// - [youtube]
 ///
 /// The [none] value is not valid and just here as a fallback in case sth. odd
@@ -42,7 +41,6 @@ enum FDSourceType {
   rss,
   stackoverflow,
   tumblr,
-  // x,
   youtube,
   none,
 }
@@ -85,8 +83,6 @@ extension FDSourceTypeExtension on FDSourceType {
         return 'StackOverflow';
       case FDSourceType.tumblr:
         return 'Tumblr';
-      // case FDSourceType.x:
-      //   return 'X';
       case FDSourceType.youtube:
         return 'YouTube';
       default:
@@ -123,8 +119,6 @@ extension FDSourceTypeExtension on FDSourceType {
         return FDIcons.stackoverflow;
       case FDSourceType.tumblr:
         return FDIcons.tumblr;
-      // case FDSourceType.x:
-      //   return FDIcons.x;
       case FDSourceType.youtube:
         return FDIcons.youtube;
       default:
@@ -161,8 +155,6 @@ extension FDSourceTypeExtension on FDSourceType {
         return const Color(0xffef8236);
       case FDSourceType.tumblr:
         return const Color(0xff34526f);
-      // case FDSourceType.x:
-      //   return const Color(0xff000000);
       case FDSourceType.youtube:
         return const Color(0xffff0000);
       default:
@@ -200,8 +192,6 @@ extension FDSourceTypeExtension on FDSourceType {
         return const Color(0xffffffff);
       case FDSourceType.tumblr:
         return const Color(0xffffffff);
-      // case FDSourceType.x:
-      //   return const Color(0xffffffff);
       case FDSourceType.youtube:
         return const Color(0xffffffff);
       default:
@@ -291,7 +281,6 @@ class FDSourceOptions {
   String? rss;
   FDStackOverflowOptions? stackoverflow;
   String? tumblr;
-  String? x;
   String? youtube;
 
   FDSourceOptions({
@@ -308,7 +297,6 @@ class FDSourceOptions {
     this.rss,
     this.stackoverflow,
     this.tumblr,
-    this.x,
     this.youtube,
   });
 
@@ -364,9 +352,6 @@ class FDSourceOptions {
           responseData.containsKey('tumblr') && responseData['tumblr'] != null
               ? responseData['tumblr']
               : null,
-      x: responseData.containsKey('x') && responseData['x'] != null
-          ? responseData['x']
-          : null,
       youtube:
           responseData.containsKey('youtube') && responseData['youtube'] != null
               ? responseData['youtube']
@@ -389,7 +374,6 @@ class FDSourceOptions {
       'rss': rss,
       'stackoverflow': stackoverflow?.toJson(),
       'tumblr': tumblr,
-      'x': x,
       'youtube': youtube,
     };
   }

@@ -19,7 +19,6 @@ import { IProfile } from '../models/profile.ts';
 import { getNitterFeed } from './nitter.ts';
 import { getMastodonFeed } from './mastodon.ts';
 import { getFourChanFeed, isFourChanUrl } from './fourchan.ts';
-// import { getXFeed } from './x.ts';
 
 /**
  * `getFeed` returns a feed which consist of a source and a list of items for
@@ -194,8 +193,6 @@ export const getFeed = async (
         source,
         feedData,
       );
-    // case 'x':
-    //   return await getXFeed(supabaseClient, redisClient, profile, source, data);
     case 'youtube':
       return await getYoutubeFeed(
         supabaseClient,

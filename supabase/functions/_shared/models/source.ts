@@ -16,7 +16,6 @@ export type TSourceType =
   | 'rss'
   | 'stackoverflow'
   | 'tumblr'
-  | 'x'
   | 'youtube'
   | 'none';
 
@@ -46,6 +45,5 @@ export interface ISourceOptions {
   rss?: string;
   stackoverflow?: ISourceOptionsStackOverflow;
   tumblr?: string;
-  x?: string;
   youtube?: string;
 }

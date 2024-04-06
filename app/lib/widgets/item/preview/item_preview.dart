@@ -110,11 +110,6 @@ class ItemPreview extends StatelessWidget {
           item: item,
           source: source,
         );
-      // case FDSourceType.x:
-      //   return ItemPreviewX(
-      //     item: item,
-      //     source: source,
-      //   );
       case FDSourceType.youtube:
         return ItemPreviewYoutube(
           item: item,
