@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:collection/collection.dart';
+
 import 'package:feeddeck/models/column.dart';
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/constants.dart';
@@ -39,6 +41,9 @@ class AddSource extends StatefulWidget {
 }
 
 class _AddSourceState extends State<AddSource> {
+  final List<FDSourceType> _sourceTypeValues = FDSourceType.values
+      .whereNot((e) => e == FDSourceType.nitter || e == FDSourceType.none)
+      .toList();
   FDSourceType _sourceType = FDSourceType.none;
 
   /// [_buildBody] returns a list of all supported source types when no source
@@ -109,14 +114,14 @@ class _AddSourceState extends State<AddSource> {
           height: Constants.spacingMiddle,
         );
       },
-      itemCount: FDSourceType.values.length - 1,
+      itemCount: _sourceTypeValues.length,
       itemBuilder: (context, index) {
         return MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             onTap: () {
               setState(() {
-                _sourceType = FDSourceType.values[index];
+                _sourceType = _sourceTypeValues[index];
               });
             },
             child: Container(
@@ -126,7 +131,7 @@ class _AddSourceState extends State<AddSource> {
                 /// If we decide later to use a generic color as background
                 /// the following line can be used:
                 /// color: Constants.secondary,
-                color: FDSourceType.values[index].bgColor,
+                color: _sourceTypeValues[index].bgColor,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Column(
@@ -134,7 +139,7 @@ class _AddSourceState extends State<AddSource> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SourceIcon(
-                    type: FDSourceType.values[index],
+                    type: _sourceTypeValues[index],
                     icon: null,
                     size: 48,
                   ),
@@ -142,7 +147,7 @@ class _AddSourceState extends State<AddSource> {
                     height: Constants.spacingSmall,
                   ),
                   Text(
-                    FDSourceType.values[index].toLocalizedString(),
+                    _sourceTypeValues[index].toLocalizedString(),
                     style: TextStyle(
                       /// Since we are using the brand color as background
                       /// color, we are using the same color as for the icon
@@ -150,7 +155,7 @@ class _AddSourceState extends State<AddSource> {
                       /// to use a generic color as background the following
                       /// line can be used:
                       /// color: Constants.onSecondary,
-                      color: FDSourceType.values[index].fgColor,
+                      color: _sourceTypeValues[index].fgColor,
                     ),
                   ),
                 ],
