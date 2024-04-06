@@ -148,14 +148,20 @@ const scheduleSources = async (
         });
         for (const source of sources) {
           /**
-           * Skip "reddit" and "nitter" sources for users on the free tier, when
-           * the source was already updated in the last 24 hours. This is done
-           * to avoid hitting the rate limits of the Reddit and Nitter APIs.
+           * The "nitter" source type is deprecated and should not be scheduled
+           * for updates anymore.
+           * See https://github.com/zedeus/nitter/issues/1155#issuecomment-1913361757
            */
-          if (
-            profile.tier === 'free' &&
-            (source.type === 'reddit' || source.type === 'nitter')
-          ) {
+          if (source.type === 'nitter') {
+            continue;
+          }
+
+          /**
+           * Skip "reddit" sources for users on the free tier, when the source
+           * was already updated in the last 24 hours. This is done to avoid
+           * hitting the rate limits of the Reddit API.
+           */
+          if (profile.tier === 'free' && source.type === 'reddit') {
             if (
               source.updatedAt > Math.floor(new Date().getTime() / 1000) -
                   (60 * 60 * 24)
