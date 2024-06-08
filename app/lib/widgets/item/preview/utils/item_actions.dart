@@ -82,7 +82,7 @@ class _ItemActionsState extends State<ItemActions> {
   /// [_showActionsMenuLarge] shows a popup menu with all available actions for
   /// an item. This means the user can mark an item as read or unread or a user
   /// can add or remove a bookmark for an item.
-  void _showActionsMenuLarge(BuildContext context) async {
+  void _showActionsMenuLarge() async {
     HapticFeedback.heavyImpact();
 
     final RenderObject? overlay =
@@ -375,10 +375,10 @@ class _ItemActionsState extends State<ItemActions> {
       child: GestureDetector(
         onTap: widget.onTap,
         onTapDown: (details) => _getTapPositionLarge(details),
-        onLongPress: () => _showActionsMenuLarge(context),
+        onLongPress: () => _showActionsMenuLarge(),
         onSecondaryTapDown:
             kIsWeb ? null : (details) => _getTapPositionLarge(details),
-        onSecondaryTap: kIsWeb ? null : () => _showActionsMenuLarge(context),
+        onSecondaryTap: kIsWeb ? null : () => _showActionsMenuLarge(),
         child: Container(
           width: double.infinity,
           decoration: const BoxDecoration(
