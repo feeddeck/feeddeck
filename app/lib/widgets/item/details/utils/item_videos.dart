@@ -94,28 +94,41 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
             maxWidth: Constants.centeredFormMaxWidth,
           ),
           builder: (BuildContext context) {
-            return Container(
-              margin: const EdgeInsets.all(
-                Constants.spacingMiddle,
-              ),
-              padding: const EdgeInsets.only(
-                left: Constants.spacingMiddle,
-                right: Constants.spacingMiddle,
-              ),
-              decoration: const BoxDecoration(
-                color: Constants.background,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(Constants.spacingMiddle),
+            return SafeArea(
+              child: Container(
+                margin: const EdgeInsets.all(
+                  Constants.spacingMiddle,
                 ),
-              ),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: widget.qualities!
-                    .asMap()
-                    .entries
-                    .map((quality) {
-                      if (quality.key == widget.qualities!.length - 1) {
+                padding: const EdgeInsets.only(
+                  left: Constants.spacingMiddle,
+                  right: Constants.spacingMiddle,
+                ),
+                decoration: const BoxDecoration(
+                  color: Constants.background,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(Constants.spacingMiddle),
+                  ),
+                ),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: widget.qualities!
+                      .asMap()
+                      .entries
+                      .map((quality) {
+                        if (quality.key == widget.qualities!.length - 1) {
+                          return [
+                            ListTile(
+                              mouseCursor: SystemMouseCursors.click,
+                              onTap: () async {
+                                Navigator.of(context).pop();
+                                await _playerOpen(quality.value.video);
+                              },
+                              title: Text(quality.value.quality),
+                            ),
+                          ];
+                        }
+
                         return [
                           ListTile(
                             mouseCursor: SystemMouseCursors.click,
@@ -125,27 +138,16 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                             },
                             title: Text(quality.value.quality),
                           ),
+                          const Divider(
+                            color: Constants.dividerColor,
+                            height: 1,
+                            thickness: 1,
+                          ),
                         ];
-                      }
-
-                      return [
-                        ListTile(
-                          mouseCursor: SystemMouseCursors.click,
-                          onTap: () async {
-                            Navigator.of(context).pop();
-                            await _playerOpen(quality.value.video);
-                          },
-                          title: Text(quality.value.quality),
-                        ),
-                        const Divider(
-                          color: Constants.dividerColor,
-                          height: 1,
-                          thickness: 1,
-                        ),
-                      ];
-                    })
-                    .expand((e) => e)
-                    .toList(),
+                      })
+                      .expand((e) => e)
+                      .toList(),
+                ),
               ),
             );
           },
