@@ -18,60 +18,62 @@ class SettingsAccountsActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(
-        Constants.spacingMiddle,
-      ),
-      padding: const EdgeInsets.only(
-        left: Constants.spacingMiddle,
-        right: Constants.spacingMiddle,
-      ),
-      decoration: const BoxDecoration(
-        color: Constants.background,
-        borderRadius: BorderRadius.all(
-          Radius.circular(Constants.spacingMiddle),
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(
+          Constants.spacingMiddle,
         ),
-      ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          ListTile(
-            mouseCursor: SystemMouseCursors.click,
-            onTap: () {
-              Navigator.of(context).pop();
-              reconnect();
-            },
-            leading: const Icon(
-              Icons.link,
-            ),
-            title: const Text(
-              'Re-Connect',
-            ),
+        padding: const EdgeInsets.only(
+          left: Constants.spacingMiddle,
+          right: Constants.spacingMiddle,
+        ),
+        decoration: const BoxDecoration(
+          color: Constants.background,
+          borderRadius: BorderRadius.all(
+            Radius.circular(Constants.spacingMiddle),
           ),
-          const Divider(
-            color: Constants.dividerColor,
-            height: 1,
-            thickness: 1,
-          ),
-          ListTile(
-            mouseCursor: SystemMouseCursors.click,
-            onTap: () {
-              Navigator.of(context).pop();
-              delete();
-            },
-            leading: const Icon(
-              Icons.delete,
-              color: Constants.error,
-            ),
-            title: const Text(
-              'Delete',
-              style: TextStyle(
-                color: Constants.error,
+        ),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            ListTile(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: () {
+                Navigator.of(context).pop();
+                reconnect();
+              },
+              leading: const Icon(
+                Icons.link,
+              ),
+              title: const Text(
+                'Re-Connect',
               ),
             ),
-          ),
-        ],
+            const Divider(
+              color: Constants.dividerColor,
+              height: 1,
+              thickness: 1,
+            ),
+            ListTile(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: () {
+                Navigator.of(context).pop();
+                delete();
+              },
+              leading: const Icon(
+                Icons.delete,
+                color: Constants.error,
+              ),
+              title: const Text(
+                'Delete',
+                style: TextStyle(
+                  color: Constants.error,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

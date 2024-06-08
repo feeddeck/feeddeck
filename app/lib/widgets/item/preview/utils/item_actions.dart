@@ -185,70 +185,72 @@ class _ItemActionsState extends State<ItemActions> {
         maxWidth: Constants.centeredFormMaxWidth,
       ),
       builder: (BuildContext context) {
-        return Container(
-          margin: const EdgeInsets.all(
-            Constants.spacingMiddle,
-          ),
-          padding: const EdgeInsets.only(
-            left: Constants.spacingMiddle,
-            right: Constants.spacingMiddle,
-          ),
-          decoration: const BoxDecoration(
-            color: Constants.background,
-            borderRadius: BorderRadius.all(
-              Radius.circular(Constants.spacingMiddle),
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(
+              Constants.spacingMiddle,
             ),
-          ),
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              ListTile(
-                mouseCursor: SystemMouseCursors.click,
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  _read(mainContext);
-                },
-                leading: widget.item.isRead
-                    ? const Icon(Icons.visibility_off)
-                    : const Icon(Icons.visibility),
-                title: widget.item.isRead
-                    ? const Text('Mark as Unread')
-                    : const Text('Mark as Read'),
+            padding: const EdgeInsets.only(
+              left: Constants.spacingMiddle,
+              right: Constants.spacingMiddle,
+            ),
+            decoration: const BoxDecoration(
+              color: Constants.background,
+              borderRadius: BorderRadius.all(
+                Radius.circular(Constants.spacingMiddle),
               ),
-              const Divider(
-                color: Constants.dividerColor,
-                height: 1,
-                thickness: 1,
-              ),
-              ListTile(
-                mouseCursor: SystemMouseCursors.click,
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  _bookmark(mainContext);
-                },
-                leading: widget.item.isBookmarked
-                    ? const Icon(Icons.bookmark)
-                    : const Icon(Icons.bookmark_outline),
-                title: widget.item.isBookmarked
-                    ? const Text('Remove Bookmark')
-                    : const Text('Add Bookmark'),
-              ),
-              const Divider(
-                color: Constants.dividerColor,
-                height: 1,
-                thickness: 1,
-              ),
-              ListTile(
-                mouseCursor: SystemMouseCursors.click,
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  _openUrl();
-                },
-                leading: const Icon(Icons.launch),
-                title: const Text('Open Link'),
-              ),
-            ],
+            ),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                ListTile(
+                  mouseCursor: SystemMouseCursors.click,
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    _read(mainContext);
+                  },
+                  leading: widget.item.isRead
+                      ? const Icon(Icons.visibility_off)
+                      : const Icon(Icons.visibility),
+                  title: widget.item.isRead
+                      ? const Text('Mark as Unread')
+                      : const Text('Mark as Read'),
+                ),
+                const Divider(
+                  color: Constants.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+                ListTile(
+                  mouseCursor: SystemMouseCursors.click,
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    _bookmark(mainContext);
+                  },
+                  leading: widget.item.isBookmarked
+                      ? const Icon(Icons.bookmark)
+                      : const Icon(Icons.bookmark_outline),
+                  title: widget.item.isBookmarked
+                      ? const Text('Remove Bookmark')
+                      : const Text('Add Bookmark'),
+                ),
+                const Divider(
+                  color: Constants.dividerColor,
+                  height: 1,
+                  thickness: 1,
+                ),
+                ListTile(
+                  mouseCursor: SystemMouseCursors.click,
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    _openUrl();
+                  },
+                  leading: const Icon(Icons.launch),
+                  title: const Text('Open Link'),
+                ),
+              ],
+            ),
           ),
         );
       },

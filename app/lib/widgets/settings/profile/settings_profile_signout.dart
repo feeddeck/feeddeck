@@ -152,60 +152,62 @@ class SettingsProfileSignOutActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(
-        Constants.spacingMiddle,
-      ),
-      padding: const EdgeInsets.only(
-        left: Constants.spacingMiddle,
-        right: Constants.spacingMiddle,
-      ),
-      decoration: const BoxDecoration(
-        color: Constants.background,
-        borderRadius: BorderRadius.all(
-          Radius.circular(Constants.spacingMiddle),
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(
+          Constants.spacingMiddle,
         ),
-      ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          ListTile(
-            mouseCursor: SystemMouseCursors.click,
-            onTap: () {
-              Navigator.of(context).pop();
-              signOut(supabase.SignOutScope.local);
-            },
-            leading: const Icon(
-              Icons.logout,
-            ),
-            title: const Text(
-              'From current device',
-            ),
+        padding: const EdgeInsets.only(
+          left: Constants.spacingMiddle,
+          right: Constants.spacingMiddle,
+        ),
+        decoration: const BoxDecoration(
+          color: Constants.background,
+          borderRadius: BorderRadius.all(
+            Radius.circular(Constants.spacingMiddle),
           ),
-          const Divider(
-            color: Constants.dividerColor,
-            height: 1,
-            thickness: 1,
-          ),
-          ListTile(
-            mouseCursor: SystemMouseCursors.click,
-            onTap: () {
-              Navigator.of(context).pop();
-              signOut(supabase.SignOutScope.global);
-            },
-            leading: const Icon(
-              Icons.logout,
-              color: Constants.error,
-            ),
-            title: const Text(
-              'From all devices',
-              style: TextStyle(
-                color: Constants.error,
+        ),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            ListTile(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: () {
+                Navigator.of(context).pop();
+                signOut(supabase.SignOutScope.local);
+              },
+              leading: const Icon(
+                Icons.logout,
+              ),
+              title: const Text(
+                'From current device',
               ),
             ),
-          ),
-        ],
+            const Divider(
+              color: Constants.dividerColor,
+              height: 1,
+              thickness: 1,
+            ),
+            ListTile(
+              mouseCursor: SystemMouseCursors.click,
+              onTap: () {
+                Navigator.of(context).pop();
+                signOut(supabase.SignOutScope.global);
+              },
+              leading: const Icon(
+                Icons.logout,
+                color: Constants.error,
+              ),
+              title: const Text(
+                'From all devices',
+                style: TextStyle(
+                  color: Constants.error,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
