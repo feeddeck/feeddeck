@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
     });
 
     if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-      _appLinks.allUriLinkStream.listen((uri) {
+      _appLinks.uriLinkStream.listen((uri) {
         if (uri
             .toString()
             .startsWith('app.feeddeck.feeddeck://signin-callback/')) {
