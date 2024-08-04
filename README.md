@@ -31,8 +31,8 @@ platforms. FeedDeck is written in [Flutter](https://flutter.dev/) and uses
 - **RSS and Social Media Feeds:** Follow your favorite RSS and social media
   feeds.
 - **News:** Get the latest news from your favorite RSS feeds and Google News.
-- **Social Media:** Follow your friends and favorite topics on Medium, Nitter,
-  Reddit, Tumblr and X.
+- **Social Media:** Follow your friends and favorite topics on Medium, Reddit
+  and Tumblr.
 - **GitHub:** Get your GitHub notifications and follow your repository
   activities.
 - **Podcasts:** Follow and listen to your favorite podcasts, via the built-in
