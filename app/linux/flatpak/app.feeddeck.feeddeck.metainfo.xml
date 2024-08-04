@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>FeedDeck</name>
-  <summary>Follow your RSS and Social Media Feeds</summary>
+  <summary>Follow RSS and Social Media Feeds</summary>
   <developer_name>Rico Berger</developer_name>
 
   <url type="homepage">https://feeddeck.app</url>
@@ -14,10 +14,6 @@
   <url type="vcs-browser">https://github.com/feeddeck/feeddeck</url>
 
   <launchable type="desktop-id">app.feeddeck.feeddeck.desktop</launchable>
-
-  <provides>
-    <id>app.feeddeck.feeddeck</id>
-  </provides>
 
   <content_rating type="oars-1.1">
     <content_attribute id="money-purchasing">intense</content_attribute>
@@ -31,7 +27,7 @@
       <li>Available for mobile and desktop: FeedDeck provides the same experience for mobile and desktop with nearly 100% code sharing.</li>
       <li>RSS and Social Media Feeds: Follow your favorite RSS and social media feeds.</li>
       <li>News: Get the latest news from your favorite RSS feeds and Google News.</li>
-      <li>Social Media: Follow your friends and favorite topics on Medium, Nitter, Reddit, Tumblr and X.</li>
+      <li>Social Media: Follow your friends and favorite topics on Medium, Reddit and Tumblr.</li>
       <li>GitHub: Get your GitHub notifications and follow your repository activities.</li>
       <li>Podcasts: Follow and listen to your favorite podcasts, via the built-in podcast player.</li>
       <li>YouTube: Follow and view your favorite YouTube channels.</li>
@@ -45,8 +41,7 @@
   </keywords>
 
   <categories>
-    <category>System</category>
-    <category>Utilities</category>
+    <category>Utility</category>
   </categories>
 
   <releases>
@@ -330,18 +325,23 @@
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/feeddeck/feeddeck/main/app/linux/flatpak/screenshots/1.png</image>
+      <caption>Deck View</caption>
     </screenshot>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/feeddeck/feeddeck/main/app/linux/flatpak/screenshots/2.png</image>
+      <caption>Details View</caption>
     </screenshot>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/feeddeck/feeddeck/main/app/linux/flatpak/screenshots/3.png</image>
+      <caption>YouTube</caption>
     </screenshot>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/feeddeck/feeddeck/main/app/linux/flatpak/screenshots/4.png</image>
+      <caption>Podcasts</caption>
     </screenshot>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/feeddeck/feeddeck/main/app/linux/flatpak/screenshots/5.png</image>
+      <caption>GitHub</caption>
     </screenshot>
   </screenshots>
 </component>
