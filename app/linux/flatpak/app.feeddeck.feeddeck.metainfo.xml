@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>FeedDeck</name>
-  <summary>Follow RSS and Social Media Feeds</summary>
+  <summary>Feed reader</summary>
   <developer_name>Rico Berger</developer_name>
 
   <url type="homepage">https://feeddeck.app</url>
@@ -18,6 +18,11 @@
   <content_rating type="oars-1.1">
     <content_attribute id="money-purchasing">intense</content_attribute>
   </content_rating>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#1f2229</color>
+    <color type="primary" scheme_preference="dark">#1f2229</color>
+  </branding>
 
   <description>
     <p>
