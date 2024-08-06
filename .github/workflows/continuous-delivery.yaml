@@ -122,12 +122,14 @@ jobs:
           supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
-  # The "Web" job builds the Flutter web app and publishes it to Cloudflare Pages. The job only runs when a commit is
-  # pushed to the main branch or a new tag is created.
+  # The "Web" job builds the Flutter web app and publishes it to Cloudflare Pages. The job only runs on pull requests or
+  # when a commit is pushed to the main branch or a new tag is created.
+  #
+  # When the job runs on a pull request it only builds the app but doesn't upload the build to Cloudflare.
   web:
     name: Web
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: read
     defaults:
@@ -185,6 +187,7 @@ jobs:
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
+        if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
