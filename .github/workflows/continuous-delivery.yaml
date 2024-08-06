@@ -387,7 +387,7 @@ jobs:
   # only runs for pull requests and when a new release is published.
   windows:
     name: Windows
-    runs-on: windows-latest
+    runs-on: windows-2019
     if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: write
@@ -416,19 +416,22 @@ jobs:
         run: |
           flutter config --enable-windows-desktop
           flutter build windows --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
+      - name: Create Archive
+        run: |
+          Compress-Archive -Path build/windows/x64/runner/Release/* -Destination feeddeck-windows-x86_64.zip
 
       - name: Package
         run: |
           flutter pub run msix:create --output-path build --output-name feeddeck
           cd build
-          7z a -tzip feeddeck-windows-x86_64.zip feeddeck.msix
+          7z a -tzip feeddeck-windows-x86_64-msix.zip feeddeck.msix
 
       - name: Upload Artifacts (PR)
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/upload-artifact@v4
         with:
           name: feeddeck-windows-x86_64.zip
-          path: app/build/feeddeck-windows-x86_64.zip
+          path: app/feeddeck-windows-x86_64.zip
           if-no-files-found: error
 
       - name: Upload Artifacts (Release)
@@ -436,7 +439,22 @@ jobs:
         if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: app/build/feeddeck-windows-x86_64.zip
+          asset_path: app/feeddeck-windows-x86_64.zip
+
+      - name: Upload Artifacts (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: feeddeck-windows-x86_64-msix.zip
+          path: app/build/feeddeck-windows-x86_64-msix.zip
+          if-no-files-found: error
+
+      - name: Upload Artifacts (Release)
+        uses: shogo82148/actions-upload-release-asset@v1
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: app/build/feeddeck-windows-x86_64-msix.zip
 
   # The "iOS" job builds the Flutter iOS app on every pull request. This is only used to test that the build of the iOS
   # app works. The artifact of the build isn't uploaded / used.
