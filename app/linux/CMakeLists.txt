@@ -90,6 +90,11 @@ set_target_properties(${BINARY_NAME}
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
+# Replace the default memory allocator with mimalloc to avoid memory leaks.
+# See:
+#   - https://github.com/Pato05/just_audio_media_kit#use-mimalloc-from-media-kits-readme
+#   - https://github.com/media-kit/media-kit#utilize-mimalloc
+target_link_libraries(${BINARY_NAME} PRIVATE ${MIMALLOC_LIB})
 
 # === Installation ===
 # By default, "installing" just makes a relocatable bundle in the build

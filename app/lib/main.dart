@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -50,6 +51,7 @@ void main() async {
   /// Initialize the [media_kit] packages, so that we can play audio and video
   /// files.
   MediaKit.ensureInitialized();
+  JustAudioMediaKit.ensureInitialized();
 
   /// Initialize the [just_audio_background] package, so that we can play audio
   /// files in the background.
