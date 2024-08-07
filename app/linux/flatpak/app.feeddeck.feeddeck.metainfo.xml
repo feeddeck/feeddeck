@@ -50,7 +50,22 @@
   </categories>
 
   <releases>
-<release version="v1.4.0" date="2024-08-04">
+    <release version="v1.4.1" date="2024-08-07">
+      <description>
+        <p>Fixed</p>
+        <ul>
+          <li>#186: [core] Fix Warnings and Regenerate Splash Screens @ricoberger</li>
+          <li>#185: [core] Fix Web Build @ricoberger</li>
+          <li>#184: [core] Fix Metadata for Flatpak @ricoberger</li>
+          <li>#183: [core] Upload Raw Build in Windows CI/CD Pipeline @ricoberger</li>
+          <li>#182: [podcast] Fix Audio Playback on Windows and Linux @ricoberger</li>
+        </ul>
+      </description>
+
+      <url>https://github.com/feeddeck/feeddeck/releases/tag/v1.2.1</url>
+    </release>
+
+    <release version="v1.4.0" date="2024-08-04">
       <description>
         <p>Added</p>
         <ul>
