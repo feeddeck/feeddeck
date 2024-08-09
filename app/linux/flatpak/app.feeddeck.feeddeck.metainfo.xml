@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>FeedDeck</name>
-  <summary>Feed reader</summary>
+  <summary>Rss and social media reader</summary>
   <developer_name>Rico Berger</developer_name>
 
   <url type="homepage">https://feeddeck.app</url>
