@@ -101,7 +101,7 @@ class _ColumnLayoutSearchState extends State<ColumnLayoutSearch> {
             width: double.infinity,
             height: _showFilters,
             decoration: const BoxDecoration(
-              color: Constants.backgroundContainerBackgroundColor,
+              color: Constants.surfaceContainerBackgroundColor,
             ),
             padding: const EdgeInsets.all(Constants.spacingMiddle),
             child: Column(

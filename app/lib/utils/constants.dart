@@ -8,12 +8,10 @@ class Constants {
   static const primary = Color(0xff49d3b4);
   static const onPrimary = Color(0xff1f2229);
   static const secondary = Color(0xff353a46);
-  static const onSecondary = Color(0xffe2e4e9);
+  static const onSecondary = Color(0xff49d3b4);
   static const error = Color(0xffde4A40);
   static const onError = Color(0xffe2e4e9);
-  static const background = Color(0xff1f2229);
-  static const onBackground = Color(0xffe2e4e9);
-  static const surface = Color(0xff353a46);
+  static const surface = Color(0xff1f2229);
   static const onSurface = Color(0xffe2e4e9);
   static const canvasColor = Color(0xff1f2229);
   static const appBarBackgroundColor = Colors.transparent;
@@ -23,7 +21,7 @@ class Constants {
   static const secondaryTextColor = Color(0xff9aa1b2);
 
   static const dividerColor = Color(0xff2a2e38);
-  static const backgroundContainerBackgroundColor = Color(0xff14161a);
+  static const surfaceContainerBackgroundColor = Color(0xff14161a);
 
   static const breakpoint = 600.0;
   static const columnWidth = 352.0;

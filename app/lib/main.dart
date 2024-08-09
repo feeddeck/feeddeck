@@ -18,8 +18,8 @@ import 'package:feeddeck/repositories/settings_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/confirmation/confirmation.dart';
 import 'package:feeddeck/widgets/home/home.dart';
-import 'package:feeddeck/widgets/reset_password/reset_password.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_audio_palyer/item_audio_player_init/item_audio_player_init.dart';
+import 'package:feeddeck/widgets/reset_password/reset_password.dart';
 
 /// Before we are calling [runApp] we have to ensure that the widget bindings
 /// are initialized, so that we can preserve the splash screen until we are done
@@ -159,8 +159,6 @@ class FeedDeckApp extends StatelessWidget {
               onSecondary: Constants.onSecondary,
               error: Constants.error,
               onError: Constants.onError,
-              background: Constants.background,
-              onBackground: Constants.onBackground,
               surface: Constants.surface,
               onSurface: Constants.onSurface,
             ),
@@ -172,32 +170,32 @@ class FeedDeckApp extends StatelessWidget {
               elevation: Constants.appBarElevation,
             ),
             snackBarTheme: const SnackBarThemeData(
-              backgroundColor: Constants.surface,
+              backgroundColor: Constants.secondary,
               contentTextStyle: TextStyle(
                 color: Constants.onSurface,
               ),
             ),
             dialogTheme: const DialogTheme(
-              backgroundColor: Constants.background,
-              surfaceTintColor: Constants.background,
+              backgroundColor: Constants.surface,
+              surfaceTintColor: Constants.surface,
               contentTextStyle: TextStyle(
-                color: Constants.onBackground,
+                color: Constants.onSurface,
               ),
             ),
             popupMenuTheme: const PopupMenuThemeData(
-              color: Constants.background,
-              surfaceTintColor: Constants.background,
+              color: Constants.surface,
+              surfaceTintColor: Constants.surface,
               textStyle: TextStyle(
-                color: Constants.onBackground,
+                color: Constants.onSurface,
               ),
             ),
             drawerTheme: const DrawerThemeData(
-              backgroundColor: Constants.background,
-              surfaceTintColor: Constants.background,
+              backgroundColor: Constants.surface,
+              surfaceTintColor: Constants.surface,
             ),
             bottomSheetTheme: const BottomSheetThemeData(
-              backgroundColor: Constants.background,
-              surfaceTintColor: Constants.background,
+              backgroundColor: Constants.surface,
+              surfaceTintColor: Constants.surface,
             ),
             pageTransitionsTheme: const PageTransitionsTheme(
               builders: {

@@ -209,7 +209,7 @@ class DeckLayoutSmall extends StatelessWidget {
                           IconButton(
                             icon: const Icon(
                               Icons.add,
-                              color: Constants.onSecondary,
+                              color: Constants.onSurface,
                             ),
                             onPressed: () {
                               showModalBottomSheet(
@@ -248,7 +248,7 @@ class DeckLayoutSmall extends StatelessWidget {
                           IconButton(
                             icon: const Icon(
                               Icons.settings,
-                              color: Constants.onSecondary,
+                              color: Constants.onSurface,
                             ),
                             onPressed: () {
                               Navigator.push(

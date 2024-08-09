@@ -101,7 +101,7 @@ class _ColumnLayoutHeaderState extends State<ColumnLayoutHeader> {
             ),
           ),
           centerTitle: false,
-          backgroundColor: Constants.background,
+          backgroundColor: Constants.surface,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -216,7 +216,7 @@ class _ColumnLayoutHeaderState extends State<ColumnLayoutHeader> {
             width: double.infinity,
             height: _showSettings,
             decoration: const BoxDecoration(
-              color: Constants.backgroundContainerBackgroundColor,
+              color: Constants.surfaceContainerBackgroundColor,
             ),
             padding: const EdgeInsets.all(Constants.spacingMiddle),
             child: ColumnLayoutHeaderSettings(

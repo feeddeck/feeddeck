@@ -66,6 +66,8 @@ class AddSourceForm extends StatelessWidget {
           padding: const EdgeInsets.all(Constants.spacingMiddle),
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
+              backgroundColor: Constants.secondary,
+              foregroundColor: Constants.onSecondary,
               maximumSize: const Size.fromHeight(
                 Constants.elevatedButtonSize,
               ),

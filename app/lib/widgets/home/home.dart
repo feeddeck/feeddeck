@@ -43,19 +43,21 @@ class _HomeState extends State<Home> {
         if (uri
             .toString()
             .startsWith('app.feeddeck.feeddeck://signin-callback/')) {
-          Provider.of<AppRepository>(context, listen: false)
-              .signInWithCallback(uri)
-              .then((_) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const DeckLayout(),
-                ),
-                (route) => false,
-              );
-            });
-          }).catchError((_) {});
+          if (mounted) {
+            Provider.of<AppRepository>(context, listen: false)
+                .signInWithCallback(uri)
+                .then((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const DeckLayout(),
+                  ),
+                  (route) => false,
+                );
+              });
+            }).catchError((_) {});
+          }
         }
       });
     }

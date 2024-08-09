@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.4.1+12
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ^3.5.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -39,7 +39,7 @@ dependencies:
 
   app_links: ^6.1.4
   cached_network_image: ^3.3.1
-  carousel_slider: ^4.2.1
+  carousel_slider: ^5.0.0
   collection: ^1.17.0
   crypto: ^3.0.3
   flutter_cache_manager: ^3.4.0

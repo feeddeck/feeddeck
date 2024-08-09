@@ -179,6 +179,10 @@ class _CreateDeckState extends State<CreateDeck> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Name',
+                      hintText: 'e.g. News',
+                      hintStyle: TextStyle(
+                        color: Constants.secondaryTextColor,
+                      ),
                     ),
                     validator: (value) => _validateDeckName(value),
                     onFieldSubmitted: (value) => _createDeck(),
@@ -189,6 +193,8 @@ class _CreateDeckState extends State<CreateDeck> {
                   ),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.secondary,
+                      foregroundColor: Constants.onSecondary,
                       maximumSize: const Size.fromHeight(
                         Constants.elevatedButtonSize,
                       ),
