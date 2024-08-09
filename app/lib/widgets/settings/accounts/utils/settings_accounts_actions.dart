@@ -28,7 +28,7 @@ class SettingsAccountsActions extends StatelessWidget {
           right: Constants.spacingMiddle,
         ),
         decoration: const BoxDecoration(
-          color: Constants.background,
+          color: Constants.surface,
           borderRadius: BorderRadius.all(
             Radius.circular(Constants.spacingMiddle),
           ),

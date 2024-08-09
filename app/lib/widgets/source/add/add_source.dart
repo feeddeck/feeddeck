@@ -151,10 +151,7 @@ class _AddSourceState extends State<AddSource> {
                     style: TextStyle(
                       /// Since we are using the brand color as background
                       /// color, we are using the same color as for the icon
-                      /// as text color (source_icon.dart). If we decide later
-                      /// to use a generic color as background the following
-                      /// line can be used:
-                      /// color: Constants.onSecondary,
+                      /// as text color (source_icon.dart).
                       color: _sourceTypeValues[index].fgColor,
                     ),
                   ),

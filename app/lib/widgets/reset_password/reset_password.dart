@@ -125,6 +125,8 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
+            backgroundColor: Constants.secondary,
+            foregroundColor: Constants.onSecondary,
             maximumSize: const Size.fromHeight(
               Constants.elevatedButtonSize,
             ),
@@ -152,6 +154,8 @@ class _ResetPasswordState extends State<ResetPassword> {
       ),
       ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
+          backgroundColor: Constants.secondary,
+          foregroundColor: Constants.onSecondary,
           maximumSize: const Size.fromHeight(
             Constants.elevatedButtonSize,
           ),

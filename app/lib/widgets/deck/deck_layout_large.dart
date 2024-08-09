@@ -222,7 +222,7 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
                       splashFactory: NoSplash.splashFactory,
                     ),
                     child: NavigationRail(
-                      backgroundColor: Constants.background,
+                      backgroundColor: Constants.surface,
                       selectedIndex: null,
 
                       /// When a user selects a destination in the navigation

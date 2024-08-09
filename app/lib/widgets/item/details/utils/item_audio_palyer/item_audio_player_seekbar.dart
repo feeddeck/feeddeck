@@ -62,7 +62,7 @@ class _ItemAudioPlayerSeekBarState extends State<ItemAudioPlayerSeekBar> {
           data: _sliderThemeData.copyWith(
             thumbShape: HiddenThumbComponentShape(),
             activeTrackColor: Constants.secondary,
-            inactiveTrackColor: Constants.backgroundContainerBackgroundColor,
+            inactiveTrackColor: Constants.surfaceContainerBackgroundColor,
           ),
           child: ExcludeSemantics(
             child: Slider(

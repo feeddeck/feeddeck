@@ -231,6 +231,8 @@ class _SignUpState extends State<SignUp> {
                   ),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.secondary,
+                      foregroundColor: Constants.onSecondary,
                       maximumSize: const Size.fromHeight(
                         Constants.elevatedButtonSize,
                       ),

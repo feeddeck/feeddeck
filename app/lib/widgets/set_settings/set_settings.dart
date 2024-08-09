@@ -235,6 +235,8 @@ class _SetSettingsState extends State<SetSettings> {
                   ),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.secondary,
+                      foregroundColor: Constants.onSecondary,
                       maximumSize: const Size.fromHeight(
                         Constants.elevatedButtonSize,
                       ),
@@ -253,6 +255,8 @@ class _SetSettingsState extends State<SetSettings> {
                   ),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Constants.secondary,
+                      foregroundColor: Constants.onSecondary,
                       maximumSize: const Size.fromHeight(
                         Constants.elevatedButtonSize,
                       ),

@@ -43,6 +43,8 @@ class _ConfirmationState extends State<Confirmation> {
       case 'change-email-address':
         return ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
+            backgroundColor: Constants.secondary,
+            foregroundColor: Constants.onSecondary,
             maximumSize: const Size.fromHeight(
               Constants.elevatedButtonSize,
             ),
@@ -57,6 +59,8 @@ class _ConfirmationState extends State<Confirmation> {
       case 'confirm-signup':
         return ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
+            backgroundColor: Constants.secondary,
+            foregroundColor: Constants.onSecondary,
             maximumSize: const Size.fromHeight(
               Constants.elevatedButtonSize,
             ),
@@ -71,6 +75,8 @@ class _ConfirmationState extends State<Confirmation> {
       case 'reset-password':
         return ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
+            backgroundColor: Constants.secondary,
+            foregroundColor: Constants.onSecondary,
             maximumSize: const Size.fromHeight(
               Constants.elevatedButtonSize,
             ),

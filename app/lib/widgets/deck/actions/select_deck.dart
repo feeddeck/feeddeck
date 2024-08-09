@@ -110,7 +110,7 @@ class _SelectDeckState extends State<SelectDeck> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Constants.background,
+      color: Constants.surface,
       child: SafeArea(
         child: Scaffold(
           body: Center(
