@@ -55,13 +55,13 @@ dependencies:
   media_kit: ^1.1.10+1
   media_kit_video: ^1.2.5
   media_kit_libs_video: ^1.0.5
-  package_info_plus: ^8.0.1
+  package_info_plus: ^8.1.1
   piped_client: ^0.1.0
   provider: ^6.1.2
-  purchases_flutter: ^8.1.6
+  purchases_flutter: ^8.2.1
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  shared_preferences: ^2.3.2
+  shared_preferences: ^2.3.3
   sign_in_with_apple: ^6.1.3
   supabase_flutter: ^2.5.11
   timeago: ^3.7.0
