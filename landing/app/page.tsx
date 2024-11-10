@@ -1,8 +1,7 @@
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import type { Metadata, Viewport } from "next";
 
-const Download = dynamic(() => import("@/components/download"), { ssr: false });
+import { Download } from "@/components/download";
 import { generalMetadata, generalViewport } from "@/helpers/metadata";
 
 export const metadata: Metadata = {
