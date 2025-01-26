@@ -339,7 +339,10 @@ class _SignInState extends State<SignIn> {
                     onPressed: _isLoading ? null : () => _signInWithGoogle(),
                     icon: _isLoading
                         ? const ElevatedButtonProgressIndicator()
-                        : const Icon(FDIcons.google),
+                        : const Icon(
+                            FDIcons.google,
+                            color: Color(0xffffffff),
+                          ),
                   ),
                   const SizedBox(
                     height: Constants.spacingMiddle,
@@ -362,7 +365,10 @@ class _SignInState extends State<SignIn> {
                     onPressed: _isLoading ? null : () => _signInWithApple(),
                     icon: _isLoading
                         ? const ElevatedButtonProgressIndicator()
-                        : const Icon(FDIcons.apple),
+                        : const Icon(
+                            FDIcons.apple,
+                            color: Color(0xff000000),
+                          ),
                   ),
                   const SizedBox(
                     height: Constants.spacingMiddle,
@@ -395,7 +401,10 @@ class _SignInState extends State<SignIn> {
                           },
                     icon: _isLoading
                         ? const ElevatedButtonProgressIndicator()
-                        : const Icon(FDIcons.feeddeck),
+                        : const Icon(
+                            FDIcons.feeddeck,
+                            color: Constants.onPrimary,
+                          ),
                   ),
                   const SizedBox(
                     height: Constants.spacingMiddle,
