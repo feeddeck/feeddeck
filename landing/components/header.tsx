@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 
 export default function Header() {
   const navigation = [
@@ -50,7 +50,7 @@ export default function Header() {
                   </span>
                 </Link>
 
-                <Disclosure.Button
+                <DisclosureButton
                   aria-label="Toggle Menu"
                   className="px-2 py-1 ml-auto rounded-md lg:hidden hover:text-primary focus:text-primary"
                 >
@@ -73,9 +73,9 @@ export default function Header() {
                       />
                     )}
                   </svg>
-                </Disclosure.Button>
+                </DisclosureButton>
 
-                <Disclosure.Panel className="flex flex-wrap w-full my-5 lg:hidden">
+                <DisclosurePanel className="flex flex-wrap w-full my-5 lg:hidden">
                   <>
                     {navigation.map((item, index) => (
                       <Link
@@ -100,7 +100,7 @@ export default function Header() {
                       Sign In
                     </Link>
                   </>
-                </Disclosure.Panel>
+                </DisclosurePanel>
               </div>
             </>
           )}
