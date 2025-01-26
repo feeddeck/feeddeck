@@ -1,6 +1,4 @@
-import { ReactNode, useState } from "react";
 import type { Metadata, Viewport } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { generalMetadata, generalViewport } from "@/helpers/metadata";
@@ -369,39 +367,3 @@ export default function Support() {
     </main>
   );
 }
-
-const Entry = (
-  { title, images, children }: {
-    title: string;
-    images: string[];
-    children: ReactNode;
-  },
-) => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16">
-      <div>
-        <div className="h-full flex items-center">
-          <div>
-            <h2 className="text-xl font-bold">{title}</h2>
-            {children}
-          </div>
-        </div>
-      </div>
-      <div className="col-span-2">
-        <div className="h-full flex items-center justify-center">
-          <div className="p-2 bg-secondary rounded-lg">
-            <Image
-              src={images[0]}
-              width={0}
-              height={0}
-              style={{ width: "100%", height: "auto" }}
-              className="object-cover"
-              alt="Feature"
-              loading="eager"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
