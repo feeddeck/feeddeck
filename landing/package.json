@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
-    "@tailwindcss/postcss": "^4.0.0",
-    "@types/node": "^22.10.10",
+    "@tailwindcss/postcss": "^4.0.3",
+    "@types/node": "^22.13.0",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "autoprefixer": "^10.4.20",
