@@ -11,12 +11,15 @@ on:
       - published
 
 jobs:
-  # The "Docker" job builds the Docker image and pushes it to the GitHub Container Registry. The job only runs when a
-  # commit is pushed to the main branch or a new tag is created.
+  # The "Docker" job builds the Docker image and pushes it to the GitHub
+  # Container Registry. The job only runs when a commit is pushed to the main
+  # branch or a new tag is created.
   docker:
     name: Docker
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.ref == 'refs/heads/main' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     permissions:
       contents: read
       packages: write
@@ -27,14 +30,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set Docker Tag
-        id: tag
-        run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            echo TAG=${GITHUB_REF:10} >> $GITHUB_ENV
-          else
-            echo TAG=main >> $GITHUB_ENV
-          fi
+      - name: Docker Metadata
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{raw}}
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -57,14 +61,18 @@ jobs:
           context: ./supabase/functions
           file: ./supabase/functions/_cmd/Dockerfile
           platforms: linux/amd64,linux/arm64/v8
-          tags: ghcr.io/${{ github.repository_owner }}/feeddeck:${{ env.TAG }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
 
-  # The "Supabase" job runs the database migrations and deploys all Supabase functions. The job only runs when a commit
-  # is pushed to the main branch or a new tag is created.
+  # The "Supabase" job runs the database migrations and deploys all Supabase
+  # functions. The job only runs when a commit is pushed to the main branch or
+  # a new tag is created.
   supabase:
     name: Supabase
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.ref == 'refs/heads/main' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     permissions:
       contents: read
 
@@ -101,7 +109,9 @@ jobs:
           supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
       - name: Push Database Migration and Deploy Functions
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        if:
+          ${{ github.event_name == 'release' && github.event.action ==
+          'published' }}
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PROD_DB_PASSWORD }}
@@ -123,14 +133,18 @@ jobs:
           supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
           supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
 
-  # The "Web" job builds the Flutter web app and publishes it to Cloudflare Pages. The job only runs on pull requests or
-  # when a commit is pushed to the main branch or a new tag is created.
+  # The "Web" job builds the Flutter web app and publishes it to Cloudflare
+  # Pages. The job only runs on pull requests or when a commit is pushed to the
+  # main branch or a new tag is created.
   #
-  # When the job runs on a pull request it only builds the app but doesn't upload the build to Cloudflare.
+  # When the job runs on a pull request it only builds the app but doesn't
+  # upload the build to Cloudflare.
   web:
     name: Web
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.event_name == 'pull_request' || github.ref == 'refs/heads/main' ||
+      (github.event_name == 'release' && github.event.action == 'published')
     permissions:
       contents: read
     defaults:
@@ -171,11 +185,12 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'stable'
+          flutter-version: "3.29.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
@@ -188,7 +203,9 @@ jobs:
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
-        if: github.ref == 'refs/heads/main' || (github.event_name == 'release' && github.event.action == 'published')
+        if:
+          github.ref == 'refs/heads/main' || (github.event_name == 'release' &&
+          github.event.action == 'published')
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -196,12 +213,15 @@ jobs:
           directory: ./app/build/web
           branch: main
 
-  # The "macOS" job builds the Flutter macOS app and uploads it to the GitHub release or the pull request. The job only
-  # runs for pull requests and when a new release is published.
+  # The "macOS" job builds the Flutter macOS app and uploads it to the GitHub
+  # release or the pull request. The job only runs for pull requests and when a
+  # new release is published.
   macos:
     name: macOS
     runs-on: macos-14
-    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.event_name == 'pull_request' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     permissions:
       contents: write
     defaults:
@@ -215,11 +235,12 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'stable'
+          flutter-version: "3.29.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
@@ -244,17 +265,22 @@ jobs:
 
       - name: Upload Artifacts (Release)
         uses: shogo82148/actions-upload-release-asset@v1
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        if:
+          ${{ github.event_name == 'release' && github.event.action ==
+          'published' }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: app/build/macos/Build/Products/Release/feeddeck-macos-universal.zip
 
-  # The "Linux (x86_64)" job builds the Flutter Linux app and uploads it to the GitHub release or the pull request. The
-  # job only runs for pull requests and when a new release is published.
+  # The "Linux (x86_64)" job builds the Flutter Linux app and uploads it to the
+  # GitHub release or the pull request. The job only runs for pull requests and
+  # when a new release is published.
   linux-x86_64:
     name: Linux (x86_64)
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.event_name == 'pull_request' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     permissions:
       contents: write
     defaults:
@@ -270,18 +296,20 @@ jobs:
           # Required for Flutter
           sudo apt-get update -y
           sudo apt-get install -y ninja-build libgtk-3-dev
-          # Required for Package "media_kit" which is used via "just_audio_media_kit" for Linux and Windows:
+          # Required for Package "media_kit" which is used via
+          # "just_audio_media_kit" for Linux and Windows:
           # See: https://pub.dev/packages/media_kit and https://pub.dev/packages/just_audio_media_kit
           sudo apt-get install -y libmpv-dev mpv
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'stable'
+          flutter-version: "3.29.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
@@ -311,16 +339,21 @@ jobs:
 
       - name: Upload Artifacts (Release)
         uses: shogo82148/actions-upload-release-asset@v1
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        if:
+          ${{ github.event_name == 'release' && github.event.action ==
+          'published' }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: app/build/feeddeck-linux-x86_64.tar.gz
 
-  # The "Linux (arm64)" job builds the Flutter Linux app and uploads it to the GitHub release or the pull request. The
-  # job only runs for pull requests and when a new release is published.
+  # The "Linux (arm64)" job builds the Flutter Linux app and uploads it to the
+  # GitHub release or the pull request. The job only runs for pull requests and
+  # when a new release is published.
   #
-  # NOTE: Normally this job should run for every pull request and when a new release is published, but since we have to
-  # pay for the "ubicloud-standard-2-arm" runner, we only run the job when a new release is published.
+  # NOTE: Normally this job should run for every pull request and when a new
+  # release is published, but since we have to pay for the
+  # "ubicloud-standard-2-arm" runner, we only run the job when a new release is
+  # published.
   linux-arm64:
     name: Linux (arm64)
     runs-on: ubicloud-standard-2-arm
@@ -341,18 +374,20 @@ jobs:
           # Required for Flutter
           sudo apt-get update -y
           sudo apt-get install -y ninja-build libgtk-3-dev
-          # Required for Package "media_kit" which is used via "just_audio_media_kit" for Linux and Windows:
+          # Required for Package "media_kit" which is used via
+          # "just_audio_media_kit" for Linux and Windows:
           # See: https://pub.dev/packages/media_kit and https://pub.dev/packages/just_audio_media_kit
           sudo apt-get install -y libmpv-dev mpv
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'master'
+          flutter-version: "3.29.0"
+          channel: "master"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
@@ -382,17 +417,22 @@ jobs:
 
       - name: Upload Artifacts (Release)
         uses: shogo82148/actions-upload-release-asset@v1
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        if:
+          ${{ github.event_name == 'release' && github.event.action ==
+          'published' }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: app/build/feeddeck-linux-arm64.tar.gz
 
-  # The "Windows" job builds the Flutter Windows app and uploads it to the GitHub release or the pull request. The job
-  # only runs for pull requests and when a new release is published.
+  # The "Windows" job builds the Flutter Windows app and uploads it to the
+  # GitHub release or the pull request. The job only runs for pull requests and
+  # when a new release is published.
   windows:
     name: Windows
     runs-on: windows-2019
-    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.event_name == 'pull_request' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     permissions:
       contents: write
     defaults:
@@ -406,11 +446,12 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'stable'
+          flutter-version: "3.29.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
@@ -440,7 +481,9 @@ jobs:
 
       - name: Upload Artifacts (Release)
         uses: shogo82148/actions-upload-release-asset@v1
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        if:
+          ${{ github.event_name == 'release' && github.event.action ==
+          'published' }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: app/feeddeck-windows-x86_64.zip
@@ -455,17 +498,22 @@ jobs:
 
       - name: Upload Artifacts (Release)
         uses: shogo82148/actions-upload-release-asset@v1
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        if:
+          ${{ github.event_name == 'release' && github.event.action ==
+          'published' }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: app/build/feeddeck-windows-x86_64-msix.zip
 
-  # The "iOS" job builds the Flutter iOS app on every pull request. This is only used to test that the build of the iOS
-  # app works. The artifact of the build isn't uploaded / used.
+  # The "iOS" job builds the Flutter iOS app on every pull request. This is only
+  # used to test that the build of the iOS app works. The artifact of the build
+  # isn't uploaded / used.
   ios:
     name: iOS
     runs-on: macos-14
-    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.event_name == 'pull_request' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     defaults:
       run:
         working-directory: "app"
@@ -477,11 +525,12 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'stable'
+          flutter-version: "3.29.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
@@ -492,12 +541,15 @@ jobs:
           flutter config --enable-ios
           flutter build ipa --no-codesign --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
 
-  # The "Android" job builds the Flutter Android app on every pull request. This is only used to test that the build of
-  # the Android app works. The artifact of the build isn't uploaded / used.
+  # The "Android" job builds the Flutter Android app on every pull request. This
+  # is only used to test that the build of the Android app works. The artifact
+  # of the build isn't uploaded / used.
   android:
     name: Android
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'release' && github.event.action == 'published')
+    if:
+      github.event_name == 'pull_request' || (github.event_name == 'release' &&
+      github.event.action == 'published')
     defaults:
       run:
         working-directory: "app"
@@ -512,11 +564,12 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
-          channel: 'stable'
+          flutter-version: "3.29.0"
+          channel: "stable"
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path:
+            "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: |
