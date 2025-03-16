@@ -22,12 +22,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (8.4.4):
+  - purchases_flutter (8.6.0):
     - Flutter
-    - PurchasesHybridCommon (= 13.16.2)
-  - PurchasesHybridCommon (13.16.2):
-    - RevenueCat (= 5.15.0)
-  - RevenueCat (5.15.0)
+    - PurchasesHybridCommon (= 13.21.0)
+  - PurchasesHybridCommon (13.21.0):
+    - RevenueCat (= 5.18.0)
+  - RevenueCat (5.18.0)
   - screen_brightness_ios (0.1.0):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -112,20 +112,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
-  app_links: 3da4c36b46cac3bf24eb897f1a6ce80bda109874
+  app_links: 76b66b60cc809390ca1ad69bfd66b998d2387ac7
   audio_service: 2023a4a1bdb2fd1443e7b00bdbdb1baa321525db
   audio_session: 94075f61f538dbe8f90f0cee58af3f1837ba7d2b
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_native_splash: 6cad9122ea0fad137d23137dd14b937f3e90b145
+  flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
   just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_native_event_loop: 5fba1a849a6c87a34985f1e178a0de5bd444a0cf
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  purchases_flutter: c30c779ce814f74e6642d511953a7a0c5102a5cf
-  PurchasesHybridCommon: 9fbb4c76f20b8e9b74f13b9045c6ed90727f935b
-  RevenueCat: 90e7642834cabc3e04e396117776bfb3f50debbf
+  purchases_flutter: cbcf97969b7bf0f1db71d802f4e682bb851f0576
+  PurchasesHybridCommon: 9691d74a051f30858360d78936d59dc14575014e
+  RevenueCat: e825836f5d6baa870c53d7281be25a5fd91abd91
   screen_brightness_ios: 5ed898fa50fa82a26171c086ca5e28228f932576
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sign_in_with_apple: c5dcc141574c8c54d5ac99dd2163c0c72ad22418
