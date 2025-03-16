@@ -20,12 +20,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (8.4.4):
+  - purchases_flutter (8.6.0):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 13.16.2)
-  - PurchasesHybridCommon (13.16.2):
-    - RevenueCat (= 5.15.0)
-  - RevenueCat (5.15.0)
+    - PurchasesHybridCommon (= 13.21.0)
+  - PurchasesHybridCommon (13.21.0):
+    - RevenueCat (= 5.18.0)
+  - RevenueCat (5.18.0)
   - screen_brightness_macos (0.1.0):
     - FlutterMacOS
   - screen_retriever_macos (0.0.1):
@@ -112,7 +112,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 9028728e32c83a0831d9db8cf91c526d16cc5468
+  app_links: afe860c55c7ef176cea7fb630a2b7d7736de591d
   audio_service: 0d9e4e25347bb3efb768f3b9f005911a81e587a7
   audio_session: 48ab6500f7a5e7c64363e206565a5dfe5a0c1441
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
@@ -122,9 +122,9 @@ SPEC CHECKSUMS:
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  purchases_flutter: c3187da96621c1c7a38f9e71f2e19080d00a008d
-  PurchasesHybridCommon: 9fbb4c76f20b8e9b74f13b9045c6ed90727f935b
-  RevenueCat: 90e7642834cabc3e04e396117776bfb3f50debbf
+  purchases_flutter: 8094bb6f8de3934313fb58c64c2c1d9b2f91c0bb
+  PurchasesHybridCommon: 9691d74a051f30858360d78936d59dc14575014e
+  RevenueCat: e825836f5d6baa870c53d7281be25a5fd91abd91
   screen_brightness_macos: 2a3ee243f8051c340381e8e51bcedced8360f421
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
