@@ -1,15 +1,15 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-import { corsHeaders } from '../_shared/utils/cors.ts';
-import { log } from '../_shared/utils/log.ts';
-import { IProfile } from '../_shared/models/profile.ts';
-import { TSourceType } from '../_shared/models/source.ts';
-import { encrypt } from '../_shared/utils/encrypt.ts';
+import { corsHeaders } from "../_shared/utils/cors.ts";
+import { log } from "../_shared/utils/log.ts";
+import { IProfile } from "../_shared/models/profile.ts";
+import { TSourceType } from "../_shared/models/source.ts";
+import { encrypt } from "../_shared/utils/encrypt.ts";
 import {
   FEEDDECK_SUPABASE_ANON_KEY,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
   FEEDDECK_SUPABASE_URL,
-} from '../_shared/utils/constants.ts';
+} from "../_shared/utils/constants.ts";
 
 /**
  * DEPRECATED: This function is deprecated and will be removed in the future.
@@ -20,8 +20,8 @@ Deno.serve(async (req) => {
    * We need to handle the preflight request for CORS as it is described in the
    * Supabase documentation: https://supabase.com/docs/guides/functions/cors
    */
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       FEEDDECK_SUPABASE_ANON_KEY,
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: req.headers.get("Authorization")! },
         },
         auth: {
           autoRefreshToken: false,
@@ -47,12 +47,14 @@ Deno.serve(async (req) => {
     /**
      * Get the user from the request. If there is no user, we return an error.
      */
-    const { data: { user } } = await userSupabaseClient.auth.getUser();
+    const {
+      data: { user },
+    } = await userSupabaseClient.auth.getUser();
     if (!user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 401,
       });
@@ -81,26 +83,22 @@ Deno.serve(async (req) => {
      * convert them to `true` or `false`, which indicates if the account is
      * connected or not.
      */
-    if (req.method === 'GET') {
+    if (req.method === "GET") {
       const { data: profile, error: profileError } = await adminSupabaseClient
-        .from(
-          'profiles',
-        )
-        .select('*').eq(
-          'id',
-          user.id,
-        );
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id);
       if (profileError || profile?.length !== 1) {
-        log('error', 'Failed to get user profile', {
-          'user': user,
-          'error': profileError,
+        log("error", "Failed to get user profile", {
+          user: user,
+          error: profileError,
         });
         return new Response(
-          JSON.stringify({ error: 'Failed to get delete user' }),
+          JSON.stringify({ error: "Failed to get delete user" }),
           {
             headers: {
               ...corsHeaders,
-              'Content-Type': 'application/json; charset=utf-8',
+              "Content-Type": "application/json; charset=utf-8",
             },
             status: 500,
           },
@@ -109,19 +107,19 @@ Deno.serve(async (req) => {
 
       return new Response(
         JSON.stringify({
-          'id': (profile[0] as IProfile).id,
-          'tier': (profile[0] as IProfile).tier,
-          'subscriptionProvider': (profile[0] as IProfile).subscriptionProvider,
-          'accountGithub': (profile[0] as IProfile).accountGithub?.token
+          id: (profile[0] as IProfile).id,
+          tier: (profile[0] as IProfile).tier,
+          subscriptionProvider: (profile[0] as IProfile).subscriptionProvider,
+          accountGithub: (profile[0] as IProfile).accountGithub?.token
             ? true
             : false,
-          'createdAt': (profile[0] as IProfile).createdAt,
-          'updatedAt': (profile[0] as IProfile).updatedAt,
+          createdAt: (profile[0] as IProfile).createdAt,
+          updatedAt: (profile[0] as IProfile).updatedAt,
         }),
         {
           headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Type": "application/json; charset=utf-8",
           },
           status: 200,
         },
@@ -136,7 +134,7 @@ Deno.serve(async (req) => {
      * process, e.g. setting a verify token and returning an url for
      * authentication.
      */
-    if (req.method === 'POST') {
+    if (req.method === "POST") {
       const data: {
         action?: string;
         sourceType?: TSourceType;
@@ -152,40 +150,39 @@ Deno.serve(async (req) => {
        * account to the users profile.
        */
       if (
-        data.action === 'add-account' && data.sourceType === 'github' &&
+        data.action === "add-account" &&
+        data.sourceType === "github" &&
         data.options?.token
       ) {
-        const { error: updateError } = await adminSupabaseClient.from(
-          'profiles',
-        ).update({
-          'accountGithub': { token: await encrypt(data.options.token) },
-        }).eq('id', user.id);
+        const { error: updateError } = await adminSupabaseClient
+          .from("profiles")
+          .update({
+            accountGithub: { token: await encrypt(data.options.token) },
+          })
+          .eq("id", user.id);
         if (updateError) {
-          log('error', 'Failed to update user profile', {
-            'user': user,
-            'error': updateError,
+          log("error", "Failed to update user profile", {
+            user: user,
+            error: updateError,
           });
           return new Response(
-            JSON.stringify({ error: 'Failed to update profile' }),
+            JSON.stringify({ error: "Failed to update profile" }),
             {
               headers: {
                 ...corsHeaders,
-                'Content-Type': 'application/json; charset=utf-8',
+                "Content-Type": "application/json; charset=utf-8",
               },
               status: 500,
             },
           );
         }
-        return new Response(
-          undefined,
-          {
-            headers: {
-              ...corsHeaders,
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-            status: 200,
+        return new Response(undefined, {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json; charset=utf-8",
           },
-        );
+          status: 200,
+        });
       }
 
       /**
@@ -194,52 +191,50 @@ Deno.serve(async (req) => {
        * the users GitHub account from his profile by setting the value of the
        * `accountGithub` column to `null`.
        */
-      if (data.action === 'delete-account' && data.sourceType === 'github') {
-        const { error: updateError } = await adminSupabaseClient.from(
-          'profiles',
-        ).update({
-          'accountGithub': null,
-        }).eq('id', user.id);
+      if (data.action === "delete-account" && data.sourceType === "github") {
+        const { error: updateError } = await adminSupabaseClient
+          .from("profiles")
+          .update({
+            accountGithub: null,
+          })
+          .eq("id", user.id);
         if (updateError) {
-          log('error', 'Failed to update user profile', {
-            'user': user,
-            'error': updateError,
+          log("error", "Failed to update user profile", {
+            user: user,
+            error: updateError,
           });
           return new Response(
-            JSON.stringify({ error: 'Failed to update profile' }),
+            JSON.stringify({ error: "Failed to update profile" }),
             {
               headers: {
                 ...corsHeaders,
-                'Content-Type': 'application/json; charset=utf-8',
+                "Content-Type": "application/json; charset=utf-8",
               },
               status: 500,
             },
           );
         }
-        return new Response(
-          undefined,
-          {
-            headers: {
-              ...corsHeaders,
-              'Content-Type': 'application/json; charset=utf-8',
-            },
-            status: 200,
+        return new Response(undefined, {
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json; charset=utf-8",
           },
-        );
+          status: 200,
+        });
       }
 
       /**
        * If the request data doesn't match any of the above conditions, we
        * return an error.
        */
-      log('error', 'Invalid request data', {
-        'user': user,
-        'request': data,
+      log("error", "Invalid request data", {
+        user: user,
+        request: data,
       });
-      return new Response(JSON.stringify({ error: 'Invalid request data' }), {
+      return new Response(JSON.stringify({ error: "Invalid request data" }), {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 400,
       });
@@ -248,21 +243,21 @@ Deno.serve(async (req) => {
     /**
      * If the request method is not GET, POST or DELETE, we return an error.
      */
-    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
+    return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json; charset=utf-8',
+        "Content-Type": "application/json; charset=utf-8",
       },
       status: 405,
     });
   } catch (err) {
-    log('error', 'An unexpected error occured', { 'error': err.toString() });
+    log("error", "An unexpected error occured", { error: err });
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occured' }),
+      JSON.stringify({ error: "An unexpected error occured" }),
       {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 400,
       },

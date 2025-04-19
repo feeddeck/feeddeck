@@ -1,16 +1,16 @@
-import { connect, Redis } from 'redis';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { connect, Redis } from "redis";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-import { log } from '../../_shared/utils/log.ts';
-import { getFeed } from '../../_shared/feed/feed.ts';
+import { log } from "../../_shared/utils/log.ts";
+import { getFeed } from "../../_shared/feed/feed.ts";
 import {
   FEEDDECK_REDIS_HOSTNAME,
   FEEDDECK_REDIS_PASSWORD,
   FEEDDECK_REDIS_PORT,
   FEEDDECK_REDIS_USERNAME,
   FEEDDECK_SUPABASE_URL,
-} from '../../_shared/utils/constants.ts';
-import { FEEDDECK_SUPABASE_SERVICE_ROLE_KEY } from '../../_shared/utils/constants.ts';
+} from "../../_shared/utils/constants.ts";
+import { FEEDDECK_SUPABASE_SERVICE_ROLE_KEY } from "../../_shared/utils/constants.ts";
 
 /**
  * `runWorker` starts the worker which is responsible for fetching the feeds for
@@ -63,14 +63,14 @@ const listenForSources = async (
      * Listen for new sources in the Redis queue. Once a valid source is
      * received we get the source and profile from the Redis data.
      */
-    const data = await redisClient.blpop(1000 * 60, 'sources');
-    if (data && data[0] === 'sources') {
+    const data = await redisClient.blpop(1000 * 60, "sources");
+    if (data && data[0] === "sources") {
       const { source: redisSource, profile: redisProfile } = JSON.parse(
         data[1],
       );
-      log('info', 'Received source', {
-        'source': redisSource.id,
-        'profile': redisProfile.id,
+      log("info", "Received source", {
+        source: redisSource.id,
+        profile: redisProfile.id,
       });
 
       try {
@@ -93,36 +93,34 @@ const listenForSources = async (
          * sources and items.
          */
         if (items.length > 0) {
-          const { error: sourceError } = await supabaseClient.from('sources')
-            .upsert(
-              source,
-            );
+          const { error: sourceError } = await supabaseClient
+            .from("sources")
+            .upsert(source);
           if (sourceError) {
-            log('error', 'Failed to save sources', { 'error': sourceError });
+            log("error", "Failed to save sources", { error: sourceError });
           }
 
-          const { error: itemsError } = await supabaseClient.from('items')
-            .upsert(
-              items,
-            );
+          const { error: itemsError } = await supabaseClient
+            .from("items")
+            .upsert(items);
           if (itemsError) {
-            log('error', 'Failed to save items', { 'error': itemsError });
+            log("error", "Failed to save items", { error: itemsError });
           }
 
-          log('info', 'Updated source', {
-            'source': redisSource.id,
-            'profile': redisProfile.id,
+          log("info", "Updated source", {
+            source: redisSource.id,
+            profile: redisProfile.id,
           });
         }
       } catch (err) {
-        log('error', 'Failed to fetch feed', {
+        log("error", "Failed to fetch feed", {
           source: redisSource,
-          'profile': redisProfile.id,
-          'error': err.toString(),
+          profile: redisProfile.id,
+          error: err,
         });
       }
     }
   } catch (err) {
-    log('error', 'Failed to listen for sources', { 'error': err.toString() });
+    log("error", "Failed to listen for sources", { error: err });
   }
 };

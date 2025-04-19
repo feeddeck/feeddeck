@@ -1,11 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-import { log } from '../_shared/utils/log.ts';
+import { log } from "../_shared/utils/log.ts";
 import {
   FEEDDECK_REVENUECAT_WEBHOOK_HEADER,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
   FEEDDECK_SUPABASE_URL,
-} from '../_shared/utils/constants.ts';
+} from "../_shared/utils/constants.ts";
 
 /**
  * The `IEventPayload` interface represents the payload of a RevenueCat webhook
@@ -29,13 +29,13 @@ interface IEvent {
  * header in RevenueCat.
  */
 const isAuthorized = (req: Request): boolean => {
-  const authorizationHeader = req.headers.get('Authorization');
+  const authorizationHeader = req.headers.get("Authorization");
 
-  if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+  if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
     return false;
   }
 
-  const authToken = authorizationHeader.split('Bearer ')[1];
+  const authToken = authorizationHeader.split("Bearer ")[1];
   if (authToken !== FEEDDECK_REVENUECAT_WEBHOOK_HEADER) {
     return false;
   }
@@ -72,39 +72,40 @@ export const manageSubscriptionStatusChange = async (
    * one profile, we return an error.
    */
   const { data: profile, error: profileError } = await adminSupabaseClient
-    .from(
-      'profiles',
-    )
-    .select('*').eq('id', userId);
+    .from("profiles")
+    .select("*")
+    .eq("id", userId);
   if (profileError || profile?.length !== 1) {
-    log('error', 'Failed to get user profile', {
-      'userId': userId,
-      'error': profileError,
+    log("error", "Failed to get user profile", {
+      userId: userId,
+      error: profileError,
     });
-    throw new Error('Failed to get user profile');
+    throw new Error("Failed to get user profile");
   }
 
   /**
    * If the user is already on the correct tier, we return early.
    */
   if (
-    (profile[0].tier === 'free' && !isCreated) ||
-    (profile[0].tier === 'premium' && isCreated)
+    (profile[0].tier === "free" && !isCreated) ||
+    (profile[0].tier === "premium" && isCreated)
   ) {
     return;
   }
 
-  const { error: updateError } = await adminSupabaseClient.from('profiles')
+  const { error: updateError } = await adminSupabaseClient
+    .from("profiles")
     .update({
-      tier: isCreated ? 'premium' : 'free',
-      subscriptionProvider: 'revenuecat',
-    }).eq('id', profile[0].id);
+      tier: isCreated ? "premium" : "free",
+      subscriptionProvider: "revenuecat",
+    })
+    .eq("id", profile[0].id);
   if (updateError) {
-    log('error', 'Failed to update user profile with new tier value', {
-      'userId': userId,
-      'error': updateError,
+    log("error", "Failed to update user profile with new tier value", {
+      userId: userId,
+      error: updateError,
     });
-    throw new Error('Failed to update user profile with new tier value');
+    throw new Error("Failed to update user profile with new tier value");
   }
 };
 
@@ -120,29 +121,23 @@ Deno.serve(async (req) => {
      * is done because we only want to accept POST requests. If the request is
      * not authorized, we return a 401 Unauthorized error.
      */
-    if (req.method !== 'POST') {
-      return new Response(
-        'Forbidden',
-        {
-          status: 403,
-        },
-      );
+    if (req.method !== "POST") {
+      return new Response("Forbidden", {
+        status: 403,
+      });
     }
 
     if (!isAuthorized(req)) {
-      return new Response(
-        'Unauthorized',
-        {
-          status: 401,
-        },
-      );
+      return new Response("Unauthorized", {
+        status: 401,
+      });
     }
 
     /**
      * Get the payload of the received webhook event.
      */
-    const payload = await req.json() as IEventPayload;
-    log('debug', 'Received event', { 'event': payload.event });
+    const payload = (await req.json()) as IEventPayload;
+    log("debug", "Received event", { event: payload.event });
 
     /**
      * If the event type is `INITIAL_PURCHASE`, `RENEWAL` or `UNCANCELLATION`,
@@ -151,31 +146,28 @@ Deno.serve(async (req) => {
      * `free`. All other event types are ignored.
      */
     if (
-      payload.event.type === 'INITIAL_PURCHASE' ||
-      payload.event.type === 'RENEWAL' ||
-      payload.event.type === 'UNCANCELLATION'
+      payload.event.type === "INITIAL_PURCHASE" ||
+      payload.event.type === "RENEWAL" ||
+      payload.event.type === "UNCANCELLATION"
     ) {
       await manageSubscriptionStatusChange(payload.event.app_user_id, true);
-      return new Response('ok', {
+      return new Response("ok", {
         status: 200,
       });
-    } else if (payload.event.type === 'EXPIRATION') {
+    } else if (payload.event.type === "EXPIRATION") {
       await manageSubscriptionStatusChange(payload.event.app_user_id, false);
-      return new Response('ok', {
+      return new Response("ok", {
         status: 200,
       });
     } else {
-      return new Response('ok', {
+      return new Response("ok", {
         status: 200,
       });
     }
   } catch (err) {
-    log('error', 'An unexpected error occured', { 'error': err.toString() });
-    return new Response(
-      'An unexpected error occured',
-      {
-        status: 500,
-      },
-    );
+    log("error", "An unexpected error occured", { error: err });
+    return new Response("An unexpected error occured", {
+      status: 500,
+    });
   }
 });
