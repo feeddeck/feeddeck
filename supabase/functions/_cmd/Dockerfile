@@ -1,5 +1,4 @@
-# FROM denoland/deno:1.34.1
-FROM lukechannings/deno:v1.40.5
+ FROM denoland/deno:1.45.2
 
 WORKDIR /app
 

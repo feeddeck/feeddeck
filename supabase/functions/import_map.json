@@ -4,7 +4,7 @@
     "std/testing/mock": "https://deno.land/std@0.208.0/testing/mock.ts",
     "std/hex": "https://deno.land/std@0.208.0/encoding/hex.ts",
     "std/crypto": "https://deno.land/std@0.208.0/crypto/mod.ts",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0",
+    "@supabase/supabase-js": "jsr:@supabase/supabase-js@2",
     "rss": "https://deno.land/x/rss@1.0.0/mod.ts",
     "rss/types": "https://deno.land/x/rss@1.0.0/src/types/mod.ts",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
