@@ -125,8 +125,17 @@ class DeckLayoutSmall extends StatelessWidget {
       );
     }
 
+    /// Return the TabBarView. Since it was requested in
+    /// https://github.com/feeddeck/feeddeck/issues/228 we removed the
+    /// `physics: const NeverScrollableScrollPhysics()` property, so that a user
+    /// can switch between tabs by swiping to the left and to the right.
+    ///
+    /// After testing this didn't conflicted with the other scroll and swipe
+    /// gestures of the children, so it should be save to activate. In case this
+    /// doesn't workout well in the long term, we should re-add the `physics`
+    /// property to the widget.
     return TabBarView(
-      physics: const NeverScrollableScrollPhysics(),
+      // physics: const NeverScrollableScrollPhysics(),
       children: widgets,
     );
   }
