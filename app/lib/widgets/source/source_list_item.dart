@@ -14,10 +14,12 @@ class SourceListItem extends StatefulWidget {
   const SourceListItem({
     super.key,
     required this.columnId,
+    required this.sourceIndex,
     required this.source,
   });
 
   final String columnId;
+  final int sourceIndex;
   final FDSource source;
   @override
   State<SourceListItem> createState() => _SourceListItemState();
@@ -35,17 +37,16 @@ class _SourceListItemState extends State<SourceListItem> {
       builder: (BuildContext context) {
         return AlertDialog(
           insetPadding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width >=
-                    (Constants.centeredFormMaxWidth +
-                        2 * Constants.spacingMiddle)
-                ? (MediaQuery.of(context).size.width -
-                        Constants.centeredFormMaxWidth) /
-                    2
-                : Constants.spacingMiddle,
+            horizontal:
+                MediaQuery.of(context).size.width >=
+                        (Constants.centeredFormMaxWidth +
+                            2 * Constants.spacingMiddle)
+                    ? (MediaQuery.of(context).size.width -
+                            Constants.centeredFormMaxWidth) /
+                        2
+                    : Constants.spacingMiddle,
           ),
-          title: const Text(
-            'Delete Source',
-          ),
+          title: const Text('Delete Source'),
           content: const Text(
             'Do you really want to delete this source? This can not be undone and will also delete all items and bookmarks related to this source.',
           ),
@@ -61,12 +62,13 @@ class _SourceListItemState extends State<SourceListItem> {
             ),
             TextButton(
               onPressed: _isLoading ? null : () => _deleteSource(),
-              child: _isLoading
-                  ? const ElevatedButtonProgressIndicator()
-                  : const Text(
-                      'Delete',
-                      style: TextStyle(color: Constants.error),
-                    ),
+              child:
+                  _isLoading
+                      ? const ElevatedButtonProgressIndicator()
+                      : const Text(
+                        'Delete',
+                        style: TextStyle(color: Constants.error),
+                      ),
             ),
           ],
         );
@@ -110,19 +112,13 @@ class _SourceListItemState extends State<SourceListItem> {
   Widget build(BuildContext context) {
     return Card(
       color: Constants.secondary,
-      margin: const EdgeInsets.only(
-        bottom: Constants.spacingSmall,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      margin: const EdgeInsets.only(bottom: Constants.spacingSmall),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(
-              Constants.spacingMiddle,
-            ),
+            padding: const EdgeInsets.all(Constants.spacingMiddle),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -135,14 +131,10 @@ class _SourceListItemState extends State<SourceListItem> {
                             .replaceAll(Characters(''), Characters('\u{200B}'))
                             .toString(),
                         maxLines: 1,
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        style: const TextStyle(overflow: TextOverflow.ellipsis),
                       ),
                       Text(
-                        Characters(
-                          widget.source.type.toLocalizedString(),
-                        )
+                        Characters(widget.source.type.toLocalizedString())
                             .replaceAll(Characters(''), Characters('\u{200B}'))
                             .toString(),
                         maxLines: 1,
@@ -156,11 +148,14 @@ class _SourceListItemState extends State<SourceListItem> {
                 ),
                 IconButton(
                   onPressed: () => _showDeleteDialog(),
-                  icon: _isLoading
-                      ? const ElevatedButtonProgressIndicator()
-                      : const Icon(
-                          Icons.delete,
-                        ),
+                  icon:
+                      _isLoading
+                          ? const ElevatedButtonProgressIndicator()
+                          : const Icon(Icons.delete),
+                ),
+                ReorderableDragStartListener(
+                  index: widget.sourceIndex,
+                  child: Icon(Icons.drag_handle),
                 ),
               ],
             ),
