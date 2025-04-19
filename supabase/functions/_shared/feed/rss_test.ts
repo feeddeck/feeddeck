@@ -1,31 +1,31 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "std/testing/mock";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getRSSFeed } from './rss.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
-import { assertEqualsItems, assertEqualsSource } from './utils/test.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getRSSFeed } from "./rss.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
+import { assertEqualsItems, assertEqualsSource } from "./utils/test.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responseTagesschauWebsiteHTML = ` <!DOCTYPE html>
@@ -150,10 +150,10 @@ const responseTagesschauWebsiteRSS = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getRSSFeed - Tagesschau Website', async () => {
+Deno.test("getRSSFeed - Tagesschau Website", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseTagesschauWebsiteHTML, { status: 200 }));
@@ -169,14 +169,13 @@ Deno.test('getRSSFeed - Tagesschau Website', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve({
-          url:
-            'https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png',
+          url: "https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png",
           size: 20251,
-          extension: 'png',
+          extension: "png",
         });
       }),
     ]),
@@ -184,11 +183,11 @@ Deno.test('getRSSFeed - Tagesschau Website', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(
-          'https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png',
+          "https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png",
         );
       }),
     ]),
@@ -202,66 +201,64 @@ Deno.test('getRSSFeed - Tagesschau Website', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://www.tagesschau.de',
+          rss: "https://www.tagesschau.de",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title':
-        'tagesschau.de - die erste Adresse für Nachrichten und Information',
-      'options': { 'rss': 'https://www.tagesschau.de/index~rss2.xml' },
-      'link': 'https://www.tagesschau.de/',
-      'icon':
-        'https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png',
+      id: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title:
+        "tagesschau.de - die erste Adresse für Nachrichten und Information",
+      options: { rss: "https://www.tagesschau.de/index~rss2.xml" },
+      link: "https://www.tagesschau.de/",
+      icon: "https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5-0937a33dc3b35c2982ebb30ca389f6f8',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5',
-      'title': 'Haushaltskrise: Um wie viele Milliarden es wirklich geht',
-      'link': 'https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html',
-      'media':
-        'https://images.tagesschau.de/image/2d5406e9-671d-4110-8302-de9b0a8b4832/AAABjBuUz7s/AAABibBxqrQ/16x9-1280/lindner-habeck-scholz-102.jpg',
-      'description':
-        'Die Spitzen der Ampelkoalition suchen Auswege aus der Haushaltskrise. Die Wirtschaft drängt, einige Vorhaben stehen auf der Kippe. Was macht die Gespräche so schwierig - und um wie viel Geld geht es genau? Von H.-J. Vieweger.',
-      'publishedAt': 1702390821,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5-73a9b28a98ee50d9d79c0b7b03fae3a8',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5',
-      'title': 'Verhandlungen über Haushalt gehen weiter',
-      'link':
-        'https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html',
-      'media':
-        'https://images.tagesschau.de/image/aff9abd4-3b6c-497a-9ff9-be59a588de60/AAABjF3BVcA/AAABibBxqrQ/16x9-1280/habeck-482.jpg',
-      'description':
-        'Sie tagen wieder: Seit dem Vormittag sitzen die Spitzen der Ampel zusammen, um eine Lösung für den Haushalt 2024 zu finden. Vertreter von Wirtschaft und Gewerkschaften dringen auf eine schnelle Einigung.',
-      'publishedAt': 1702380001,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5-fbdf4ad3cc0a0edfbde09afe55844dde',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5',
-      'title':
-        'Ringen um Abschlusserklärung: Die dicken Bretter der Klimakonferenz',
-      'link':
-        'https://www.tagesschau.de/ausland/asien/cop28-knackpunkte-100.html',
-      'media':
-        'https://images.tagesschau.de/image/7fa64dfe-5ca7-4845-8dac-5cdeaa1e4c1d/AAABjF3uH6c/AAABibBxqrQ/16x9-1280/cop-aktivisten-102.jpg',
-      'description':
-        'Auf der Klimakonferenz ist es den Teilnehmern bislang nicht gelungen, sich auf einen gemeinsamen Beschluss zu verständigen. Der größte Knackpunkt ist der Ausstieg aus fossilen Energien. Doch es gibt weitere. Von M. Polansky.',
-      'publishedAt': 1702383879,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5-0937a33dc3b35c2982ebb30ca389f6f8",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5",
+        title: "Haushaltskrise: Um wie viele Milliarden es wirklich geht",
+        link: "https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html",
+        media:
+          "https://images.tagesschau.de/image/2d5406e9-671d-4110-8302-de9b0a8b4832/AAABjBuUz7s/AAABibBxqrQ/16x9-1280/lindner-habeck-scholz-102.jpg",
+        description:
+          '<p> <a href="https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html"><img src="https://images.tagesschau.de/image/2d5406e9-671d-4110-8302-de9b0a8b4832/AAABjBuUz7s/AAABibBxqrQ/16x9-1280/lindner-habeck-scholz-102.jpg" alt="Christian Lindner, Robert Habeck und Olaf Scholz im Bundestag  | dpa" /></a> <br/> <br/>Die Spitzen der Ampelkoalition suchen Auswege aus der Haushaltskrise. Die Wirtschaft drängt, einige Vorhaben stehen auf der Kippe. Was macht die Gespräche so schwierig - und um wie viel Geld geht es genau? <em>Von H.-J. Vieweger.</em>[<a href="https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html">mehr</a>]</p>',
+        publishedAt: 1702390821,
+      },
+      {
+        id: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5-73a9b28a98ee50d9d79c0b7b03fae3a8",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5",
+        title: "Verhandlungen über Haushalt gehen weiter",
+        link: "https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html",
+        media:
+          "https://images.tagesschau.de/image/aff9abd4-3b6c-497a-9ff9-be59a588de60/AAABjF3BVcA/AAABibBxqrQ/16x9-1280/habeck-482.jpg",
+        description:
+          '<p> <a href="https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html"><img src="https://images.tagesschau.de/image/aff9abd4-3b6c-497a-9ff9-be59a588de60/AAABjF3BVcA/AAABibBxqrQ/16x9-1280/habeck-482.jpg" alt="Robert Habeck (M, Bündnis 90/Die Grünen), Bundesminister für Wirtschaft und Klimaschutz, kommt ins Bundeskanzleramt | dpa" /></a> <br/> <br/>Sie tagen wieder: Seit dem Vormittag sitzen die Spitzen der Ampel zusammen, um eine Lösung für den Haushalt 2024 zu finden. Vertreter von Wirtschaft und Gewerkschaften dringen auf eine schnelle Einigung.[<a href="https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html">mehr</a>]</p>',
+        publishedAt: 1702380001,
+      },
+      {
+        id: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5-fbdf4ad3cc0a0edfbde09afe55844dde",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5",
+        title:
+          "Ringen um Abschlusserklärung: Die dicken Bretter der Klimakonferenz",
+        link: "https://www.tagesschau.de/ausland/asien/cop28-knackpunkte-100.html",
+        media:
+          "https://images.tagesschau.de/image/7fa64dfe-5ca7-4845-8dac-5cdeaa1e4c1d/AAABjF3uH6c/AAABibBxqrQ/16x9-1280/cop-aktivisten-102.jpg",
+        description:
+          '<p> <a href="https://www.tagesschau.de/ausland/asien/cop28-knackpunkte-100.html"><img src="https://images.tagesschau.de/image/7fa64dfe-5ca7-4845-8dac-5cdeaa1e4c1d/AAABjF3uH6c/AAABibBxqrQ/16x9-1280/cop-aktivisten-102.jpg" alt="Verkleidete Klimaaktivisten fordern auf der Klimakonferenz in Dubai den Ausstieg aus fossilen Energien. | EPA" /></a> <br/> <br/>Auf der Klimakonferenz ist es den Teilnehmern bislang nicht gelungen, sich auf einen gemeinsamen Beschluss zu verständigen. Der größte Knackpunkt ist der Ausstieg aus fossilen Energien. Doch es gibt weitere. <em>Von M. Polansky</em>.[<a href="https://www.tagesschau.de/ausland/asien/cop28-knackpunkte-100.html">mehr</a>]</p>',
+        publishedAt: 1702383879,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -269,43 +266,30 @@ Deno.test('getRSSFeed - Tagesschau Website', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://www.tagesschau.de',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.tagesschau.de", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseTagesschauWebsiteHTML, { status: 200 }));
     }),
   });
   assertSpyCall(fetchWithTimeoutSpy, 1, {
-    args: [
-      'https://www.tagesschau.de',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.tagesschau.de", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseTagesschauWebsiteHTML, { status: 200 }));
     }),
   });
   assertSpyCall(fetchWithTimeoutSpy, 2, {
-    args: [
-      'https://www.tagesschau.de/index~rss2.xml',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.tagesschau.de/index~rss2.xml", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseTagesschauWebsiteRSS, { status: 200 }));
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.tagesschau.de/'],
+    args: ["https://www.tagesschau.de/"],
     returned: new Promise((resolve) => {
       resolve({
-        url:
-          'https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png',
+        url: "https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png",
         size: 20251,
-        extension: 'png',
+        extension: "png",
       });
     }),
   });
@@ -313,21 +297,20 @@ Deno.test('getRSSFeed - Tagesschau Website', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title':
-          'tagesschau.de - die erste Adresse für Nachrichten und Information',
-        'options': { 'rss': 'https://www.tagesschau.de/index~rss2.xml' },
-        'link': 'https://www.tagesschau.de/',
-        'icon':
-          'https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png',
+        id: "rss-myuser-mycolumn-790bbd13d8bff02d80672419ea0709b5",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title:
+          "tagesschau.de - die erste Adresse für Nachrichten und Information",
+        options: { rss: "https://www.tagesschau.de/index~rss2.xml" },
+        link: "https://www.tagesschau.de/",
+        icon: "https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png",
       },
     ],
     returned: new Promise((resolve) => {
       resolve(
-        'https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png',
+        "https://www.tagesschau.de/resources/assets/image/favicon/apple-icon-152x152.png",
       );
     }),
   });
@@ -366,10 +349,10 @@ const responseTagesschauAtom = `<?xml version="1.0" encoding="UTF-8"?>
    </entry>
 </feed>`;
 
-Deno.test('getRSSFeed - Tagesschau Atom', async () => {
+Deno.test("getRSSFeed - Tagesschau Atom", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseTagesschauAtom, { status: 200 }));
@@ -379,7 +362,7 @@ Deno.test('getRSSFeed - Tagesschau Atom', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -389,7 +372,7 @@ Deno.test('getRSSFeed - Tagesschau Atom', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -405,49 +388,49 @@ Deno.test('getRSSFeed - Tagesschau Atom', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://www.tagesschau.de/index~atom.xml',
+          rss: "https://www.tagesschau.de/index~atom.xml",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title':
-        'tagesschau.de - die erste Adresse für Nachrichten und Information',
-      'options': { 'rss': 'https://www.tagesschau.de/index~atom.xml' },
-      'link': 'https://www.tagesschau.de/',
+      id: "rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title:
+        "tagesschau.de - die erste Adresse für Nachrichten und Information",
+      options: { rss: "https://www.tagesschau.de/index~atom.xml" },
+      link: "https://www.tagesschau.de/",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f-0937a33dc3b35c2982ebb30ca389f6f8',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f',
-      'title': 'Haushaltskrise: Um wie viele Milliarden es wirklich geht',
-      'link': 'https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html',
-      'media':
-        'https://images.tagesschau.de/image/2d5406e9-671d-4110-8302-de9b0a8b4832/AAABjBuUz7s/AAABibBxqrQ/16x9-1280/lindner-habeck-scholz-102.jpg',
-      'description':
-        'Die Spitzen der Ampelkoalition suchen Auswege aus der Haushaltskrise. Die Wirtschaft drängt, einige Vorhaben stehen auf der Kippe. Was macht die Gespräche so schwierig - und um wie viel Geld geht es genau? Von H.-J. Vieweger.',
-      'publishedAt': 1702390821,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f-73a9b28a98ee50d9d79c0b7b03fae3a8',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f',
-      'title': 'Verhandlungen über Haushalt gehen weiter',
-      'link':
-        'https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html',
-      'media':
-        'https://images.tagesschau.de/image/aff9abd4-3b6c-497a-9ff9-be59a588de60/AAABjF3BVcA/AAABibBxqrQ/16x9-1280/habeck-482.jpg',
-      'description':
-        'Sie tagen wieder: Seit dem Vormittag sitzen die Spitzen der Ampel zusammen, um eine Lösung für den Haushalt 2024 zu finden. Vertreter von Wirtschaft und Gewerkschaften dringen auf eine schnelle Einigung.',
-      'publishedAt': 1702380001,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f-0937a33dc3b35c2982ebb30ca389f6f8",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f",
+        title: "Haushaltskrise: Um wie viele Milliarden es wirklich geht",
+        link: "https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html",
+        media:
+          "https://images.tagesschau.de/image/2d5406e9-671d-4110-8302-de9b0a8b4832/AAABjBuUz7s/AAABibBxqrQ/16x9-1280/lindner-habeck-scholz-102.jpg",
+        description:
+          '<![CDATA[<p ><a href="https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html"><img src="https://images.tagesschau.de/image/2d5406e9-671d-4110-8302-de9b0a8b4832/AAABjBuUz7s/AAABibBxqrQ/16x9-1280/lindner-habeck-scholz-102.jpg" alt="Christian Lindner, Robert Habeck und Olaf Scholz im Bundestag  | dpa" /></a ><br/><br/>Die Spitzen der Ampelkoalition suchen Auswege aus der Haushaltskrise. Die Wirtschaft drängt, einige Vorhaben stehen auf der Kippe. Was macht die Gespräche so schwierig - und um wie viel Geld geht es genau? <em >Von H.-J. Vieweger.</em >[<a href="https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html">mehr </a >]</p >]]>',
+        publishedAt: 1702390821,
+      },
+      {
+        id: "rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f-73a9b28a98ee50d9d79c0b7b03fae3a8",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f",
+        title: "Verhandlungen über Haushalt gehen weiter",
+        link: "https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html",
+        media:
+          "https://images.tagesschau.de/image/aff9abd4-3b6c-497a-9ff9-be59a588de60/AAABjF3BVcA/AAABibBxqrQ/16x9-1280/habeck-482.jpg",
+        description:
+          '<![CDATA[<p ><a href="https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html"><img src="https://images.tagesschau.de/image/aff9abd4-3b6c-497a-9ff9-be59a588de60/AAABjF3BVcA/AAABibBxqrQ/16x9-1280/habeck-482.jpg" alt="Robert Habeck (M, Bündnis 90/Die Grünen), Bundesminister für Wirtschaft und Klimaschutz, kommt ins Bundeskanzleramt | dpa" /></a ><br/><br/>Sie tagen wieder: Seit dem Vormittag sitzen die Spitzen der Ampel zusammen, um eine Lösung für den Haushalt 2024 zu finden. Vertreter von Wirtschaft und Gewerkschaften dringen auf eine schnelle Einigung.[<a href="https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html">mehr </a >]</p >]]>',
+        publishedAt: 1702380001,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -455,17 +438,13 @@ Deno.test('getRSSFeed - Tagesschau Atom', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://www.tagesschau.de/index~atom.xml',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.tagesschau.de/index~atom.xml", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseTagesschauAtom, { status: 200 }));
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.tagesschau.de/'],
+    args: ["https://www.tagesschau.de/"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -474,14 +453,14 @@ Deno.test('getRSSFeed - Tagesschau Atom', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title':
-          'tagesschau.de - die erste Adresse für Nachrichten und Information',
-        'options': { 'rss': 'https://www.tagesschau.de/index~atom.xml' },
-        'link': 'https://www.tagesschau.de/',
+        id: "rss-myuser-mycolumn-8465a4b4e81845fd534f45a3ef63ae7f",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title:
+          "tagesschau.de - die erste Adresse für Nachrichten und Information",
+        options: { rss: "https://www.tagesschau.de/index~atom.xml" },
+        link: "https://www.tagesschau.de/",
         icon: undefined,
       },
     ],
@@ -562,10 +541,10 @@ const responseTagesschauRDF = `<?xml version="1.0" encoding="UTF-8"?>
    </item>
 </rdf:RDF>`;
 
-Deno.test('getRSSFeed - Tagesschau RDF', async () => {
+Deno.test("getRSSFeed - Tagesschau RDF", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseTagesschauRDF, { status: 200 }));
@@ -575,7 +554,7 @@ Deno.test('getRSSFeed - Tagesschau RDF', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -585,7 +564,7 @@ Deno.test('getRSSFeed - Tagesschau RDF', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -601,45 +580,45 @@ Deno.test('getRSSFeed - Tagesschau RDF', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://www.tagesschau.de/index~rdf.xml',
+          rss: "https://www.tagesschau.de/index~rdf.xml",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title':
-        'tagesschau.de - die erste Adresse für Nachrichten und Information',
-      'options': { 'rss': 'https://www.tagesschau.de/index~rdf.xml' },
-      'link': 'https://www.tagesschau.de/',
+      id: "rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title:
+        "tagesschau.de - die erste Adresse für Nachrichten und Information",
+      options: { rss: "https://www.tagesschau.de/index~rdf.xml" },
+      link: "https://www.tagesschau.de/",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09-d1a49b5818b63c6c2d4cbabb45086a8c',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09',
-      'title': 'Haushaltskrise: Um wie viele Milliarden es wirklich geht',
-      'link': 'https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html',
-      'description':
-        'Die Spitzen der Ampelkoalition suchen Auswege aus der Haushaltskrise. Die Wirtschaft drängt, einige Vorhaben stehen auf der Kippe. Was macht die Gespräche so schwierig - und um wie viel Geld geht es genau? Von H.-J. Vieweger.',
-      'publishedAt': 1702390821,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09-c2f8e98ba67224f9e65c3623e7989fd6',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09',
-      'title': 'Verhandlungen über Haushalt gehen weiter',
-      'link':
-        'https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html',
-      'description':
-        'Sie tagen wieder: Seit dem Vormittag sitzen die Spitzen der Ampel zusammen, um eine Lösung für den Haushalt 2024 zu finden. Vertreter von Wirtschaft und Gewerkschaften dringen auf eine schnelle Einigung.',
-      'publishedAt': 1702380001,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09-d1a49b5818b63c6c2d4cbabb45086a8c",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09",
+        title: "Haushaltskrise: Um wie viele Milliarden es wirklich geht",
+        link: "https://www.tagesschau.de/wirtschaft/haushalt-volumen-100.html",
+        description:
+          "Die Spitzen der Ampelkoalition suchen Auswege aus der Haushaltskrise. Die Wirtschaft drängt, einige Vorhaben stehen auf der Kippe. Was macht die Gespräche so schwierig - und um wie viel Geld geht es genau? Von H.-J. Vieweger.",
+        publishedAt: 1702390821,
+      },
+      {
+        id: "rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09-c2f8e98ba67224f9e65c3623e7989fd6",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09",
+        title: "Verhandlungen über Haushalt gehen weiter",
+        link: "https://www.tagesschau.de/inland/innenpolitik/haushalt-verhandlungen-fortsetzung-100.html",
+        description:
+          "Sie tagen wieder: Seit dem Vormittag sitzen die Spitzen der Ampel zusammen, um eine Lösung für den Haushalt 2024 zu finden. Vertreter von Wirtschaft und Gewerkschaften dringen auf eine schnelle Einigung.",
+        publishedAt: 1702380001,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -647,17 +626,13 @@ Deno.test('getRSSFeed - Tagesschau RDF', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://www.tagesschau.de/index~rdf.xml',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.tagesschau.de/index~rdf.xml", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseTagesschauRDF, { status: 200 }));
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.tagesschau.de/'],
+    args: ["https://www.tagesschau.de/"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -666,14 +641,14 @@ Deno.test('getRSSFeed - Tagesschau RDF', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title':
-          'tagesschau.de - die erste Adresse für Nachrichten und Information',
-        'options': { 'rss': 'https://www.tagesschau.de/index~rdf.xml' },
-        'link': 'https://www.tagesschau.de/',
+        id: "rss-myuser-mycolumn-315eca5c9ed1af9968989241a5b7de09",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title:
+          "tagesschau.de - die erste Adresse für Nachrichten und Information",
+        options: { rss: "https://www.tagesschau.de/index~rdf.xml" },
+        link: "https://www.tagesschau.de/",
         icon: undefined,
       },
     ],
@@ -729,10 +704,10 @@ const responseNYT = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getRSSFeed - NYT', async () => {
+Deno.test("getRSSFeed - NYT", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseNYT, { status: 200 }));
@@ -742,7 +717,7 @@ Deno.test('getRSSFeed - NYT', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -752,7 +727,7 @@ Deno.test('getRSSFeed - NYT', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -768,54 +743,54 @@ Deno.test('getRSSFeed - NYT', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+          rss: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title': 'NYT >World News',
-      'options': {
-        'rss': 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+      id: "rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title: "NYT >World News",
+      options: {
+        rss: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
       },
-      'link': 'https://www.nytimes.com/section/world',
+      link: "https://www.nytimes.com/section/world",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6-d22cc21707b95a8e85b4c7bd88b712e5',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6',
-      'title':
-        'Israel-Hamas War: Houthis Strike Commercial Ship in Red Sea, Fanning Fears of Wider War',
-      'link':
-        'https://www.nytimes.com/live/2023/12/12/world/israel-hamas-gaza-war-news',
-      'media':
-        'https://static01.nyt.com/images/2023/12/12/multimedia/12israel-hamas-header-sub-cthq/12israel-hamas-header-sub-cthq-mediumSquareAt3X.jpg',
-      'description':
-        'A missile hit a tanker in one of the first successful strikes on a ship by the Iranian-backed Houthi militia in Yemen, which has vowed to target vessels in protest of Israel’s assault on Gaza.',
-      'author': 'The New York Times',
-      'publishedAt': 1702401431,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6-92c1a2023e17f7793d796690ff6ef250',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6',
-      'title':
-        'Russia-Ukraine War: As Zelensky Pleads for Aid, Republicans Demand Border Concessions From Biden',
-      'link': 'https://www.nytimes.com/live/2023/12/12/us/zelensky-biden-visit',
-      'media':
-        'https://static01.nyt.com/images/2023/12/12/multimedia/12zelensky-dc-blog/12zelensky-dc-hp-mediumSquareAt3X-v2.jpg',
-      'description':
-        'Ukraine’s president is in Washington with an urgent request for more help to fight Russia, but Republicans in both chambers say they won’t act without a border deal. Mr. Zelensky will meet soon with President Biden.',
-      'author': 'The New York Times',
-      'publishedAt': 1702401431,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6-d22cc21707b95a8e85b4c7bd88b712e5",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6",
+        title:
+          "Israel-Hamas War: Houthis Strike Commercial Ship in Red Sea, Fanning Fears of Wider War",
+        link: "https://www.nytimes.com/live/2023/12/12/world/israel-hamas-gaza-war-news",
+        media:
+          "https://static01.nyt.com/images/2023/12/12/multimedia/12israel-hamas-header-sub-cthq/12israel-hamas-header-sub-cthq-mediumSquareAt3X.jpg",
+        description:
+          "A missile hit a tanker in one of the first successful strikes on a ship by the Iranian-backed Houthi militia in Yemen, which has vowed to target vessels in protest of Israel’s assault on Gaza.",
+        author: "The New York Times",
+        publishedAt: 1702401431,
+      },
+      {
+        id: "rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6-92c1a2023e17f7793d796690ff6ef250",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6",
+        title:
+          "Russia-Ukraine War: As Zelensky Pleads for Aid, Republicans Demand Border Concessions From Biden",
+        link: "https://www.nytimes.com/live/2023/12/12/us/zelensky-biden-visit",
+        media:
+          "https://static01.nyt.com/images/2023/12/12/multimedia/12zelensky-dc-blog/12zelensky-dc-hp-mediumSquareAt3X-v2.jpg",
+        description:
+          "Ukraine’s president is in Washington with an urgent request for more help to fight Russia, but Republicans in both chambers say they won’t act without a border deal. Mr. Zelensky will meet soon with President Biden.",
+        author: "The New York Times",
+        publishedAt: 1702401431,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -824,8 +799,8 @@ Deno.test('getRSSFeed - NYT', async () => {
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-      { method: 'get' },
+      "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
@@ -833,7 +808,7 @@ Deno.test('getRSSFeed - NYT', async () => {
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.nytimes.com/section/world'],
+    args: ["https://www.nytimes.com/section/world"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -842,15 +817,15 @@ Deno.test('getRSSFeed - NYT', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title': 'NYT >World News',
-        'options': {
-          'rss': 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+        id: "rss-myuser-mycolumn-befdaecfac50335eaa1a93512d673fb6",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title: "NYT >World News",
+        options: {
+          rss: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
         },
-        'link': 'https://www.nytimes.com/section/world',
+        link: "https://www.nytimes.com/section/world",
         icon: undefined,
       },
     ],
@@ -923,10 +898,10 @@ const responseCNN = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getRSSFeed - CNN', async () => {
+Deno.test("getRSSFeed - CNN", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseCNN, { status: 200 }));
@@ -936,7 +911,7 @@ Deno.test('getRSSFeed - CNN', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -946,7 +921,7 @@ Deno.test('getRSSFeed - CNN', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -962,50 +937,49 @@ Deno.test('getRSSFeed - CNN', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'http://rss.cnn.com/rss/cnn_latest.rss',
+          rss: "http://rss.cnn.com/rss/cnn_latest.rss",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title': 'CNN.com - RSS Channel',
-      'options': { 'rss': 'http://rss.cnn.com/rss/cnn_latest.rss' },
-      'link': 'http://www.cnn.com',
+      id: "rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title: "CNN.com - RSS Channel",
+      options: { rss: "http://rss.cnn.com/rss/cnn_latest.rss" },
+      link: "http://www.cnn.com",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea-6577cd61df49e5dd769eb44e0be07ca5',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea',
-      'title': 'Zelensky visits Washington in push for more Ukraine aid',
-      'link':
-        'https://www.cnn.com/politics/live-news/zelensky-biden-visit-12-12-23/index.html',
-      'media':
-        'https://cdn.cnn.com/cnnnext/dam/assets/231212094255-01-zelensky-dc-visit-121223-super-169.jpg',
-      'description':
-        'Ukrainian President Volodymyr Zelensky is meeting with President Joe Biden at the White House and lawmakers on Capitol Hill Tuesday as discussions on a Ukraine aid deal remain stalled. Follow for the latest live news updates.',
-      'publishedAt': 1702397465,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea-45e3785b62227cf241b472cd51107ae2',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea',
-      'title':
-        'Humanitarian crisis worsens in Gaza as Israel-Hamas war intensifies',
-      'link':
-        'https://www.cnn.com/middleeast/live-news/israel-hamas-war-gaza-news-12-12-23/index.html',
-      'media':
-        'https://cdn.cnn.com/cnnnext/dam/assets/231211100814-gaza-skyline-5t-121123-super-169.jpeg',
-      'description':
-        'The United Nations General Assembly will resume its emergency session Tuesday on Gaza, days after the United States vetoed a Security Council resolution calling for a ceasefire. Follow for live updates.',
-      'publishedAt': 1702396874,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea-6577cd61df49e5dd769eb44e0be07ca5",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea",
+        title: "Zelensky visits Washington in push for more Ukraine aid",
+        link: "https://www.cnn.com/politics/live-news/zelensky-biden-visit-12-12-23/index.html",
+        media:
+          "https://cdn.cnn.com/cnnnext/dam/assets/231212094255-01-zelensky-dc-visit-121223-super-169.jpg",
+        description:
+          "Ukrainian President Volodymyr Zelensky is meeting with President Joe Biden at the White House and lawmakers on Capitol Hill Tuesday as discussions on a Ukraine aid deal remain stalled. Follow for the latest live news updates.",
+        publishedAt: 1702397465,
+      },
+      {
+        id: "rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea-45e3785b62227cf241b472cd51107ae2",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea",
+        title:
+          "Humanitarian crisis worsens in Gaza as Israel-Hamas war intensifies",
+        link: "https://www.cnn.com/middleeast/live-news/israel-hamas-war-gaza-news-12-12-23/index.html",
+        media:
+          "https://cdn.cnn.com/cnnnext/dam/assets/231211100814-gaza-skyline-5t-121123-super-169.jpeg",
+        description:
+          "The United Nations General Assembly will resume its emergency session Tuesday on Gaza, days after the United States vetoed a Security Council resolution calling for a ceasefire. Follow for live updates.",
+        publishedAt: 1702396874,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -1013,17 +987,13 @@ Deno.test('getRSSFeed - CNN', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'http://rss.cnn.com/rss/cnn_latest.rss',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["http://rss.cnn.com/rss/cnn_latest.rss", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseCNN, { status: 200 }));
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['http://www.cnn.com'],
+    args: ["http://www.cnn.com"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -1032,13 +1002,13 @@ Deno.test('getRSSFeed - CNN', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title': 'CNN.com - RSS Channel',
-        'options': { 'rss': 'http://rss.cnn.com/rss/cnn_latest.rss' },
-        'link': 'http://www.cnn.com',
+        id: "rss-myuser-mycolumn-27c792d08caef396bf1e3ce488f6b4ea",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title: "CNN.com - RSS Channel",
+        options: { rss: "http://rss.cnn.com/rss/cnn_latest.rss" },
+        link: "http://www.cnn.com",
         icon: undefined,
       },
     ],
@@ -1090,10 +1060,10 @@ const responseNTV = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getRSSFeed - NTV', async () => {
+Deno.test("getRSSFeed - NTV", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseNTV, { status: 200 }));
@@ -1103,7 +1073,7 @@ Deno.test('getRSSFeed - NTV', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -1113,7 +1083,7 @@ Deno.test('getRSSFeed - NTV', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -1129,50 +1099,49 @@ Deno.test('getRSSFeed - NTV', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://www.n-tv.de/rss',
+          rss: "https://www.n-tv.de/rss",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title': 'n-tv.de - Startseite',
-      'options': { 'rss': 'https://www.n-tv.de/rss' },
-      'link': 'https://www.n-tv.de/',
+      id: "rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title: "n-tv.de - Startseite",
+      options: { rss: "https://www.n-tv.de/rss" },
+      link: "https://www.n-tv.de/",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae-b959f7366439bfcc1381b9a5f9fcf636',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae',
-      'title': 'Tinte oder Laser: Das sind aktuell die besten Drucker',
-      'link':
-        'https://www.n-tv.de/technik/Das-sind-aktuell-die-besten-Drucker-article24595055.html',
-      'media':
-        'https://bilder2.n-tv.de/img/incoming/crop24595613/7928676886-cImg_4_3-w250/Drucker.jpg',
-      'description':
-        'Für einen guten Drucker im Homeoffice kann man 200 Euro, aber auch 500 Euro ausgeben, ein hoher Preis garantiert aber keine hohe Qualität. Welches Gerät das richtige ist, entscheiden individuelle Prioritäten und wie intensiv es eingesetzt wird. Stiftung Warentest hilft bei der Kaufentscheidung.',
-      'publishedAt': 1702401718,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae-36e1c97d7833bb69e6e53704e866e3ba',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae',
-      'title':
-        'Auch andere Konzerne betroffen: Hacker legen ukrainischen Mobilfunkanbieter lahm',
-      'link':
-        'https://www.n-tv.de/politik/Hacker-legen-ukrainischen-Mobilfunkanbieter-lahm-article24594969.html',
-      'media':
-        'https://bilder2.n-tv.de/img/incoming/crop24595013/3588678578-cImg_4_3-w250/imago0241272335h.jpg',
-      'description':
-        'Am Morgen wird der größte Mobilfunkanbieter der Ukraine, Kyivstar, nach eigenen Angaben Opfer eines Hackerangriffs. Landesweit fallen Verbindungen aus. Die Polizei sei eingeschaltet worden, teilt der Konzern mit. Auch andere Unternehmen sind betroffen.',
-      'publishedAt': 1702401208,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae-b959f7366439bfcc1381b9a5f9fcf636",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae",
+        title: "Tinte oder Laser: Das sind aktuell die besten Drucker",
+        link: "https://www.n-tv.de/technik/Das-sind-aktuell-die-besten-Drucker-article24595055.html",
+        media:
+          "https://bilder2.n-tv.de/img/incoming/crop24595613/7928676886-cImg_4_3-w250/Drucker.jpg",
+        description:
+          '<img src="https://bilder2.n-tv.de/img/incoming/crop24595613/7928676886-cImg_4_3-w250/Drucker.jpg" width="250" height="188" align="left" />Für einen guten Drucker im Homeoffice kann man 200 Euro, aber auch 500 Euro ausgeben, ein hoher Preis garantiert aber keine hohe Qualität. Welches Gerät das richtige ist, entscheiden individuelle Prioritäten und wie intensiv es eingesetzt wird. Stiftung Warentest hilft bei der Kaufentscheidung.',
+        publishedAt: 1702401718,
+      },
+      {
+        id: "rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae-36e1c97d7833bb69e6e53704e866e3ba",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae",
+        title:
+          "Auch andere Konzerne betroffen: Hacker legen ukrainischen Mobilfunkanbieter lahm",
+        link: "https://www.n-tv.de/politik/Hacker-legen-ukrainischen-Mobilfunkanbieter-lahm-article24594969.html",
+        media:
+          "https://bilder2.n-tv.de/img/incoming/crop24595013/3588678578-cImg_4_3-w250/imago0241272335h.jpg",
+        description:
+          '<img src="https://bilder2.n-tv.de/img/incoming/crop24595013/3588678578-cImg_4_3-w250/imago0241272335h.jpg" width="250" height="188" align="left" />Am Morgen wird der größte Mobilfunkanbieter der Ukraine, Kyivstar, nach eigenen Angaben Opfer eines Hackerangriffs. Landesweit fallen Verbindungen aus. Die Polizei sei eingeschaltet worden, teilt der Konzern mit. Auch andere Unternehmen sind betroffen.',
+        publishedAt: 1702401208,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -1180,17 +1149,13 @@ Deno.test('getRSSFeed - NTV', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://www.n-tv.de/rss',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.n-tv.de/rss", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseNTV, { status: 200 }));
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.n-tv.de/'],
+    args: ["https://www.n-tv.de/"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -1199,13 +1164,13 @@ Deno.test('getRSSFeed - NTV', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title': 'n-tv.de - Startseite',
-        'options': { 'rss': 'https://www.n-tv.de/rss' },
-        'link': 'https://www.n-tv.de/',
+        id: "rss-myuser-mycolumn-390a57640c2613653000729c6fef53ae",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title: "n-tv.de - Startseite",
+        options: { rss: "https://www.n-tv.de/rss" },
+        link: "https://www.n-tv.de/",
         icon: undefined,
       },
     ],
@@ -1247,10 +1212,10 @@ const responseFP = `<?xml version="1.0" encoding="UTF-8"?>
    </entry>
 </feed>`;
 
-Deno.test('getRSSFeed - FP', async () => {
+Deno.test("getRSSFeed - FP", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseFP, { status: 200 }));
@@ -1260,7 +1225,7 @@ Deno.test('getRSSFeed - FP', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -1270,7 +1235,7 @@ Deno.test('getRSSFeed - FP', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -1286,51 +1251,50 @@ Deno.test('getRSSFeed - FP', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://www.freiepresse.de/rss/rss_chemnitz.php',
+          rss: "https://www.freiepresse.de/rss/rss_chemnitz.php",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title': 'Freie Presse - Chemnitz',
-      'options': { 'rss': 'https://www.freiepresse.de/rss/rss_chemnitz.php' },
-      'link': 'https://www.freiepresse.de/rss/rss_chemnitz.php',
+      id: "rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title: "Freie Presse - Chemnitz",
+      options: { rss: "https://www.freiepresse.de/rss/rss_chemnitz.php" },
+      link: "https://www.freiepresse.de/rss/rss_chemnitz.php",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600-39bfc1acb8b30883dce00bb6167b766d',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600',
-      'title':
-        'Nach Streit im Chemnitzer Küchwald-Bühnenverein: Werner Haas gründet neues Theater',
-      'link':
-        'https://www.freiepresse.de/chemnitz/nach-streit-im-chemnitzer-kuechwald-buehnenverein-werner-haas-gruendet-neues-theater-artikel13168401',
-      'media':
-        'https://www.freiepresse.de/DYNIMG/72/08/13067208_W740C2040x1360o0x0.jpg',
-      'description':
-        '<img src="https://www.freiepresse.de/DYNIMG/72/08/13067208_W740C2040x1360o0x0.jpg" />Es ist nicht lange still geblieben um Werner Haas. Der Regisseur und Chorleiter trennte sich im Sommer im Streit vom Verein zur Belebung der Küchwaldbühne. Er hatte den Verein gegründet und leitete die Laientheatergruppe, die fast jährlich auf der Freilichtbühne spielte. Für 2023 hatte sich der Vereinsvorstand aber mehrheitlich gegen eine Premiere entschieden. Haas habe kein tragfähiges Konzept da...',
-      'publishedAt': 1702404000,
-    }, {
-      'id':
-        'rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600-cab31961af28e14e6b601b7e68bcd678',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600',
-      'title':
-        'Oberflächliche Ermittlungen, fehlende Technik im Gerichtssaal: Prozessauftakt zu 2018er-Aufarbeitung wirft Fragen auf',
-      'link':
-        'https://www.freiepresse.de/chemnitz/oberflaechliche-ermittlungen-fehlende-technik-im-gerichtssaal-prozessauftakt-zu-2018er-aufarbeitung-wirft-fragen-auf-artikel13168461',
-      'media':
-        'https://www.freiepresse.de/DYNIMG/73/46/13067346_W740C2040x1360o0x0.jpg',
-      'description':
-        '<img src="https://www.freiepresse.de/DYNIMG/73/46/13067346_W740C2040x1360o0x0.jpg" />Der Beginn der Verhandlung war auf 9 Uhr am Montag angesetzt, als die Vernehmung der ersten Zeugin begann, war es 13 Uhr. Sie sollte unter anderem den Weg skizzieren, den die mutmaßlichen Täter am Tattag zu den Tatorten genommen hatten. Vier Angeklagte mit je einem Vertreter auf der einen Seite, Staatsanwalt und drei Nebenkläger-Vertreter auf der anderen. Der Vorsitzende Richter Jürgen Zöllner lie...',
-      'publishedAt': 1702400400,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600-39bfc1acb8b30883dce00bb6167b766d",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600",
+        title:
+          "Nach Streit im Chemnitzer Küchwald-Bühnenverein: Werner Haas gründet neues Theater",
+        link: "https://www.freiepresse.de/chemnitz/nach-streit-im-chemnitzer-kuechwald-buehnenverein-werner-haas-gruendet-neues-theater-artikel13168401",
+        media:
+          "https://www.freiepresse.de/DYNIMG/72/08/13067208_W740C2040x1360o0x0.jpg",
+        description:
+          '<img src="https://www.freiepresse.de/DYNIMG/72/08/13067208_W740C2040x1360o0x0.jpg" />Es ist nicht lange still geblieben um Werner Haas. Der Regisseur und Chorleiter trennte sich im Sommer im Streit vom Verein zur Belebung der Küchwaldbühne. Er hatte den Verein gegründet und leitete die Laientheatergruppe, die fast jährlich auf der Freilichtbühne spielte. Für 2023 hatte sich der Vereinsvorstand aber mehrheitlich gegen eine Premiere entschieden. Haas habe kein tragfähiges Konzept da...',
+        publishedAt: 1702404000,
+      },
+      {
+        id: "rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600-cab31961af28e14e6b601b7e68bcd678",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600",
+        title:
+          "Oberflächliche Ermittlungen, fehlende Technik im Gerichtssaal: Prozessauftakt zu 2018er-Aufarbeitung wirft Fragen auf",
+        link: "https://www.freiepresse.de/chemnitz/oberflaechliche-ermittlungen-fehlende-technik-im-gerichtssaal-prozessauftakt-zu-2018er-aufarbeitung-wirft-fragen-auf-artikel13168461",
+        media:
+          "https://www.freiepresse.de/DYNIMG/73/46/13067346_W740C2040x1360o0x0.jpg",
+        description:
+          '<img src="https://www.freiepresse.de/DYNIMG/73/46/13067346_W740C2040x1360o0x0.jpg" />Der Beginn der Verhandlung war auf 9 Uhr am Montag angesetzt, als die Vernehmung der ersten Zeugin begann, war es 13 Uhr. Sie sollte unter anderem den Weg skizzieren, den die mutmaßlichen Täter am Tattag zu den Tatorten genommen hatten. Vier Angeklagte mit je einem Vertreter auf der einen Seite, Staatsanwalt und drei Nebenkläger-Vertreter auf der anderen. Der Vorsitzende Richter Jürgen Zöllner lie...',
+        publishedAt: 1702400400,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -1339,8 +1303,8 @@ Deno.test('getRSSFeed - FP', async () => {
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://www.freiepresse.de/rss/rss_chemnitz.php',
-      { method: 'get' },
+      "https://www.freiepresse.de/rss/rss_chemnitz.php",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
@@ -1348,7 +1312,7 @@ Deno.test('getRSSFeed - FP', async () => {
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.freiepresse.de/rss/rss_chemnitz.php'],
+    args: ["https://www.freiepresse.de/rss/rss_chemnitz.php"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -1357,13 +1321,13 @@ Deno.test('getRSSFeed - FP', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title': 'Freie Presse - Chemnitz',
-        'options': { 'rss': 'https://www.freiepresse.de/rss/rss_chemnitz.php' },
-        'link': 'https://www.freiepresse.de/rss/rss_chemnitz.php',
+        id: "rss-myuser-mycolumn-3d20715877c48f9b58c13809c5abc600",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title: "Freie Presse - Chemnitz",
+        options: { rss: "https://www.freiepresse.de/rss/rss_chemnitz.php" },
+        link: "https://www.freiepresse.de/rss/rss_chemnitz.php",
         icon: undefined,
       },
     ],
@@ -1400,34 +1364,7 @@ const responseHV = `<?xml version="1.0" encoding="UTF-8"?>
          <guid isPermaLink="false">https://www.hippovideo.io/blog/?p=49277</guid>
          <description><![CDATA[<p>Growth of SaaS The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups [&#8230;]</p>
 <p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>]]></description>
-         <content:encoded><![CDATA[<h2>Growth of SaaS</h2>
-<p>The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups and established players alike releasing a plethora of products to address a myriad of challenges faced by their customers.<br><br>Central to this evolution is the project management category. Amidst the clutter of tools and platforms, Atlassian has distinguished itself as a luminary, having carved out a niche with its powerful suite of tools like Jira, Confluence, and Bitbucket. Over the years, Atlassian&#8217;s commitment to facilitating seamless collaboration and streamlining workflows has enabled it to gain a sizable market share and an enviable reputation.</p>
-<p>Parallelly, in the realm of communication tools, Loom emerged in 2015 with a promise to redefine how professionals connect. Offering a novel approach to communication, Loom combined the immediacy of video messaging with the convenience of asynchronous communication, making interactions more personal and efficient. The platform&#8217;s unique value proposition quickly garnered attention, allowing Loom to amass a dedicated user base and establish itself as a formidable player in the SaaS space.</p>
-<h2>Atlassian + Loom</h2>
-<p>The convergence of these two giants&#8217; paths, as evidenced by Atlassian&#8217;s recent acquisition of Loom, brings forth a fascinating chapter in the SaaS narrative, one that underscores the sector&#8217;s dynamic nature and the relentless pursuit of innovation.</p>
-<p>Loom, with its focus on enhancing communication for internal teams via video messaging, has undoubtedly found a fitting home within Atlassian&#8217;s suite. Especially for software developers using Jira, the integration of Loom&#8217;s video tools offers a more interactive way to communicate about bugs, code feedback, and other software development concerns.</p>
-<h2>Hippo Video: Where Video Communication Scales Seamlessly</h2>
-<p>While Loom is a powerhouse for internal communications, <a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&amp;utm_medium=CTA&amp;utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Hippo Video&#8217;s capabilities</a> stretch even further, serving both internal teams and those interacting directly with customers. Hippo Video presents itself as a unique offering in the video market with its AI-powered capabilities and diverse use cases for customer-facing teams of all sizes. For those who have been using Loom, or even those considering Loom specifically for external communications, here&#8217;s a deeper dive into why Hippo Video might be worth your attention.</p>
-<h2>Leading the way with category-first features</h2>
-<p><strong>Ready-to-Use Templates:</strong> Time is of the essence in today&#8217;s fast-paced world. With a library of pre-built templates tailored for diverse scenarios, Hippo Video ensures you&#8217;re never starting from scratch. This accelerates video creation, ensuring you can communicate effectively without unique delay.<br><br><strong>AI-Powered Personalization:</strong> At its core, Hippo Video uses AI to help businesses connect more intimately with their audience. Personalized videos can lead to deeper engagement, ensuring that your message resonates with each individual viewer.</p>
-<figure class="wp-block-video"><video autoplay controls muted preload="auto" src="https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4"></video></figure>
-<p class="has-text-align-center">AI Avatar by Hippo Video</p>
-<p><strong>Pioneering Generative AI Technology:</strong> As one of the early adopters of Generative AI technology in the video tool segment, Hippo Video offers groundbreaking features like the AI Script Generator, AI Editor, and AI Avatars.</p>
-<p><strong><a href="https://www.hippovideo.io/features/ai-video-script-generator.html" target="_blank" rel="noreferrer noopener">AI Script Generator</a>:</strong> Unsure about scripting your video or trying to figure out how to respond to an irate customer? Simply provide some basic prompts, and Hippo Video will generate a script for you. This not only makes video creation simpler but also ensures the content remains engaging.</p>
-<p><strong><a href="https://www.hippovideo.io/features/ai-editor.html" target="_blank" rel="noreferrer noopener">AI Editor</a>:</strong> Video editing can often be a cumbersome process, but with Hippo Video&#8217;s AI Editor, it&#8217;s as simple as editing a document. The tool transcribes your video into text, allowing you to edit it seamlessly. Want to remove those unnecessary &#8220;ums&#8221; and &#8220;ahs&#8221;? Just a click, and they&#8217;re gone!</p>
-<p><strong><a href="https://www.hippovideo.io/features/ai-avatar-video-generator.html" target="_blank" rel="noreferrer noopener">AI Avatar</a>:</strong> For times when an instant video is needed, but you&#8217;re not camera-ready, Hippo Video&#8217;s AI Avatar comes to the rescue. Choose from a range of digital presenters, input your script, pick a voice, and have a polished video ready in mere minutes. </p>
-<h2>Empowering all customer-facing teams with video</h2>
-<p>Hippo Video&#8217;s wide array of features and AI tools make it an invaluable asset for businesses, seamlessly catering to diverse teams and their specific needs.</p>
-<p><strong>Sales:</strong> Hippo Video&#8217;s personalized videos boost prospecting and lead nurturing, making the outreach more memorable and engaging.</p>
-<p><strong>Customer Support: </strong>With Hippo Video, the team can easily create knowledge base videos and product tutorials, simplifying complex topics and improving customer understanding.</p>
-<p><strong>Customer Success:</strong> From onboarding new clients to sharing product updates or quarterly reviews, Hippo Video ensures that the Success Team communicates effectively, enhancing client relations.</p>
-<p><strong>L&amp;D: </strong>&nbsp;Training becomes more dynamic and digestible with Hippo Video, allowing the Learning and Development Team to produce content that resonates with its audience.</p>
-<p><strong>Product Marketing: </strong>The platform empowers the marketing team to create clear and compelling explainer videos, ensuring products are presented in the best light.</p>
-<p><strong>Sales Enablement:</strong> With Hippo Video, sales training becomes more interactive and valuable, enabling teams to grasp concepts faster and apply them in real-world scenarios.</p>
-<p><a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&amp;utm_medium=CTA&amp;utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Try Hippo Video for Free</a></p>
-<h2>Conclusion</h2>
-<p>In summation, while Loom offers robust solutions for internal team communications for those looking to expand their video capabilities externally, Hippo Video brings an array of innovative tools to the table. Its AI-driven features, coupled with ease of use, make it a compelling choice for businesses aiming to elevate their video communication strategy.</p>
-<p><a class="a2a_button_facebook" href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Facebook" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_twitter" href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Twitter" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_linkedin" href="https://www.addtoany.com/add_to/linkedin?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="LinkedIn" rel="nofollow noopener" target="_blank"></a><a class="a2a_dd addtoany_share_save addtoany_share" href="https://www.addtoany.com/share#url=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&#038;title=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" data-a2a-url="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/" data-a2a-title="Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?"></a></p><p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>]]></content:encoded>
+         <content:encoded><![CDATA[<h2>Growth of SaaS</h2> <p>The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups and established players alike releasing a plethora of products to address a myriad of challenges faced by their customers.<br><br>Central to this evolution is the project management category. Amidst the clutter of tools and platforms, Atlassian has distinguished itself as a luminary, having carved out a niche with its powerful suite of tools like Jira, Confluence, and Bitbucket. Over the years, Atlassian&#8217;s commitment to facilitating seamless collaboration and streamlining workflows has enabled it to gain a sizable market share and an enviable reputation.</p> <p>Parallelly, in the realm of communication tools, Loom emerged in 2015 with a promise to redefine how professionals connect. Offering a novel approach to communication, Loom combined the immediacy of video messaging with the convenience of asynchronous communication, making interactions more personal and efficient. The platform&#8217;s unique value proposition quickly garnered attention, allowing Loom to amass a dedicated user base and establish itself as a formidable player in the SaaS space.</p> <h2>Atlassian + Loom</h2> <p>The convergence of these two giants&#8217; paths, as evidenced by Atlassian&#8217;s recent acquisition of Loom, brings forth a fascinating chapter in the SaaS narrative, one that underscores the sector&#8217;s dynamic nature and the relentless pursuit of innovation.</p> <p>Loom, with its focus on enhancing communication for internal teams via video messaging, has undoubtedly found a fitting home within Atlassian&#8217;s suite. Especially for software developers using Jira, the integration of Loom&#8217;s video tools offers a more interactive way to communicate about bugs, code feedback, and other software development concerns.</p> <h2>Hippo Video: Where Video Communication Scales Seamlessly</h2> <p>While Loom is a powerhouse for internal communications, <a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&amp;utm_medium=CTA&amp;utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Hippo Video&#8217;s capabilities</a> stretch even further, serving both internal teams and those interacting directly with customers. Hippo Video presents itself as a unique offering in the video market with its AI-powered capabilities and diverse use cases for customer-facing teams of all sizes. For those who have been using Loom, or even those considering Loom specifically for external communications, here&#8217;s a deeper dive into why Hippo Video might be worth your attention.</p> <h2>Leading the way with category-first features</h2> <p><strong>Ready-to-Use Templates:</strong> Time is of the essence in today&#8217;s fast-paced world. With a library of pre-built templates tailored for diverse scenarios, Hippo Video ensures you&#8217;re never starting from scratch. This accelerates video creation, ensuring you can communicate effectively without unique delay.<br><br><strong>AI-Powered Personalization:</strong> At its core, Hippo Video uses AI to help businesses connect more intimately with their audience. Personalized videos can lead to deeper engagement, ensuring that your message resonates with each individual viewer.</p> <figure class="wp-block-video"><video autoplay controls muted preload="auto" src="https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4"></video></figure> <p class="has-text-align-center">AI Avatar by Hippo Video</p> <p><strong>Pioneering Generative AI Technology:</strong> As one of the early adopters of Generative AI technology in the video tool segment, Hippo Video offers groundbreaking features like the AI Script Generator, AI Editor, and AI Avatars.</p> <p><strong><a href="https://www.hippovideo.io/features/ai-video-script-generator.html" target="_blank" rel="noreferrer noopener">AI Script Generator</a>:</strong> Unsure about scripting your video or trying to figure out how to respond to an irate customer? Simply provide some basic prompts, and Hippo Video will generate a script for you. This not only makes video creation simpler but also ensures the content remains engaging.</p> <p><strong><a href="https://www.hippovideo.io/features/ai-editor.html" target="_blank" rel="noreferrer noopener">AI Editor</a>:</strong> Video editing can often be a cumbersome process, but with Hippo Video&#8217;s AI Editor, it&#8217;s as simple as editing a document. The tool transcribes your video into text, allowing you to edit it seamlessly. Want to remove those unnecessary &#8220;ums&#8221; and &#8220;ahs&#8221;? Just a click, and they&#8217;re gone!</p> <p><strong><a href="https://www.hippovideo.io/features/ai-avatar-video-generator.html" target="_blank" rel="noreferrer noopener">AI Avatar</a>:</strong> For times when an instant video is needed, but you&#8217;re not camera-ready, Hippo Video&#8217;s AI Avatar comes to the rescue. Choose from a range of digital presenters, input your script, pick a voice, and have a polished video ready in mere minutes. </p> <h2>Empowering all customer-facing teams with video</h2> <p>Hippo Video&#8217;s wide array of features and AI tools make it an invaluable asset for businesses, seamlessly catering to diverse teams and their specific needs.</p> <p><strong>Sales:</strong> Hippo Video&#8217;s personalized videos boost prospecting and lead nurturing, making the outreach more memorable and engaging.</p> <p><strong>Customer Support: </strong>With Hippo Video, the team can easily create knowledge base videos and product tutorials, simplifying complex topics and improving customer understanding.</p> <p><strong>Customer Success:</strong> From onboarding new clients to sharing product updates or quarterly reviews, Hippo Video ensures that the Success Team communicates effectively, enhancing client relations.</p> <p><strong>L&amp;D: </strong>&nbsp;Training becomes more dynamic and digestible with Hippo Video, allowing the Learning and Development Team to produce content that resonates with its audience.</p> <p><strong>Product Marketing: </strong>The platform empowers the marketing team to create clear and compelling explainer videos, ensuring products are presented in the best light.</p> <p><strong>Sales Enablement:</strong> With Hippo Video, sales training becomes more interactive and valuable, enabling teams to grasp concepts faster and apply them in real-world scenarios.</p> <p><a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&amp;utm_medium=CTA&amp;utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Try Hippo Video for Free</a></p> <h2>Conclusion</h2> <p>In summation, while Loom offers robust solutions for internal team communications for those looking to expand their video capabilities externally, Hippo Video brings an array of innovative tools to the table. Its AI-driven features, coupled with ease of use, make it a compelling choice for businesses aiming to elevate their video communication strategy.</p> <p><a class="a2a_button_facebook" href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Facebook" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_twitter" href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Twitter" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_linkedin" href="https://www.addtoany.com/add_to/linkedin?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&amp;linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="LinkedIn" rel="nofollow noopener" target="_blank"></a><a class="a2a_dd addtoany_share_save addtoany_share" href="https://www.addtoany.com/share#url=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&#038;title=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" data-a2a-url="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/" data-a2a-title="Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?"></a></p><p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>]]></content:encoded>
          <wfw:commentRss>https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/feed/</wfw:commentRss>
          <slash:comments>0</slash:comments>
          <enclosure url="https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4" length="16292637" type="video/mp4" />
@@ -1435,10 +1372,10 @@ const responseHV = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getRSSFeed - HV', async () => {
+Deno.test("getRSSFeed - HV", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseHV, { status: 200 }));
@@ -1448,7 +1385,7 @@ Deno.test('getRSSFeed - HV', async () => {
 
   const getFaviconSpy = stub(
     feedutils,
-    'getFavicon',
+    "getFavicon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -1458,7 +1395,7 @@ Deno.test('getRSSFeed - HV', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(undefined);
@@ -1474,39 +1411,39 @@ Deno.test('getRSSFeed - HV', async () => {
       {
         ...mockSource,
         options: {
-          rss: 'https://www.hippovideo.io/blog/feed/',
+          rss: "https://www.hippovideo.io/blog/feed/",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'rss',
-      'title': 'Hippovideo.io',
-      'options': { 'rss': 'https://www.hippovideo.io/blog/feed/' },
-      'link': 'https://www.hippovideo.io/blog',
+      id: "rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "rss",
+      title: "Hippovideo.io",
+      options: { rss: "https://www.hippovideo.io/blog/feed/" },
+      link: "https://www.hippovideo.io/blog",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4-840819f0740d37f9c7a615f26ffcfa5f',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4',
-      'title':
-        'Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?',
-      'link':
-        'https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=rss&utm_medium=rss&utm_campaign=looms-acquisition-what-lies-ahead-for-customer-facing-functions',
-      'options': {
-        'video':
-          'https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4',
+    assertEqualsItems(items, [
+      {
+        id: "rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4-840819f0740d37f9c7a615f26ffcfa5f",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4",
+        title:
+          "Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?",
+        link: "https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=rss&utm_medium=rss&utm_campaign=looms-acquisition-what-lies-ahead-for-customer-facing-functions",
+        options: {
+          video:
+            "https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4",
+        },
+        description:
+          '<h2>Growth of SaaS</h2> <p>The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups and established players alike releasing a plethora of products to address a myriad of challenges faced by their customers.<br><br>Central to this evolution is the project management category. Amidst the clutter of tools and platforms, Atlassian has distinguished itself as a luminary, having carved out a niche with its powerful suite of tools like Jira, Confluence, and Bitbucket. Over the years, Atlassian&#8217;s commitment to facilitating seamless collaboration and streamlining workflows has enabled it to gain a sizable market share and an enviable reputation.</p> <p>Parallelly, in the realm of communication tools, Loom emerged in 2015 with a promise to redefine how professionals connect. Offering a novel approach to communication, Loom combined the immediacy of video messaging with the convenience of asynchronous communication, making interactions more personal and efficient. The platform&#8217;s unique value proposition quickly garnered attention, allowing Loom to amass a dedicated user base and establish itself as a formidable player in the SaaS space.</p> <h2>Atlassian + Loom</h2> <p>The convergence of these two giants&#8217; paths, as evidenced by Atlassian&#8217;s recent acquisition of Loom, brings forth a fascinating chapter in the SaaS narrative, one that underscores the sector&#8217;s dynamic nature and the relentless pursuit of innovation.</p> <p>Loom, with its focus on enhancing communication for internal teams via video messaging, has undoubtedly found a fitting home within Atlassian&#8217;s suite. Especially for software developers using Jira, the integration of Loom&#8217;s video tools offers a more interactive way to communicate about bugs, code feedback, and other software development concerns.</p> <h2>Hippo Video: Where Video Communication Scales Seamlessly</h2> <p>While Loom is a powerhouse for internal communications, <a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&utm_medium=CTA&utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Hippo Video&#8217;s capabilities</a> stretch even further, serving both internal teams and those interacting directly with customers. Hippo Video presents itself as a unique offering in the video market with its AI-powered capabilities and diverse use cases for customer-facing teams of all sizes. For those who have been using Loom, or even those considering Loom specifically for external communications, here&#8217;s a deeper dive into why Hippo Video might be worth your attention.</p> <h2>Leading the way with category-first features</h2> <p><strong>Ready-to-Use Templates:</strong> Time is of the essence in today&#8217;s fast-paced world. With a library of pre-built templates tailored for diverse scenarios, Hippo Video ensures you&#8217;re never starting from scratch. This accelerates video creation, ensuring you can communicate effectively without unique delay.<br><br><strong>AI-Powered Personalization:</strong> At its core, Hippo Video uses AI to help businesses connect more intimately with their audience. Personalized videos can lead to deeper engagement, ensuring that your message resonates with each individual viewer.</p> <figure class="wp-block-video"><video autoplay controls muted preload="auto" src="https://www.hippovideo.io/blog/wp-content/uploads/2023/10/AvatarLPHeroVideo2.mp4"></video></figure> <p class="has-text-align-center">AI Avatar by Hippo Video</p> <p><strong>Pioneering Generative AI Technology:</strong> As one of the early adopters of Generative AI technology in the video tool segment, Hippo Video offers groundbreaking features like the AI Script Generator, AI Editor, and AI Avatars.</p> <p><strong><a href="https://www.hippovideo.io/features/ai-video-script-generator.html" target="_blank" rel="noreferrer noopener">AI Script Generator</a>:</strong> Unsure about scripting your video or trying to figure out how to respond to an irate customer? Simply provide some basic prompts, and Hippo Video will generate a script for you. This not only makes video creation simpler but also ensures the content remains engaging.</p> <p><strong><a href="https://www.hippovideo.io/features/ai-editor.html" target="_blank" rel="noreferrer noopener">AI Editor</a>:</strong> Video editing can often be a cumbersome process, but with Hippo Video&#8217;s AI Editor, it&#8217;s as simple as editing a document. The tool transcribes your video into text, allowing you to edit it seamlessly. Want to remove those unnecessary &#8220;ums&#8221; and &#8220;ahs&#8221;? Just a click, and they&#8217;re gone!</p> <p><strong><a href="https://www.hippovideo.io/features/ai-avatar-video-generator.html" target="_blank" rel="noreferrer noopener">AI Avatar</a>:</strong> For times when an instant video is needed, but you&#8217;re not camera-ready, Hippo Video&#8217;s AI Avatar comes to the rescue. Choose from a range of digital presenters, input your script, pick a voice, and have a polished video ready in mere minutes. </p> <h2>Empowering all customer-facing teams with video</h2> <p>Hippo Video&#8217;s wide array of features and AI tools make it an invaluable asset for businesses, seamlessly catering to diverse teams and their specific needs.</p> <p><strong>Sales:</strong> Hippo Video&#8217;s personalized videos boost prospecting and lead nurturing, making the outreach more memorable and engaging.</p> <p><strong>Customer Support: </strong>With Hippo Video, the team can easily create knowledge base videos and product tutorials, simplifying complex topics and improving customer understanding.</p> <p><strong>Customer Success:</strong> From onboarding new clients to sharing product updates or quarterly reviews, Hippo Video ensures that the Success Team communicates effectively, enhancing client relations.</p> <p><strong>L&D: </strong>&nbsp;Training becomes more dynamic and digestible with Hippo Video, allowing the Learning and Development Team to produce content that resonates with its audience.</p> <p><strong>Product Marketing: </strong>The platform empowers the marketing team to create clear and compelling explainer videos, ensuring products are presented in the best light.</p> <p><strong>Sales Enablement:</strong> With Hippo Video, sales training becomes more interactive and valuable, enabling teams to grasp concepts faster and apply them in real-world scenarios.</p> <p><a href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/?utm_source=blog&utm_medium=CTA&utm_campaign=atlassianloom" target="_blank" rel="noreferrer noopener">Try Hippo Video for Free</a></p> <h2>Conclusion</h2> <p>In summation, while Loom offers robust solutions for internal team communications for those looking to expand their video capabilities externally, Hippo Video brings an array of innovative tools to the table. Its AI-driven features, coupled with ease of use, make it a compelling choice for businesses aiming to elevate their video communication strategy.</p> <p><a class="a2a_button_facebook" href="https://www.addtoany.com/add_to/facebook?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Facebook" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_twitter" href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="Twitter" rel="nofollow noopener" target="_blank"></a><a class="a2a_button_linkedin" href="https://www.addtoany.com/add_to/linkedin?linkurl=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&linkname=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" title="LinkedIn" rel="nofollow noopener" target="_blank"></a><a class="a2a_dd addtoany_share_save addtoany_share" href="https://www.addtoany.com/share#url=https%3A%2F%2Fwww.hippovideo.io%2Fblog%2Flooms-acquisition-what-lies-ahead-for-customer-facing-functions%2F&#038;title=Loom%E2%80%99s%20Acquisition%3A%20What%20Lies%20Ahead%20for%20Customer-Facing%20Functions%3F" data-a2a-url="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/" data-a2a-title="Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?"></a></p><p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>',
+        author: "Nayana",
+        publishedAt: 1697811248,
       },
-      'description':
-        '<p>Growth of SaaS The Software as a Service (SaaS) industry has undergone a transformative journey over the last decade. Once a budding sector, it has now blossomed into a vast ecosystem teeming with innovative solutions across diverse categories. As businesses worldwide turned their focus towards digital transformation, the demand for SaaS solutions skyrocketed, with startups [&#8230;]</p>\n<p>The post <a rel="nofollow" href="https://www.hippovideo.io/blog/looms-acquisition-what-lies-ahead-for-customer-facing-functions/">Loom’s Acquisition: What Lies Ahead for Customer-Facing Functions?</a> appeared first on <a rel="nofollow" href="https://www.hippovideo.io/blog">Hippovideo.io</a>.</p>',
-      'author': 'Nayana',
-      'publishedAt': 1697811248,
-    }]);
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     getFaviconSpy.restore();
@@ -1514,17 +1451,13 @@ Deno.test('getRSSFeed - HV', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://www.hippovideo.io/blog/feed/',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.hippovideo.io/blog/feed/", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseHV, { status: 200 }));
     }),
   });
   assertSpyCall(getFaviconSpy, 0, {
-    args: ['https://www.hippovideo.io/blog'],
+    args: ["https://www.hippovideo.io/blog"],
     returned: new Promise((resolve) => {
       resolve(undefined);
     }),
@@ -1533,13 +1466,13 @@ Deno.test('getRSSFeed - HV', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'rss',
-        'title': 'Hippovideo.io',
-        'options': { 'rss': 'https://www.hippovideo.io/blog/feed/' },
-        'link': 'https://www.hippovideo.io/blog',
+        id: "rss-myuser-mycolumn-f09335225050a5529306575010bf8aa4",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "rss",
+        title: "Hippovideo.io",
+        options: { rss: "https://www.hippovideo.io/blog/feed/" },
+        link: "https://www.hippovideo.io/blog",
         icon: undefined,
       },
     ],
