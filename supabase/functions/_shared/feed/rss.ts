@@ -1,15 +1,15 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Feed } from 'rss';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
-import * as cheerio from 'cheerio';
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Feed } from "rss";
+import { FeedEntry } from "rss/types";
+import { Redis } from "redis";
+import { unescape } from "lodash";
+import * as cheerio from "cheerio";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { feedutils } from './utils/index.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { feedutils } from "./utils/index.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
 
 export const getRSSFeed = async (
   supabaseClient: SupabaseClient,
@@ -24,19 +24,19 @@ export const getRSSFeed = async (
    * feed.
    */
   if (!source.options?.rss) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   let feed = await getFeed(source, feedData);
   if (!feed) {
     utils.log(
-      'debug',
-      'Failed to get RSS feed, try to get RSS feed from website',
+      "debug",
+      "Failed to get RSS feed, try to get RSS feed from website",
       { requestUrl: source.options.rss },
     );
     feed = await getFeedFromWebsite(source);
     if (!feed) {
-      throw new Error('Failed to get RSS feed');
+      throw new Error("Failed to get RSS feed");
     }
   }
 
@@ -45,7 +45,7 @@ export const getRSSFeed = async (
    * error.
    */
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -54,14 +54,14 @@ export const getRSSFeed = async (
    * user id, the column id and the link of the RSS feed. We also set the type
    * of the source to `rss` and the title to the title of the feed.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.rss,
     );
   }
-  source.type = 'rss';
+  source.type = "rss";
   source.title = feed.title.value;
 
   /**
@@ -85,15 +85,15 @@ export const getRSSFeed = async (
   if (!source.icon) {
     if (source.link) {
       const favicon = await feedutils.getFavicon(source.link);
-      if (favicon && favicon.url.startsWith('https://')) {
+      if (favicon && favicon.url.startsWith("https://")) {
         source.icon = favicon.url;
       }
     }
 
     if (!source.icon) {
-      if (feed.icon && feed.icon.startsWith('https://')) {
+      if (feed.icon && feed.icon.startsWith("https://")) {
         source.icon = feed.icon;
-      } else if (feed.image?.url && feed.image.url.startsWith('https://')) {
+      } else if (feed.image?.url && feed.image.url.startsWith("https://")) {
         source.icon = feed.image?.url;
       }
     }
@@ -118,7 +118,7 @@ export const getRSSFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
+    let itemId = "";
     if (entry.id) {
       itemId = await generateItemId(source.id, entry.id);
     } else {
@@ -147,10 +147,10 @@ export const getRSSFeed = async (
       publishedAt: entry.published
         ? Math.floor(entry.published.getTime() / 1000)
         : entry.updated
-        ? Math.floor(entry.updated.getTime() / 1000)
-        : entry['dc:date']
-        ? getDCDateTimestamp(entry['dc:date'])
-        : Math.floor(new Date().getTime() / 1000),
+          ? Math.floor(entry.updated.getTime() / 1000)
+          : entry["dc:date"]
+            ? getDCDateTimestamp(entry["dc:date"])
+            : Math.floor(new Date().getTime() / 1000),
     });
   }
 
@@ -198,17 +198,17 @@ const getFeedFromWebsite = async (
   try {
     const response = await utils.fetchWithTimeout(
       source.options!.rss!,
-      { method: 'get' },
+      { method: "get" },
       5000,
     );
     const html = await response.text();
 
     const $ = cheerio.load(html);
-    let rssLink = $('link[type="application/rss+xml"]').attr('href');
+    let rssLink = $('link[type="application/rss+xml"]').attr("href");
     if (!rssLink) {
-      rssLink = $('link[type="application/atom+xml"]').attr('href');
+      rssLink = $('link[type="application/atom+xml"]').attr("href");
       if (!rssLink) {
-        rssLink = $('link[type="application/rdf+xml"]').attr('href');
+        rssLink = $('link[type="application/rdf+xml"]').attr("href");
         if (!rssLink) {
           return undefined;
         }
@@ -243,25 +243,26 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) ||
-    (!entry.published && !entry.updated && !entry['dc:date'])
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    (!entry.published && !entry.updated && !entry["dc:date"])
   ) {
     return true;
   }
 
   if (
     entry.published &&
-    Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)
+    Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10
   ) {
     return true;
   } else if (
     entry.updated &&
-    Math.floor(entry.updated.getTime() / 1000) <= (sourceUpdatedAt - 10)
+    Math.floor(entry.updated.getTime() / 1000) <= sourceUpdatedAt - 10
   ) {
     return true;
   } else if (
-    entry['dc:date'] &&
-    getDCDateTimestamp(entry['dc:date']) <= (sourceUpdatedAt - 10)
+    entry["dc:date"] &&
+    getDCDateTimestamp(entry["dc:date"]) <= sourceUpdatedAt - 10
   ) {
     return true;
   }
@@ -309,21 +310,32 @@ const generateItemId = async (
 
 /**
  * `getItemDescription` returns the description of an item based on the provided
- * description and content. In the first step we try to use the description of
- * the items as our description. If that is not available, we try to use the
- * content. If that is not available, we return undefined. We also remove all
- * HTML tags from the description and content before returning it.
+ * description and content. In the first step we try to use the content of the
+ * item as our description. If  the item doesn't have a content field we will
+ * try to use the description field. If the item contains a content and
+ * description field we will use the content field, except for cases where the
+ * the text within the description field is longer.
+ *
+ * NOTE: The order was changed from "description | content" to
+ * "content | description", because it is more commmon that the full text is
+ * within the content field when a item contains both fields. The fallback of
+ * comparison of the length should be good enough as fallback.
  */
 const getItemDescription = (entry: FeedEntry): string | undefined => {
-  if (entry.description?.value) {
-    return unescape(entry.description?.value);
-  }
+  let content = undefined;
 
   if (entry.content?.value) {
-    return unescape(entry.content?.value);
+    content = unescape(entry.content?.value);
   }
 
-  return undefined;
+  if (entry.description?.value) {
+    const description = unescape(entry.description?.value);
+    if (!content || description.length > content?.length) {
+      content = description;
+    }
+  }
+
+  return content;
 };
 
 /**
@@ -336,12 +348,14 @@ const getItemDescription = (entry: FeedEntry): string | undefined => {
  * for the media field.
  */
 const getMedia = (entry: FeedEntry): string | undefined => {
-  if (entry['media:content'] && entry['media:content'].length > 0) {
-    for (const media of entry['media:content']) {
+  if (entry["media:content"] && entry["media:content"].length > 0) {
+    for (const media of entry["media:content"]) {
       if (
-        media.medium && media.medium === 'image' && media.url &&
-        (media.url.startsWith('https://') || media.url.startsWith('http://')) &&
-        !media.url.endsWith('.svg')
+        media.medium &&
+        media.medium === "image" &&
+        media.url &&
+        (media.url.startsWith("https://") || media.url.startsWith("http://")) &&
+        !media.url.endsWith(".svg")
       ) {
         return media.url;
       }
@@ -349,23 +363,25 @@ const getMedia = (entry: FeedEntry): string | undefined => {
   }
 
   if (
-    entry['media:thumbnails'] && entry['media:thumbnails'].url &&
-    (entry['media:thumbnails'].url.startsWith('https://') ||
-      entry['media:thumbnails'].url.startsWith('http://'))
+    entry["media:thumbnails"] &&
+    entry["media:thumbnails"].url &&
+    (entry["media:thumbnails"].url.startsWith("https://") ||
+      entry["media:thumbnails"].url.startsWith("http://"))
   ) {
-    return entry['media:thumbnails'].url;
+    return entry["media:thumbnails"].url;
   }
 
-  if (entry['media:group'] && entry['media:group'].length > 0) {
-    for (const mediaGroup of entry['media:group']) {
-      if (mediaGroup['media:content']) {
-        for (const mediaContent of mediaGroup['media:content']) {
+  if (entry["media:group"] && entry["media:group"].length > 0) {
+    for (const mediaGroup of entry["media:group"]) {
+      if (mediaGroup["media:content"]) {
+        for (const mediaContent of mediaGroup["media:content"]) {
           if (
-            mediaContent.medium && mediaContent.medium === 'image' &&
+            mediaContent.medium &&
+            mediaContent.medium === "image" &&
             mediaContent.url &&
-            (mediaContent.url.startsWith('https://') ||
-              mediaContent.url.startsWith('http://')) &&
-            !mediaContent.url.endsWith('.svg')
+            (mediaContent.url.startsWith("https://") ||
+              mediaContent.url.startsWith("http://")) &&
+            !mediaContent.url.endsWith(".svg")
           ) {
             return mediaContent.url;
           }
@@ -377,11 +393,12 @@ const getMedia = (entry: FeedEntry): string | undefined => {
   if (entry.attachments && entry.attachments.length > 0) {
     for (const attachment of entry.attachments) {
       if (
-        attachment.mimeType && attachment.mimeType.startsWith('image/') &&
+        attachment.mimeType &&
+        attachment.mimeType.startsWith("image/") &&
         attachment.url &&
-        (attachment.url.startsWith('https://') ||
-          attachment.url.startsWith('http://')) &&
-        !attachment.url.endsWith('.svg')
+        (attachment.url.startsWith("https://") ||
+          attachment.url.startsWith("http://")) &&
+        !attachment.url.endsWith(".svg")
       ) {
         return attachment.url;
       }
@@ -393,9 +410,10 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       unescape(entry.description.value),
     );
     if (
-      matches && matches.length == 2 &&
-      (matches[1].startsWith('https://') || matches[1].startsWith('http://')) &&
-      !matches[1].endsWith('.svg')
+      matches &&
+      matches.length == 2 &&
+      (matches[1].startsWith("https://") || matches[1].startsWith("http://")) &&
+      !matches[1].endsWith(".svg")
     ) {
       return matches[1];
     }
@@ -406,9 +424,10 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       unescape(entry.content.value),
     );
     if (
-      matches && matches.length == 2 &&
-      (matches[1].startsWith('https://') || matches[1].startsWith('http://')) &&
-      !matches[1].endsWith('.svg')
+      matches &&
+      matches.length == 2 &&
+      (matches[1].startsWith("https://") || matches[1].startsWith("http://")) &&
+      !matches[1].endsWith(".svg")
     ) {
       return matches[1];
     }
@@ -425,10 +444,11 @@ const getVideo = (entry: FeedEntry): string | undefined => {
   if (entry.attachments && entry.attachments.length > 0) {
     for (const attachment of entry.attachments) {
       if (
-        attachment.mimeType && attachment.mimeType.startsWith('video/') &&
+        attachment.mimeType &&
+        attachment.mimeType.startsWith("video/") &&
         attachment.url &&
-        (attachment.url.startsWith('https://') ||
-          attachment.url.startsWith('http://'))
+        (attachment.url.startsWith("https://") ||
+          attachment.url.startsWith("http://"))
       ) {
         return attachment.url;
       }
