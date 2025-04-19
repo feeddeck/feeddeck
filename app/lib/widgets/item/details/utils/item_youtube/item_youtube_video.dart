@@ -1,5 +1,3 @@
-library item_youtube_video;
-
 import 'package:flutter/material.dart';
 
 import 'item_youtube_video_stub.dart'

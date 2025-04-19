@@ -1,4 +1,4 @@
-import 'dart:html'; // ignore: avoid_web_libraries_in_flutter
+import 'package:web/web.dart';
 
 import 'dart:ui' as ui;
 
@@ -42,7 +42,7 @@ class ItemPipedVideoWeb extends StatefulWidget implements ItemPipedVideo {
 }
 
 class _ItemPipedVideoWebState extends State<ItemPipedVideoWeb> {
-  final IFrameElement _iframeElement = IFrameElement();
+  final HTMLIFrameElement _iframeElement = HTMLIFrameElement();
 
   @override
   void initState() {
@@ -62,9 +62,7 @@ class _ItemPipedVideoWebState extends State<ItemPipedVideoWeb> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        bottom: Constants.spacingMiddle,
-      ),
+      padding: const EdgeInsets.only(bottom: Constants.spacingMiddle),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Center(
@@ -84,7 +82,4 @@ class _ItemPipedVideoWebState extends State<ItemPipedVideoWeb> {
 }
 
 ItemPipedVideo getItemPipedVideo(String? imageUrl, String videoUrl) =>
-    ItemPipedVideoWeb(
-      imageUrl: imageUrl,
-      videoUrl: videoUrl,
-    );
+    ItemPipedVideoWeb(imageUrl: imageUrl, videoUrl: videoUrl);

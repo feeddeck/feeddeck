@@ -29,16 +29,15 @@ class DeckLayoutSmall extends StatelessWidget {
   /// user before returning the index. If a column was deleted we reset the
   /// index to 0.
   int _getInitialIndex(BuildContext context, int columnsLength) {
-    final deckLayoutSmallInitialTabIndex = Provider.of<LayoutRepository>(
-      context,
-      listen: false,
-    ).deckLayoutSmallInitialTabIndex;
+    final deckLayoutSmallInitialTabIndex =
+        Provider.of<LayoutRepository>(
+          context,
+          listen: false,
+        ).deckLayoutSmallInitialTabIndex;
 
     if (deckLayoutSmallInitialTabIndex >= columnsLength) {
-      Provider.of<LayoutRepository>(
-        context,
-        listen: false,
-      ).deckLayoutSmallInitialTabIndex = 0;
+      Provider.of<LayoutRepository>(context, listen: false)
+          .deckLayoutSmallInitialTabIndex = 0;
       return 0;
     }
 
@@ -61,25 +60,20 @@ class DeckLayoutSmall extends StatelessWidget {
           key: ValueKey(column.id),
           height: 56,
           icon: SourceIcon(
-            type: column.sources.isNotEmpty
-                ? column.sources[0].type
-                : FDSourceType.none,
+            type:
+                column.sources.isNotEmpty
+                    ? column.sources[0].type
+                    : FDSourceType.none,
             icon: column.sources.isNotEmpty ? column.sources[0].icon : null,
             size: 24,
           ),
           iconMargin: const EdgeInsets.only(bottom: 0),
           child: Container(
-            constraints: const BoxConstraints(
-              minWidth: 54,
-              maxWidth: 54,
-            ),
+            constraints: const BoxConstraints(minWidth: 54, maxWidth: 54),
             child: Text(
-              Characters(column.name)
-                  .replaceAll(
-                    Characters(''),
-                    Characters('\u{200B}'),
-                  )
-                  .toString(),
+              Characters(
+                column.name,
+              ).replaceAll(Characters(''), Characters('\u{200B}')).toString(),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 10,
@@ -106,20 +100,13 @@ class DeckLayoutSmall extends StatelessWidget {
           child: RichText(
             textAlign: TextAlign.center,
             text: const TextSpan(
-              style: TextStyle(
-                color: Constants.onSurface,
-                fontSize: 14.0,
-              ),
+              style: TextStyle(color: Constants.onSurface, fontSize: 14.0),
               children: [
                 TextSpan(
                   text: 'Add you first column by clicking on the plus icon (',
                 ),
-                WidgetSpan(
-                  child: Icon(Icons.add, size: 14.0),
-                ),
-                TextSpan(
-                  text: ') in the tab bar on the bottom.',
-                ),
+                WidgetSpan(child: Icon(Icons.add, size: 14.0)),
+                TextSpan(text: ') in the tab bar on the bottom.'),
               ],
             ),
           ),
@@ -157,10 +144,7 @@ class DeckLayoutSmall extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(
-                  color: Constants.dividerColor,
-                  width: 1,
-                ),
+                top: BorderSide(color: Constants.dividerColor, width: 1),
               ),
             ),
             child: Row(
@@ -170,8 +154,8 @@ class DeckLayoutSmall extends StatelessWidget {
                   child: Theme(
                     data: Theme.of(context).copyWith(
                       colorScheme: Theme.of(context).colorScheme.copyWith(
-                            surfaceVariant: Colors.transparent,
-                          ),
+                        surfaceContainerHighest: Colors.transparent,
+                      ),
                     ),
                     child: TabBar(
                       isScrollable: true,
@@ -182,10 +166,8 @@ class DeckLayoutSmall extends StatelessWidget {
                         /// the [LayoutRepository] so that we can use it as
                         /// initial index when the widget is rebuild (e.g. when
                         /// a user switches between the large and small layout).
-                        Provider.of<LayoutRepository>(
-                          context,
-                          listen: false,
-                        ).deckLayoutSmallInitialTabIndex = index;
+                        Provider.of<LayoutRepository>(context, listen: false)
+                            .deckLayoutSmallInitialTabIndex = index;
                       },
                       tabs: _buildTabs(context),
                     ),
@@ -254,8 +236,9 @@ class DeckLayoutSmall extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const Settings(),
+                                  builder:
+                                      (BuildContext context) =>
+                                          const Settings(),
                                 ),
                               );
                             },
@@ -269,9 +252,7 @@ class DeckLayoutSmall extends StatelessWidget {
             ),
           ),
         ),
-        body: SafeArea(
-          child: _buildViews(context),
-        ),
+        body: SafeArea(child: _buildViews(context)),
       ),
     );
   }
