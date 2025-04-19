@@ -1,15 +1,15 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-import { corsHeaders } from '../_shared/utils/cors.ts';
-import { log } from '../_shared/utils/log.ts';
+import { corsHeaders } from "../_shared/utils/cors.ts";
+import { log } from "../_shared/utils/log.ts";
 import {
   createCheckoutSession,
   createOrRetrieveCustomer,
-} from '../_shared/stripe/stripe.ts';
+} from "../_shared/stripe/stripe.ts";
 import {
   FEEDDECK_SUPABASE_ANON_KEY,
   FEEDDECK_SUPABASE_URL,
-} from '../_shared/utils/constants.ts';
+} from "../_shared/utils/constants.ts";
 
 /**
  * The `stripe-create-checkout-session-v1` edge function is used to create a new
@@ -21,8 +21,8 @@ Deno.serve(async (req) => {
    * We need to handle the preflight request for CORS as it is described in the
    * Supabase documentation: https://supabase.com/docs/guides/functions/cors
    */
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       FEEDDECK_SUPABASE_ANON_KEY,
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: req.headers.get("Authorization")! },
         },
         auth: {
           autoRefreshToken: false,
@@ -43,12 +43,14 @@ Deno.serve(async (req) => {
     /**
      * Get the user from the request. If there is no user, we return an error.
      */
-    const { data: { user } } = await userSupabaseClient.auth.getUser();
+    const {
+      data: { user },
+    } = await userSupabaseClient.auth.getUser();
     if (!user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 401,
       });
@@ -63,18 +65,18 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ url: url }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json; charset=utf-8',
+        "Content-Type": "application/json; charset=utf-8",
       },
       status: 200,
     });
   } catch (err) {
-    log('error', 'An unexpected error occured', { 'error': err.toString() });
+    log("error", "An unexpected error occured", { error: err });
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occured' }),
+      JSON.stringify({ error: "An unexpected error occured" }),
       {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 400,
       },

@@ -1,7 +1,7 @@
-import { connect, Redis } from 'redis';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { connect, Redis } from "redis";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-import { log } from '../../_shared/utils/log.ts';
+import { log } from "../../_shared/utils/log.ts";
 import {
   FEEDDECK_REDIS_HOSTNAME,
   FEEDDECK_REDIS_PASSWORD,
@@ -9,7 +9,7 @@ import {
   FEEDDECK_REDIS_USERNAME,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
   FEEDDECK_SUPABASE_URL,
-} from '../../_shared/utils/constants.ts';
+} from "../../_shared/utils/constants.ts";
 
 /**
  * `runScheduler` starts the scheduler which is responsible for fetching all
@@ -78,11 +78,10 @@ const scheduleSources = async (
      * The `sourcesUpdatedAt` is used to fetch all sources which where not
      * updated in the last hour.
      */
-    const profileCreatedAt = Math.floor(new Date().getTime() / 1000) -
-      (60 * 60 * 24 * 7);
-    const sourcesUpdatedAt = Math.floor(new Date().getTime() / 1000) -
-      (60 * 60);
-    log('info', 'Schedule sources', {
+    const profileCreatedAt =
+      Math.floor(new Date().getTime() / 1000) - 60 * 60 * 24 * 7;
+    const sourcesUpdatedAt = Math.floor(new Date().getTime() / 1000) - 60 * 60;
+    log("info", "Schedule sources", {
       sourcesUpdatedAt: sourcesUpdatedAt,
       profileCreatedAt: profileCreatedAt,
     });
@@ -98,19 +97,17 @@ const scheduleSources = async (
     let offset = 0;
 
     while (true) {
-      log('debug', 'Fetching profiles', { offset: offset });
+      log("debug", "Fetching profiles", { offset: offset });
 
       const { data: tmpProfiles, error: profilesError } = await supabaseClient
-        .from(
-          'profiles',
-        ).select('*').or(`tier.eq.premium,createdAt.gt.${profileCreatedAt}`)
-        .order(
-          'createdAt',
-        )
+        .from("profiles")
+        .select("*")
+        .or(`tier.eq.premium,createdAt.gt.${profileCreatedAt}`)
+        .order("createdAt")
         .range(offset, offset + batchSize);
       if (profilesError) {
-        log('error', 'Failed to get user profiles', {
-          'error': profilesError,
+        log("error", "Failed to get user profiles", {
+          error: profilesError,
         });
       } else {
         profiles.push(...tmpProfiles);
@@ -123,27 +120,25 @@ const scheduleSources = async (
       }
     }
 
-    log('info', 'Fetched profiles', { profilesCount: profiles.length });
+    log("info", "Fetched profiles", { profilesCount: profiles.length });
     for (const profile of profiles) {
       /**
        * Fetch all sources for the current user profile which where not updated
        * in the last hour.
        */
       const { data: sources, error: sourcesError } = await supabaseClient
-        .from(
-          'sources',
-        ).select('*').eq('userId', profile.id).lt(
-          'updatedAt',
-          sourcesUpdatedAt,
-        );
+        .from("sources")
+        .select("*")
+        .eq("userId", profile.id)
+        .lt("updatedAt", sourcesUpdatedAt);
       if (sourcesError) {
-        log('error', 'Failed to get user sources', {
-          'profile': profile.id,
-          'error': sourcesError,
+        log("error", "Failed to get user sources", {
+          profile: profile.id,
+          error: sourcesError,
         });
       } else {
-        log('info', 'Fetched sources', {
-          'profile': profile.id,
+        log("info", "Fetched sources", {
+          profile: profile.id,
           sourcesCount: sources.length,
         });
         for (const source of sources) {
@@ -152,7 +147,7 @@ const scheduleSources = async (
            * for updates anymore.
            * See https://github.com/zedeus/nitter/issues/1155#issuecomment-1913361757
            */
-          if (source.type === 'nitter') {
+          if (source.type === "nitter") {
             continue;
           }
 
@@ -161,14 +156,14 @@ const scheduleSources = async (
            * was already updated in the last 24 hours. This is done to avoid
            * hitting the rate limits of the Reddit API.
            */
-          if (profile.tier === 'free' && source.type === 'reddit') {
+          if (profile.tier === "free" && source.type === "reddit") {
             if (
-              source.updatedAt > Math.floor(new Date().getTime() / 1000) -
-                  (60 * 60 * 24)
+              source.updatedAt >
+              Math.floor(new Date().getTime() / 1000) - 60 * 60 * 24
             ) {
-              log('debug', 'Skip source', {
-                'source': source.id,
-                'profile': profile.id,
+              log("debug", "Skip source", {
+                source: source.id,
+                profile: profile.id,
               });
               continue;
             }
@@ -180,12 +175,12 @@ const scheduleSources = async (
            * we need the users account information to fetch the sources data,
            * e.g. the users GitHub token.
            */
-          log('info', 'Scheduling source', {
-            'source': source.id,
-            'profile': profile.id,
+          log("info", "Scheduling source", {
+            source: source.id,
+            profile: profile.id,
           });
           await redisClient.rpush(
-            'sources',
+            "sources",
             JSON.stringify({
               source: source,
               profile: profile,
@@ -195,6 +190,6 @@ const scheduleSources = async (
       }
     }
   } catch (err) {
-    log('error', 'Failed to schedule sources...', { error: err.toString() });
+    log("error", "Failed to schedule sources...", { error: err });
   }
 };

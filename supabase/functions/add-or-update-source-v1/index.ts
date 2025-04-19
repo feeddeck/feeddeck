@@ -1,16 +1,16 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-import { corsHeaders } from '../_shared/utils/cors.ts';
-import { getFeed } from '../_shared/feed/feed.ts';
-import { ISource } from '../_shared/models/source.ts';
-import { IProfile } from '../_shared/models/profile.ts';
-import { utils } from '../_shared/utils/index.ts';
-import { feedutils } from '../_shared/feed/utils/index.ts';
+import { corsHeaders } from "../_shared/utils/cors.ts";
+import { getFeed } from "../_shared/feed/feed.ts";
+import { ISource } from "../_shared/models/source.ts";
+import { IProfile } from "../_shared/models/profile.ts";
+import { utils } from "../_shared/utils/index.ts";
+import { feedutils } from "../_shared/feed/utils/index.ts";
 import {
   FEEDDECK_SUPABASE_ANON_KEY,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
   FEEDDECK_SUPABASE_URL,
-} from '../_shared/utils/constants.ts';
+} from "../_shared/utils/constants.ts";
 
 /**
  * The `add-or-update-source-v1` edge function is used to add a new source and
@@ -24,8 +24,8 @@ Deno.serve(async (req) => {
    * We need to handle the preflight request for CORS as it is described in the
    * Supabase documentation: https://supabase.com/docs/guides/functions/cors
    */
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       FEEDDECK_SUPABASE_ANON_KEY,
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: req.headers.get("Authorization")! },
         },
         auth: {
           autoRefreshToken: false,
@@ -51,12 +51,14 @@ Deno.serve(async (req) => {
     /**
      * Get the user from the request. If there is no user, we return an error.
      */
-    const { data: { user } } = await userSupabaseClient.auth.getUser();
+    const {
+      data: { user },
+    } = await userSupabaseClient.auth.getUser();
     if (!user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 401,
       });
@@ -84,21 +86,20 @@ Deno.serve(async (req) => {
      * than one profile, we return an error.
      */
     const { data: profile, error: profileError } = await adminSupabaseClient
-      .from(
-        'profiles',
-      )
-      .select('*').eq('id', user.id);
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id);
     if (profileError || profile?.length !== 1) {
-      utils.log('error', 'Failed to get user profile', {
-        'user': user,
-        'error': profileError,
+      utils.log("error", "Failed to get user profile", {
+        user: user,
+        error: profileError,
       });
       return new Response(
-        JSON.stringify({ error: 'Failed to get user profile' }),
+        JSON.stringify({ error: "Failed to get user profile" }),
         {
           headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Type": "application/json; charset=utf-8",
           },
           status: 500,
         },
@@ -116,58 +117,53 @@ Deno.serve(async (req) => {
      * sources.
      */
     const { count: sourcesCount, error: countError } = await adminSupabaseClient
-      .from('sources')
-      .select(
-        '*',
-        { count: 'exact' },
-      ).eq('userId', user.id);
+      .from("sources")
+      .select("*", { count: "exact" })
+      .eq("userId", user.id);
     if (countError || sourcesCount === null) {
-      utils.log('error', 'Failed to get sources', { 'error': countError });
-      return new Response(
-        JSON.stringify({ error: 'Failed to get sources' }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          status: 500,
+      utils.log("error", "Failed to get sources", { error: countError });
+      return new Response(JSON.stringify({ error: "Failed to get sources" }), {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json; charset=utf-8",
         },
-      );
+        status: 500,
+      });
     }
 
-    if (profile[0].tier === 'free' && sourcesCount >= 10) {
+    if (profile[0].tier === "free" && sourcesCount >= 10) {
       utils.log(
-        'warning',
-        'User is on the free tier and has reached the maximum number of sources',
+        "warning",
+        "User is on the free tier and has reached the maximum number of sources",
       );
       return new Response(
         JSON.stringify({
           error:
-            'You reached the maximum number of sources you can create, please upgrade your account to the premium tier.',
+            "You reached the maximum number of sources you can create, please upgrade your account to the premium tier.",
         }),
         {
           headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Type": "application/json; charset=utf-8",
           },
           status: 400,
         },
       );
     }
 
-    if (profile[0].tier === 'premium' && sourcesCount >= 1000) {
+    if (profile[0].tier === "premium" && sourcesCount >= 1000) {
       utils.log(
-        'warning',
-        'User is on the premium tier and has reached the maximum number of sources',
+        "warning",
+        "User is on the premium tier and has reached the maximum number of sources",
       );
       return new Response(
         JSON.stringify({
-          error: 'You reached the maximum number of sources you can create.',
+          error: "You reached the maximum number of sources you can create.",
         }),
         {
           headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Type": "application/json; charset=utf-8",
           },
           status: 400,
         },
@@ -197,32 +193,30 @@ Deno.serve(async (req) => {
      * If there is an error, we return an error. If the insert succeeds we
      * return the source object.
      */
-    const { error: sourceError } = await adminSupabaseClient.from('sources')
-      .insert(
-        source,
-      );
+    const { error: sourceError } = await adminSupabaseClient
+      .from("sources")
+      .insert(source);
     if (sourceError) {
-      utils.log('error', 'Failed to save sources', { 'error': sourceError });
-      return new Response(JSON.stringify({ error: 'Failed to save sources' }), {
+      utils.log("error", "Failed to save sources", { error: sourceError });
+      return new Response(JSON.stringify({ error: "Failed to save sources" }), {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         status: 500,
       });
     }
 
     if (items.length > 0) {
-      const { error: itemsError } = await adminSupabaseClient.from('items')
-        .insert(
-          items,
-        );
+      const { error: itemsError } = await adminSupabaseClient
+        .from("items")
+        .insert(items);
       if (itemsError) {
-        utils.log('error', 'Failed to save items', { 'error': itemsError });
-        return new Response(JSON.stringify({ error: 'Failed to save items' }), {
+        utils.log("error", "Failed to save items", { error: itemsError });
+        return new Response(JSON.stringify({ error: "Failed to save items" }), {
           headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Type": "application/json; charset=utf-8",
           },
           status: 500,
         });
@@ -232,49 +226,43 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify(source), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json; charset=utf-8',
+        "Content-Type": "application/json; charset=utf-8",
       },
       status: 200,
     });
   } catch (err) {
     if (err instanceof feedutils.FeedValidationError) {
-      utils.log('error', 'FeedValidationError', {
-        'error': err.toString(),
+      utils.log("error", "FeedValidationError", {
+        error: err,
       });
-      return new Response(
-        JSON.stringify({ error: err.message }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          status: 400,
+      return new Response(JSON.stringify({ error: err.message }), {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json; charset=utf-8",
         },
-      );
+        status: 400,
+      });
     } else if (err instanceof feedutils.FeedGetAndParseError) {
-      utils.log('error', 'FeedGetAndParseError', {
-        'error': err.toString(),
+      utils.log("error", "FeedGetAndParseError", {
+        error: err,
       });
-      return new Response(
-        JSON.stringify({ error: err.message }),
-        {
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
-          },
-          status: 400,
+      return new Response(JSON.stringify({ error: err.message }), {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json; charset=utf-8",
         },
-      );
+        status: 400,
+      });
     } else {
-      utils.log('error', 'An unexpected error occured', {
-        'error': err.toString(),
+      utils.log("error", "An unexpected error occured", {
+        error: err,
       });
       return new Response(
-        JSON.stringify({ error: 'An unexpected error occured' }),
+        JSON.stringify({ error: "An unexpected error occured" }),
         {
           headers: {
             ...corsHeaders,
-            'Content-Type': 'application/json; charset=utf-8',
+            "Content-Type": "application/json; charset=utf-8",
           },
           status: 400,
         },

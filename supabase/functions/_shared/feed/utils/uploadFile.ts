@@ -1,8 +1,8 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient } from "@supabase/supabase-js";
 
-import { ISource } from '../../models/source.ts';
-import { fetchWithTimeout } from '../../utils/fetchWithTimeout.ts';
-import { log } from '../../utils/log.ts';
+import { ISource } from "../../models/source.ts";
+import { fetchWithTimeout } from "../../utils/fetchWithTimeout.ts";
+import { log } from "../../utils/log.ts";
 
 /**
  * `uploadSourceIcon` uploads the `icon` of the provided `source` to the
@@ -16,8 +16,9 @@ export const uploadSourceIcon = async (
   source: ISource,
 ): Promise<string | undefined> => {
   if (
-    !source.icon || source.icon === '' || (!source.icon.startsWith('http://') &&
-      !source.icon.startsWith('https://'))
+    !source.icon ||
+    source.icon === "" ||
+    (!source.icon.startsWith("http://") && !source.icon.startsWith("https://"))
   ) {
     return undefined;
   }
@@ -25,9 +26,9 @@ export const uploadSourceIcon = async (
   try {
     const cdnIcon = await uploadFile(
       supabaseClient,
-      'sources',
+      "sources",
       source.icon,
-      `${source.userId}/${source.id}.${source.icon.split('.').pop()}`,
+      `${source.userId}/${source.id}.${source.icon.split(".").pop()}`,
     );
 
     if (cdnIcon) {
@@ -54,30 +55,45 @@ const uploadFile = async (
   try {
     const fileResponse = await fetchWithTimeout(
       sourcePath,
-      { method: 'get' },
+      { method: "get" },
       5000,
     );
-    const file = await fileResponse.blob();
+    const blob = await fileResponse.blob();
 
-    const { data: uploadData, error: uploadError } = await supabaseClient
-      .storage.from(bucket)
-      .upload(
-        targetPath,
-        file,
-        {
-          upsert: true,
-        },
-      );
+    const { data: uploadData, error: uploadError } =
+      await supabaseClient.storage
+        .from(bucket)
+        .upload(
+          targetPath,
+          blobToFile(blob, targetPath.replace(/^.*[\\/]/, "")),
+          {
+            upsert: true,
+          },
+        );
     if (uploadError) {
-      log('error', 'Failed to upload source icon', {
-        'error': uploadError,
+      log("error", "Failed to upload source icon", {
+        error: uploadError,
       });
       return undefined;
     }
 
     return uploadData?.path;
   } catch (err) {
-    log('error', 'Failed to upload source icon', { 'error': err.toString() });
+    log("error", "Failed to upload source icon", { error: err });
     return undefined;
   }
+};
+
+/**
+ * `blobToFile` converts a Blob to a File. This is needed because the Supabase
+ * client only accepts File objects for uploading files. The `File` object
+ * will be created with the provided `fileName` and the current date as
+ * last modified date.
+ */
+const blobToFile = (blob: Blob, fileName: string): File => {
+  // deno-lint-ignore no-explicit-any
+  const b: any = blob;
+  b.lastModifiedDate = new Date();
+  b.name = fileName;
+  return blob as File;
 };

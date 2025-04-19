@@ -1,9 +1,9 @@
-import { Feed, parseFeed } from 'rss';
+import { Feed, parseFeed } from "rss";
 
-import { utils } from '../../utils/index.ts';
-import { feedutils } from './index.ts';
-import { ISource } from '../../models/source.ts';
-import { FEEDDECK_LOG_LEVEL } from '../../utils/constants.ts';
+import { utils } from "../../utils/index.ts";
+import { feedutils } from "./index.ts";
+import { ISource } from "../../models/source.ts";
+import { FEEDDECK_LOG_LEVEL } from "../../utils/constants.ts";
 
 export const getAndParseFeed = async (
   requestUrl: string,
@@ -16,7 +16,7 @@ export const getAndParseFeed = async (
   }
 
   try {
-    utils.log('debug', 'Get and parse feed', {
+    utils.log("debug", "Get and parse feed", {
       sourceType: source.type,
       requestUrl: requestUrl,
     });
@@ -24,10 +24,10 @@ export const getAndParseFeed = async (
       requestUrl,
       requestOptions
         ? {
-          ...requestOptions,
-          method: 'get',
-        }
-        : { method: 'get' },
+            ...requestOptions,
+            method: "get",
+          }
+        : { method: "get" },
       5000,
     );
 
@@ -36,11 +36,11 @@ export const getAndParseFeed = async (
     if (err instanceof feedutils.FeedValidationError) {
       throw err;
     } else {
-      utils.log('error', 'Failed to get feed', {
+      utils.log("error", "Failed to get feed", {
         source: source,
-        error: err.toString(),
+        error: err,
       });
-      throw new feedutils.FeedGetAndParseError('Failed to get feed');
+      throw new feedutils.FeedGetAndParseError("Failed to get feed");
     }
   }
 };
@@ -56,17 +56,18 @@ const _parseFeed = async (
     const feed = await parseFeed(feedData);
     return feed;
   } catch (err) {
-    utils.log('error', 'Failed to parse feed', {
+    utils.log("error", "Failed to parse feed", {
       source: source,
       requestUrl: requestUrl,
       responseStatus: response.status,
-      responseBody: FEEDDECK_LOG_LEVEL === 'debug' ? feedData : '',
-      responseHeaders: FEEDDECK_LOG_LEVEL === 'debug'
-        ? Object.fromEntries(response.headers.entries())
-        : '',
-      error: err.toString(),
+      responseBody: FEEDDECK_LOG_LEVEL === "debug" ? feedData : "",
+      responseHeaders:
+        FEEDDECK_LOG_LEVEL === "debug"
+          ? Object.fromEntries(response.headers.entries())
+          : "",
+      error: err,
     });
-    throw new feedutils.FeedGetAndParseError('Failed to parse feed');
+    throw new feedutils.FeedGetAndParseError("Failed to parse feed");
   }
 };
 
@@ -78,11 +79,11 @@ const _parseFeedData = async (
     const feed = await parseFeed(feedData);
     return feed;
   } catch (err) {
-    utils.log('error', 'Failed to parse feed', {
+    utils.log("error", "Failed to parse feed", {
       source: source,
-      feedData: FEEDDECK_LOG_LEVEL === 'debug' ? feedData : '',
-      error: err.toString(),
+      feedData: FEEDDECK_LOG_LEVEL === "debug" ? feedData : "",
+      error: err,
     });
-    throw new feedutils.FeedGetAndParseError('Failed to parse feed');
+    throw new feedutils.FeedGetAndParseError("Failed to parse feed");
   }
 };
