@@ -10,11 +10,7 @@ import 'package:feeddeck/models/deck.dart';
 import 'package:feeddeck/models/source.dart';
 import 'package:feeddeck/utils/api_exception.dart';
 
-enum FDAppStatus {
-  uninitialized,
-  authenticated,
-  unauthenticated,
-}
+enum FDAppStatus { uninitialized, authenticated, unauthenticated }
 
 /// [AppRepository] is the repository for our app. The repository is responsible
 /// for managing the state of our app, this includes the authentication status
@@ -82,10 +78,7 @@ class AppRepository with ChangeNotifier {
   ///
   /// If the user was signed in successfully, we run the same logic as in the
   /// [init] function, to set the active deck for the user.
-  Future<void> signInWithPassword(
-    String email,
-    String password,
-  ) async {
+  Future<void> signInWithPassword(String email, String password) async {
     await Supabase.instance.client.auth.signInWithPassword(
       email: email,
       password: password,
@@ -115,9 +108,7 @@ class AppRepository with ChangeNotifier {
   ///
   /// If the user was signed in successfully, we run the same logic as in the
   /// [init] function, to set the active deck for the user.
-  Future<void> signInWithCallback(
-    Uri uri,
-  ) async {
+  Future<void> signInWithCallback(Uri uri) async {
     await Supabase.instance.client.auth.getSessionFromUrl(
       uri,
       storeSession: true,
@@ -145,17 +136,16 @@ class AppRepository with ChangeNotifier {
   /// create a new deck for the user with the given name. After the deck was
   /// created, the deck is set as the users active deck and the deck is added to
   /// the list of decks.
-  Future<void> createDeck(
-    String name,
-  ) async {
-    final data = await Supabase.instance.client
-        .from('decks')
-        .insert({
-          'name': name,
-          'userId': Supabase.instance.client.auth.currentUser!.id,
-        })
-        .select()
-        .single();
+  Future<void> createDeck(String name) async {
+    final data =
+        await Supabase.instance.client
+            .from('decks')
+            .insert({
+              'name': name,
+              'userId': Supabase.instance.client.auth.currentUser!.id,
+            })
+            .select()
+            .single();
 
     final newDeck = FDDeck.fromJson(data);
 
@@ -182,13 +172,11 @@ class AppRepository with ChangeNotifier {
   /// a [deckId] and a [name] as parameters. The function calls the Supabase
   /// client to update the name of the deck. After the deck was updated, the
   /// deck is also updated in the list of decks.
-  Future<void> updateDeck(
-    String deckId,
-    String name,
-  ) async {
+  Future<void> updateDeck(String deckId, String name) async {
     await Supabase.instance.client
         .from('decks')
-        .update({'name': name}).eq('id', deckId);
+        .update({'name': name})
+        .eq('id', deckId);
 
     for (var i = 0; i < _decks.length; i++) {
       if (_decks[i].id == deckId) {
@@ -205,9 +193,7 @@ class AppRepository with ChangeNotifier {
   /// the deck. After the deck was deleted, the deck is also removed from the
   /// list of decks. If the deleted deck was the active deck, the active deck is
   /// set to `null`.
-  Future<void> deleteDeck(
-    String deckId,
-  ) async {
+  Future<void> deleteDeck(String deckId) async {
     await Supabase.instance.client.from('decks').delete().eq('id', deckId);
 
     _decks.removeWhere((deck) => deck.id == deckId);
@@ -223,9 +209,7 @@ class AppRepository with ChangeNotifier {
   /// to get the columns for the deck and all sources for each column. After the
   /// columns and sources are fetched, the active deck is set to the provided
   /// deckId and the columns and sources are stored in the repository.
-  Future<void> selectDeck(
-    String deckId,
-  ) async {
+  Future<void> selectDeck(String deckId) async {
     final columns = await getColumns(deckId);
     for (final column in columns) {
       column.sources = await getSources(column.id);
@@ -243,18 +227,18 @@ class AppRepository with ChangeNotifier {
   /// function takes a [name] as parameter. The function calls the Supabase
   /// client to create a new column for the active deck with the given name.
   /// Finally the newly created column is added to the list of columns.
-  Future<void> createColumn(
-    String name,
-  ) async {
-    final data = await Supabase.instance.client.from('columns').insert({
-      'deckId': _activeDeckId,
-      'userId': Supabase.instance.client.auth.currentUser!.id,
-      'name': name,
-      'position': _columns.length,
-    }).select();
+  Future<void> createColumn(String name) async {
+    final data =
+        await Supabase.instance.client.from('columns').insert({
+          'deckId': _activeDeckId,
+          'userId': Supabase.instance.client.auth.currentUser!.id,
+          'name': name,
+          'position': _columns.length,
+        }).select();
 
-    final newColumn =
-        List<FDColumn>.from(data.map((column) => FDColumn.fromJson(column)));
+    final newColumn = List<FDColumn>.from(
+      data.map((column) => FDColumn.fromJson(column)),
+    );
     _columns.addAll(newColumn);
     notifyListeners();
   }
@@ -262,9 +246,7 @@ class AppRepository with ChangeNotifier {
   /// [getColumns] is called to get all columns for the deck with the provided
   /// [deckId]. The function calls the Supabase client to get all columns for
   /// the deck. The function returns a list of [FDColumn]s.
-  Future<List<FDColumn>> getColumns(
-    String deckId,
-  ) async {
+  Future<List<FDColumn>> getColumns(String deckId) async {
     final data = await Supabase.instance.client
         .from('columns')
         .select('id, name, position')
@@ -276,9 +258,7 @@ class AppRepository with ChangeNotifier {
   /// [deleteColumn] is called to delete a column with the provided [columnId].
   /// The function calls the Supabase client to delete the column. After the
   /// column was deleted, the column is also removed from the list of columns.
-  Future<void> deleteColumn(
-    String columnId,
-  ) async {
+  Future<void> deleteColumn(String columnId) async {
     await Supabase.instance.client.from('columns').delete().eq('id', columnId);
 
     _columns.removeWhere((column) => column.id == columnId);
@@ -289,13 +269,11 @@ class AppRepository with ChangeNotifier {
   /// The function takes a [name] as parameter. The function calls the Supabase
   /// client to update the name of the column. After the column was updated, the
   /// column is also updated in the list of columns.
-  Future<void> updateColumn(
-    String columnId,
-    String name,
-  ) async {
+  Future<void> updateColumn(String columnId, String name) async {
     await Supabase.instance.client
         .from('columns')
-        .update({'name': name}).eq('id', columnId);
+        .update({'name': name})
+        .eq('id', columnId);
 
     for (var i = 0; i < _columns.length; i++) {
       if (_columns[i].id == columnId) {
@@ -311,22 +289,15 @@ class AppRepository with ChangeNotifier {
   /// with the provided [index1] and [index2]. The function calls the Supabase
   /// client to update the positions of the columns. After the columns were
   /// updated, the columns are also updated in the list of columns.
-  Future<void> updateColumnPositions(
-    int index1,
-    int index2,
-  ) async {
+  Future<void> updateColumnPositions(int index1, int index2) async {
     await Supabase.instance.client
         .from('columns')
-        .update({'position': _columns[index2].position}).eq(
-      'id',
-      _columns[index1].id,
-    );
+        .update({'position': _columns[index2].position})
+        .eq('id', _columns[index1].id);
     await Supabase.instance.client
         .from('columns')
-        .update({'position': _columns[index1].position}).eq(
-      'id',
-      _columns[index2].id,
-    );
+        .update({'position': _columns[index1].position})
+        .eq('id', _columns[index2].id);
 
     final tmp = _columns[index1];
     _columns[index1] = _columns[index2];
@@ -340,13 +311,19 @@ class AppRepository with ChangeNotifier {
   /// [getSources] is called to get all sources for the column with the provided
   /// [columnId]. The function calls the Supabase client to get all sources for
   /// the column. The function returns a list of [FDSource]s.
-  Future<List<FDSource>> getSources(
-    String columnId,
-  ) async {
+  ///
+  /// The returned list of sources is ordered by the `position` field. Since the
+  /// position field was added later there might be columns where the field is
+  /// `null`, which will come after all columns with a `position`. The source
+  /// where the position is `null` will be ordered by the `createdAt` date. This
+  /// should retain the order as before the `position` field was added and
+  /// should also work for new sources, which are added without a position.
+  Future<List<FDSource>> getSources(String columnId) async {
     final data = await Supabase.instance.client
         .from('sources')
         .select('id, type, title, options, link, icon')
         .eq('columnId', columnId)
+        .order('position', ascending: true, nullsFirst: false)
         .order('createdAt', ascending: true);
     return List<FDSource>.from(data.map((source) => FDSource.fromJson(source)));
   }
@@ -355,10 +332,7 @@ class AppRepository with ChangeNotifier {
   /// The function calls the Supabase client to delete the source. After the
   /// source was deleted, the source is also removed from the list of sources of
   /// the column with the provided [columnId].
-  Future<void> deleteSource(
-    String columnId,
-    String sourceId,
-  ) async {
+  Future<void> deleteSource(String columnId, String sourceId) async {
     await Supabase.instance.client.from('sources').delete().eq('id', sourceId);
 
     /// It could take some time before we can retrieve the items after a source
@@ -419,6 +393,53 @@ class AppRepository with ChangeNotifier {
         _columns[i].sources.add(FDSource.fromJson(result.data));
         break;
       }
+    }
+
+    notifyListeners();
+  }
+
+  /// [updateSourcePositions] can be used to reorder the list of sources for a
+  /// column. To achieve this order the list of sources for the provided
+  /// [columnId] locally and update the `position` field of each source
+  /// afterwards in the database.
+  ///
+  /// We have to check if the user drags a source from top to bottom ([start]
+  /// is lower then [current]) or from the bottom to the top ([start] is greater
+  /// then [current]), to apply a different logic for the reordering.
+  Future<void> updateSourcePositions(
+    String columnId,
+    int start,
+    int current,
+  ) async {
+    final columnIndex = _columns.indexWhere((column) => column.id == columnId);
+    if (columnIndex == -1) {
+      return;
+    }
+
+    if (start < current) {
+      int end = current - 1;
+      FDSource startItem = _columns[columnIndex].sources[start];
+      int i = 0;
+      int local = start;
+      do {
+        _columns[columnIndex].sources[local] =
+            _columns[columnIndex].sources[++local];
+        i++;
+      } while (i < end - start);
+      _columns[columnIndex].sources[end] = startItem;
+    } else if (start > current) {
+      FDSource startItem = _columns[columnIndex].sources[start];
+      for (int i = start; i > current; i--) {
+        _columns[columnIndex].sources[i] = _columns[columnIndex].sources[i - 1];
+      }
+      _columns[columnIndex].sources[current] = startItem;
+    }
+
+    for (var i = 0; i < _columns[columnIndex].sources.length; i++) {
+      await Supabase.instance.client
+          .from('sources')
+          .update({'position': i})
+          .eq('id', _columns[columnIndex].sources[i].id);
     }
 
     notifyListeners();

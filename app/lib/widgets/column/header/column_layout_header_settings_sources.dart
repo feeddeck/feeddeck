@@ -32,28 +32,66 @@ class ColumnLayoutHeaderSettingsSources extends StatefulWidget {
 
 class _ColumnLayoutHeaderSettingsSourcesState
     extends State<ColumnLayoutHeaderSettingsSources> {
+  /// [_proxyDecorator] is used to highlight the source which is currently
+  /// draged by the user.
+  Widget _proxyDecorator(Widget child, int index, Animation<double> animation) {
+    return Material(
+      elevation: 0,
+      color: Colors.transparent,
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 16,
+            child: Material(
+              borderRadius: BorderRadius.circular(16),
+              elevation: 24,
+              color: Colors.transparent,
+            ),
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+
   /// [_buildSourcesList] returns a list of all sources of the current column.
   /// If the list of sources is empty it will return a [Container].
   ///
   /// Each source in the list also contains a delete item, which can be used to
   /// remove the source from the current column.
-  List<Widget> _buildSourcesList() {
+  Widget _buildSourcesList() {
     if (widget.column.sources.isEmpty) {
-      return [Container()];
+      return Container();
     }
 
-    List<Widget> columns = [];
+    return ReorderableListView.builder(
+      shrinkWrap: true,
+      buildDefaultDragHandles: false,
+      physics: const NeverScrollableScrollPhysics(),
+      onReorder: (int start, int current) {
+        final AppRepository appRepository = Provider.of<AppRepository>(
+          context,
+          listen: false,
+        );
 
-    for (var i = 0; i < widget.column.sources.length; i++) {
-      columns.add(
-        SourceListItem(
+        appRepository.updateSourcePositions(widget.column.id, start, current);
+      },
+      proxyDecorator: (Widget child, int index, Animation<double> animation) {
+        return _proxyDecorator(child, index, animation);
+      },
+      itemCount: widget.column.sources.length,
+      itemBuilder: (context, index) {
+        return SourceListItem(
+          key: Key(widget.column.sources[index].id),
           columnId: widget.column.id,
-          source: widget.column.sources[i],
-        ),
-      );
-    }
-
-    return columns;
+          sourceIndex: index,
+          source: widget.column.sources[index],
+        );
+      },
+    );
   }
 
   /// [_showAddSource] shows the [AddSource] widget within a modal bottom sheet
@@ -92,14 +130,12 @@ class _ColumnLayoutHeaderSettingsSourcesState
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 275,
-          ),
+          constraints: const BoxConstraints(maxHeight: 275),
           child: ListView(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             children: [
-              ..._buildSourcesList(),
+              _buildSourcesList(),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Constants.secondary,
@@ -116,9 +152,7 @@ class _ColumnLayoutHeaderSettingsSourcesState
                 ),
                 label: const Text('Add Source'),
                 onPressed: () => _showAddSource(),
-                icon: const Icon(
-                  Icons.add,
-                ),
+                icon: const Icon(Icons.add),
               ),
             ],
           ),
