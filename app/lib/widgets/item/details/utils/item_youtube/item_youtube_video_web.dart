@@ -1,4 +1,4 @@
-import 'dart:html'; // ignore: avoid_web_libraries_in_flutter
+import 'package:web/web.dart';
 
 import 'dart:ui' as ui;
 
@@ -18,17 +18,11 @@ String _convertVideoUrl(String videoUrl) {
   }
 
   if (videoUrl.startsWith('https://www.youtube.com/watch?v=')) {
-    return 'https://www.youtube-nocookie.com/embed/${videoUrl.replaceFirst(
-      'https://www.youtube.com/watch?v=',
-      '',
-    )}';
+    return 'https://www.youtube-nocookie.com/embed/${videoUrl.replaceFirst('https://www.youtube.com/watch?v=', '')}';
   }
 
   if (videoUrl.startsWith('https://m.youtube.com/watch?v=')) {
-    return 'https://www.youtube-nocookie.com/embed/${videoUrl.replaceFirst(
-      'https://m.youtube.com/watch?v=',
-      '',
-    )}';
+    return 'https://www.youtube-nocookie.com/embed/${videoUrl.replaceFirst('https://m.youtube.com/watch?v=', '')}';
   }
 
   return videoUrl;
@@ -49,7 +43,7 @@ class ItemYoutubeVideoWeb extends StatefulWidget implements ItemYoutubeVideo {
 }
 
 class _ItemYoutubeVideoWebState extends State<ItemYoutubeVideoWeb> {
-  final IFrameElement _iframeElement = IFrameElement();
+  final HTMLIFrameElement _iframeElement = HTMLIFrameElement();
 
   @override
   void initState() {
@@ -69,9 +63,7 @@ class _ItemYoutubeVideoWebState extends State<ItemYoutubeVideoWeb> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        bottom: Constants.spacingMiddle,
-      ),
+      padding: const EdgeInsets.only(bottom: Constants.spacingMiddle),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Center(
@@ -91,7 +83,4 @@ class _ItemYoutubeVideoWebState extends State<ItemYoutubeVideoWeb> {
 }
 
 ItemYoutubeVideo getItemYoutubeVideo(String? imageUrl, String videoUrl) =>
-    ItemYoutubeVideoWeb(
-      imageUrl: imageUrl,
-      videoUrl: videoUrl,
-    );
+    ItemYoutubeVideoWeb(imageUrl: imageUrl, videoUrl: videoUrl);

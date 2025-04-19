@@ -1,5 +1,3 @@
-library item_piped_video;
-
 import 'package:flutter/material.dart';
 
 import 'item_piped_video_stub.dart'
