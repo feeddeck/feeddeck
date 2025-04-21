@@ -1,0 +1,6 @@
+volumes/db/migrations.sql
+volumes/db/data
+volumes/functions/*
+!volumes/functions/main
+volumes/storage
+.env
