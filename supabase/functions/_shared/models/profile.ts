@@ -1,7 +1,7 @@
 export interface IProfile {
   id: string;
-  tier: 'free' | 'premium';
-  subscriptionProvider?: 'stripe' | 'revenuecat';
+  tier: "free" | "premium";
+  subscriptionProvider?: "stripe" | "revenuecat";
   accountGithub?: {
     token?: string;
   };

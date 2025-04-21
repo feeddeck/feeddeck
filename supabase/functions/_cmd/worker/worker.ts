@@ -1,5 +1,5 @@
-import { connect, Redis } from "redis";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { connect, Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
 import { log } from "../../_shared/utils/log.ts";
 import { getFeed } from "../../_shared/feed/feed.ts";

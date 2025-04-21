@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { ISource } from '../models/source.ts';
-import { IItem } from '../models/item.ts';
-import { feedutils } from './utils/index.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IItem } from "../models/item.ts";
+import { feedutils } from "./utils/index.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
 
 export const getPodcastFeed = async (
   supabaseClient: SupabaseClient,
@@ -17,14 +17,14 @@ export const getPodcastFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.podcast) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   /**
    * If the `podcast` url is an Apple Podcast url we try to get the RSS feed url
    * from it.
    */
-  if (source.options.podcast.startsWith('https://podcasts.apple.com')) {
+  if (source.options.podcast.startsWith("https://podcasts.apple.com")) {
     const matches = /[^w]+\/id(\d+)/.exec(source.options?.podcast);
     if (matches && matches.length === 2) {
       const feedUrl = await getRSSFeedFromApplePodcast(matches[1]);
@@ -43,7 +43,7 @@ export const getPodcastFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -60,7 +60,7 @@ export const getPodcastFeed = async (
       source.options.podcast,
     );
   }
-  source.type = 'podcast';
+  source.type = "podcast";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -70,9 +70,9 @@ export const getPodcastFeed = async (
       source.icon = feed.image.url;
       source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
       // deno-lint-ignore no-explicit-any
-    } else if ((feed as any)['itunes:image']?.href) {
+    } else if ((feed as any)["itunes:image"]?.href) {
       // deno-lint-ignore no-explicit-any
-      source.icon = (feed as any)['itunes:image'].href;
+      source.icon = (feed as any)["itunes:image"].href;
       source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
     }
   }
@@ -101,8 +101,8 @@ export const getPodcastFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links && entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -116,14 +116,15 @@ export const getPodcastFeed = async (
       columnId: source.columnId,
       sourceId: source.id,
       title: entry.title!.value!,
-      link: entry.links && entry.links.length > 0 && entry.links[0].href
-        ? entry.links[0].href
-        : media,
+      link:
+        entry.links && entry.links.length > 0 && entry.links[0].href
+          ? entry.links[0].href
+          : media,
       media: media,
       description: entry.description?.value
         ? unescape(entry.description.value)
         : undefined,
-      author: entry['dc:creator']?.join(', '),
+      author: entry["dc:creator"]?.join(", "),
       publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
   }
@@ -154,7 +155,7 @@ const skipEntry = (
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -168,16 +169,18 @@ const skipEntry = (
 const getRSSFeedFromApplePodcast = async (id: string): Promise<string> => {
   const resp = await utils.fetchWithTimeout(
     `https://itunes.apple.com/lookup?id=${id}&entity=podcast`,
-    { method: 'get' },
+    { method: "get" },
     5000,
   );
   const podcast = await resp.json();
 
   if (
-    !podcast || !podcast.results || podcast.results.length !== 1 ||
+    !podcast ||
+    !podcast.results ||
+    podcast.results.length !== 1 ||
     !podcast.results[0].feedUrl
   ) {
-    throw new Error('Failed to get Apple Podcast');
+    throw new Error("Failed to get Apple Podcast");
   }
 
   return podcast.results[0].feedUrl;

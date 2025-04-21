@@ -1,35 +1,35 @@
-import { assertEquals, assertThrows } from 'std/assert';
-import { createClient } from '@supabase/supabase-js';
+import { assertEquals, assertThrows } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
 import {
   getPinterestFeed,
   isPinterestUrl,
   parsePinterestOption,
-} from './pinterest.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+} from "./pinterest.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responseUser = `<?xml version="1.0" encoding="UTF-8"?>
@@ -65,39 +65,39 @@ const responseUser = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('isPinterestUrl', () => {
+Deno.test("isPinterestUrl", () => {
   assertEquals(
-    isPinterestUrl('https://www.pinterest.de/pinterestde/essen-und-trinken/'),
+    isPinterestUrl("https://www.pinterest.de/pinterestde/essen-und-trinken/"),
     true,
   );
-  assertEquals(isPinterestUrl('https://www.google.de/'), false);
+  assertEquals(isPinterestUrl("https://www.google.de/"), false);
 });
 
-Deno.test('parsePinterestOption', () => {
+Deno.test("parsePinterestOption", () => {
   assertEquals(
-    parsePinterestOption('https://www.pinterest.de/pinterestde'),
-    'https://www.pinterest.com/pinterestde/feed.rss',
+    parsePinterestOption("https://www.pinterest.de/pinterestde"),
+    "https://www.pinterest.com/pinterestde/feed.rss",
   );
   assertEquals(
-    parsePinterestOption('https://www.pinterest.de/aurelianstoian/math/'),
-    'https://www.pinterest.com/aurelianstoian/math.rss',
+    parsePinterestOption("https://www.pinterest.de/aurelianstoian/math/"),
+    "https://www.pinterest.com/aurelianstoian/math.rss",
   );
   assertEquals(
-    parsePinterestOption('@pinterestde'),
-    'https://www.pinterest.com/pinterestde/feed.rss',
+    parsePinterestOption("@pinterestde"),
+    "https://www.pinterest.com/pinterestde/feed.rss",
   );
   assertEquals(
-    parsePinterestOption('@aurelianstoian/math'),
-    'https://www.pinterest.com/aurelianstoian/math.rss',
+    parsePinterestOption("@aurelianstoian/math"),
+    "https://www.pinterest.com/aurelianstoian/math.rss",
   );
   assertThrows(() => parsePinterestOption(undefined));
-  assertThrows(() => parsePinterestOption(''));
+  assertThrows(() => parsePinterestOption(""));
 });
 
-Deno.test('getPinterestFeed - User', async () => {
+Deno.test("getPinterestFeed - User", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseUser, { status: 200 }));
@@ -112,73 +112,74 @@ Deno.test('getPinterestFeed - User', async () => {
       mockProfile,
       {
         ...mockSource,
-        options: { pinterest: 'https://www.pinterest.de/pinterestde' },
+        options: { pinterest: "https://www.pinterest.de/pinterestde" },
       },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'pinterest',
-      'title': 'Pinterest Deutschland',
-      'options': {
-        'pinterest': 'https://www.pinterest.com/pinterestde/feed.rss',
+      id: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "pinterest",
+      title: "Pinterest Deutschland",
+      options: {
+        pinterest: "https://www.pinterest.com/pinterestde/feed.rss",
       },
-      'link': 'https://www.pinterest.com/pinterestde/',
+      link: "https://www.pinterest.com/pinterestde/",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab-b943f6a54297d4cab0bb47da53a3966a',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab',
-      'title':
-        'Willy Wonka und die Schokoladenfabril Warner Kinofilm Photo Edit | Photshop #DezemberChallenge',
-      'link': 'https://www.pinterest.de/pin/458452437083858830/',
-      'media':
-        'https://i.pinimg.com/236x/38/ec/d5/38ecd5a70f26b7aed5a03d5d3d202a90.jpg',
-      'description':
-        '<a href="https://www.pinterest.de/pin/458452437083858830/"><img src="https://i.pinimg.com/236x/38/ec/d5/38ecd5a70f26b7aed5a03d5d3d202a90.jpg"></a>Willy Wonka und die Schokoladenfabril Warner Kinofilm Photo Edit | Photshop #DezemberChallenge',
-      'author': '@pinterestde',
-      'publishedAt': 1701970115,
-    }, {
-      'id':
-        'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab-3bf66585db7320d3182510e8a691350c',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab',
-      'title': '',
-      'link': 'https://www.pinterest.de/pin/458452437083858826/',
-      'media':
-        'https://i.pinimg.com/236x/bd/fe/c1/bdfec1ee5d5342c250460e7065cb037f.jpg',
-      'description':
-        '<a href="https://www.pinterest.de/pin/458452437083858826/"><img src="https://i.pinimg.com/236x/bd/fe/c1/bdfec1ee5d5342c250460e7065cb037f.jpg"></a>',
-      'author': '@pinterestde',
-      'publishedAt': 1701970081,
-    }, {
-      'id':
-        'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab-b604f0bd41e5f641231a99b9606854a3',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab',
-      'title': '',
-      'link': 'https://www.pinterest.de/pin/458452437083858815/',
-      'media':
-        'https://i.pinimg.com/236x/bb/b6/8b/bbb68be1c4069ba9c1facdcf66063849.jpg',
-      'description':
-        '<a href="https://www.pinterest.de/pin/458452437083858815/"><img src="https://i.pinimg.com/236x/bb/b6/8b/bbb68be1c4069ba9c1facdcf66063849.jpg"></a>',
-      'author': '@pinterestde',
-      'publishedAt': 1701970016,
-    }]);
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab-b943f6a54297d4cab0bb47da53a3966a",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab",
+        title:
+          "Willy Wonka und die Schokoladenfabril Warner Kinofilm Photo Edit | Photshop #DezemberChallenge",
+        link: "https://www.pinterest.de/pin/458452437083858830/",
+        media:
+          "https://i.pinimg.com/236x/38/ec/d5/38ecd5a70f26b7aed5a03d5d3d202a90.jpg",
+        description:
+          '<a href="https://www.pinterest.de/pin/458452437083858830/"><img src="https://i.pinimg.com/236x/38/ec/d5/38ecd5a70f26b7aed5a03d5d3d202a90.jpg"></a>Willy Wonka und die Schokoladenfabril Warner Kinofilm Photo Edit | Photshop #DezemberChallenge',
+        author: "@pinterestde",
+        publishedAt: 1701970115,
+      },
+      {
+        id: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab-3bf66585db7320d3182510e8a691350c",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab",
+        title: "",
+        link: "https://www.pinterest.de/pin/458452437083858826/",
+        media:
+          "https://i.pinimg.com/236x/bd/fe/c1/bdfec1ee5d5342c250460e7065cb037f.jpg",
+        description:
+          '<a href="https://www.pinterest.de/pin/458452437083858826/"><img src="https://i.pinimg.com/236x/bd/fe/c1/bdfec1ee5d5342c250460e7065cb037f.jpg"></a>',
+        author: "@pinterestde",
+        publishedAt: 1701970081,
+      },
+      {
+        id: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab-b604f0bd41e5f641231a99b9606854a3",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "pinterest-myuser-mycolumn-18a73e1c3eb363440dbd64cfa9dfd1ab",
+        title: "",
+        link: "https://www.pinterest.de/pin/458452437083858815/",
+        media:
+          "https://i.pinimg.com/236x/bb/b6/8b/bbb68be1c4069ba9c1facdcf66063849.jpg",
+        description:
+          '<a href="https://www.pinterest.de/pin/458452437083858815/"><img src="https://i.pinimg.com/236x/bb/b6/8b/bbb68be1c4069ba9c1facdcf66063849.jpg"></a>',
+        author: "@pinterestde",
+        publishedAt: 1701970016,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://www.pinterest.com/pinterestde/feed.rss',
-      { method: 'get' },
+      "https://www.pinterest.com/pinterestde/feed.rss",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {

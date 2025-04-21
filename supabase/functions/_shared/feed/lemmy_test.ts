@@ -1,31 +1,31 @@
-import { assertEquals } from 'std/assert';
-import { createClient } from '@supabase/supabase-js';
+import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getLemmyFeed, isLemmyUrl } from './lemmy.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getLemmyFeed, isLemmyUrl } from "./lemmy.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responseUser = `<?xml version="1.0" encoding="UTF-8"?>
@@ -201,15 +201,15 @@ const responseCommunityIIC = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('isLemmyUrl', () => {
-  assertEquals(isLemmyUrl('https://lemmy.world/c/lemmyworld'), true);
-  assertEquals(isLemmyUrl('https://www.google.de/'), false);
+Deno.test("isLemmyUrl", () => {
+  assertEquals(isLemmyUrl("https://lemmy.world/c/lemmyworld"), true);
+  assertEquals(isLemmyUrl("https://www.google.de/"), false);
 });
 
-Deno.test('getLemmyFeed - User', async () => {
+Deno.test("getLemmyFeed - User", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseUser, { status: 200 }));
@@ -222,56 +222,57 @@ Deno.test('getLemmyFeed - User', async () => {
       supabaseClient,
       undefined,
       mockProfile,
-      { ...mockSource, options: { lemmy: 'https://lemmy.world/u/lwCET' } },
+      { ...mockSource, options: { lemmy: "https://lemmy.world/u/lwCET" } },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'lemmy',
-      'title': 'Lemmy.World - lwCET',
-      'options': { 'lemmy': 'https://lemmy.world/feeds/u/lwCET.xml?sort=New' },
-      'link': 'https://lemmy.world/u/lwCET',
+      id: "lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "lemmy",
+      title: "Lemmy.World - lwCET",
+      options: { lemmy: "https://lemmy.world/feeds/u/lwCET.xml?sort=New" },
+      link: "https://lemmy.world/u/lwCET",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4-1f643a920e7a0d3766558a52ddb28f96',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4',
-      'title':
-        '[Weekly Community Spotlights] c/forgottenweapons and aneurysmposting@sopuli.xyz',
-      'link': 'https://lemmy.world/post/9209829',
-      'media':
-        'https://lemmy.world/pictrs/image/d22b2935-f27b-49f0-81e7-c81c21088467.png',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/lwCET">lwCET</a> to <a href="https://lemmy.world/c/communityspotlight">communityspotlight</a><br>180 points | <a href="https://lemmy.world/post/9209829">19 comments</a><br><a href="https://lemmy.world/pictrs/image/d22b2935-f27b-49f0-81e7-c81c21088467.png">https://lemmy.world/pictrs/image/d22b2935-f27b-49f0-81e7-c81c21088467.png</a><h2>Hello World,</h2>\n<h2>This weekâ€™s Community Spotlights are:</h2>\n<p><strong>LW Community:</strong> <a href="https://lemmy.world/c/forgottenweapons">Forgotten Weapons</a> (!forgottenweapons@lemmy.world) - A community dedicated to discussion around historical arms, mechanically unique arms, and Ian McCollumâ€™s Forgotten Weapons content.<br />\n<strong>Mod(s):</strong> @FireTower@lemmy.world</p>\n<hr />\n<p><strong>Fediverse Community:</strong> <a href="https://sopuli.xyz/c/aneurysmposting">Aneurysm Posting</a> (!aneurysmposting@sopuli.xyz) - For shitposting by people who can smell burnt toast.<br />\n<strong>Mod(s):</strong> @PinkyCoyote@sopuli.xyz</p>\n<hr />\n<h2>How to submit a community you would like to see spotlighted</h2>\n<p>Comment on any Weekly Spotlight post or suggest a community on our <a href="https://discord.gg/lemmyworld">Discord server</a> in the <strong>community-spotlight</strong> channel.  You can also send a message to the <a href="https://lemmy.world/u/lwCET">Community Team</a> with your suggestions.</p>',
-      'author': 'https://lemmy.world/u/lwCET',
-      'publishedAt': 1701862339,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4-86c6108b553905422e6268948f22ba54',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4',
-      'title': 'LW Holiday Logos',
-      'link': 'https://lemmy.world/post/9036399',
-      'media':
-        'https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/lwCET">lwCET</a> to <a href="https://lemmy.world/c/lemmyworld">lemmyworld</a><br>361 points | <a href="https://lemmy.world/post/9036399">47 comments</a><br><a href="https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png">https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png</a><p>Hello World,</p>\n<p>You may have seen the LW holiday themed logos we have used for Halloween and Thanksgiving.  LWâ€™s users represent many countries around the world and we want to celebrate holidays and other special days that are local to you, but our team is fairly small and we arenâ€™t aware of a lot of the local customs out there.  So weâ€™re asking you what you would like to see represented in a LW themed logo.  What are some holidays/special days in your area and how do you celebrate them?  And not just major holidays, we would like to celebrate festivals, days of remembrance, and other special days.</p>\n<p>Please, comment below your suggestions and ideas on how we could represent them in the LW logo.</p>\n<p>EDIT: Mostly looking for events throughout the year.  Whatâ€™s left of 2023 is already in work.  Thanks!</p>',
-      'author': 'https://lemmy.world/u/lwCET',
-      'publishedAt': 1701495545,
-    }]);
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4-1f643a920e7a0d3766558a52ddb28f96",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4",
+        title:
+          "[Weekly Community Spotlights] c/forgottenweapons and aneurysmposting@sopuli.xyz",
+        link: "https://lemmy.world/post/9209829",
+        media:
+          "https://lemmy.world/pictrs/image/d22b2935-f27b-49f0-81e7-c81c21088467.png",
+        description:
+          'submitted by <a href="https://lemmy.world/u/lwCET">lwCET</a> to <a href="https://lemmy.world/c/communityspotlight">communityspotlight</a><br>180 points | <a href="https://lemmy.world/post/9209829">19 comments</a><br><a href="https://lemmy.world/pictrs/image/d22b2935-f27b-49f0-81e7-c81c21088467.png">https://lemmy.world/pictrs/image/d22b2935-f27b-49f0-81e7-c81c21088467.png</a><h2>Hello World,</h2>\n<h2>This weekâ€™s Community Spotlights are:</h2>\n<p><strong>LW Community:</strong> <a href="https://lemmy.world/c/forgottenweapons">Forgotten Weapons</a> (!forgottenweapons@lemmy.world) - A community dedicated to discussion around historical arms, mechanically unique arms, and Ian McCollumâ€™s Forgotten Weapons content.<br />\n<strong>Mod(s):</strong> @FireTower@lemmy.world</p>\n<hr />\n<p><strong>Fediverse Community:</strong> <a href="https://sopuli.xyz/c/aneurysmposting">Aneurysm Posting</a> (!aneurysmposting@sopuli.xyz) - For shitposting by people who can smell burnt toast.<br />\n<strong>Mod(s):</strong> @PinkyCoyote@sopuli.xyz</p>\n<hr />\n<h2>How to submit a community you would like to see spotlighted</h2>\n<p>Comment on any Weekly Spotlight post or suggest a community on our <a href="https://discord.gg/lemmyworld">Discord server</a> in the <strong>community-spotlight</strong> channel.  You can also send a message to the <a href="https://lemmy.world/u/lwCET">Community Team</a> with your suggestions.</p>',
+        author: "https://lemmy.world/u/lwCET",
+        publishedAt: 1701862339,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4-86c6108b553905422e6268948f22ba54",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-9b51f0368938451bfbd740fad833b7a4",
+        title: "LW Holiday Logos",
+        link: "https://lemmy.world/post/9036399",
+        media:
+          "https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png",
+        description:
+          'submitted by <a href="https://lemmy.world/u/lwCET">lwCET</a> to <a href="https://lemmy.world/c/lemmyworld">lemmyworld</a><br>361 points | <a href="https://lemmy.world/post/9036399">47 comments</a><br><a href="https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png">https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png</a><p>Hello World,</p>\n<p>You may have seen the LW holiday themed logos we have used for Halloween and Thanksgiving.  LWâ€™s users represent many countries around the world and we want to celebrate holidays and other special days that are local to you, but our team is fairly small and we arenâ€™t aware of a lot of the local customs out there.  So weâ€™re asking you what you would like to see represented in a LW themed logo.  What are some holidays/special days in your area and how do you celebrate them?  And not just major holidays, we would like to celebrate festivals, days of remembrance, and other special days.</p>\n<p>Please, comment below your suggestions and ideas on how we could represent them in the LW logo.</p>\n<p>EDIT: Mostly looking for events throughout the year.  Whatâ€™s left of 2023 is already in work.  Thanks!</p>',
+        author: "https://lemmy.world/u/lwCET",
+        publishedAt: 1701495545,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://lemmy.world/feeds/u/lwCET.xml?sort=New',
-      { method: 'get' },
+      "https://lemmy.world/feeds/u/lwCET.xml?sort=New",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
@@ -281,10 +282,10 @@ Deno.test('getLemmyFeed - User', async () => {
   assertSpyCalls(fetchWithTimeoutSpy, 1);
 });
 
-Deno.test('getLemmyFeed - Community', async () => {
+Deno.test("getLemmyFeed - Community", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseCommunity, { status: 200 }));
@@ -297,55 +298,56 @@ Deno.test('getLemmyFeed - Community', async () => {
       supabaseClient,
       undefined,
       mockProfile,
-      { ...mockSource, options: { lemmy: 'https://lemmy.world/c/lemmyworld' } },
+      { ...mockSource, options: { lemmy: "https://lemmy.world/c/lemmyworld" } },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'lemmy',
-      'title': 'Lemmy.World - lemmyworld',
-      'options': {
-        'lemmy': 'https://lemmy.world/feeds/c/lemmyworld.xml?sort=New',
+      id: "lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "lemmy",
+      title: "Lemmy.World - lemmyworld",
+      options: {
+        lemmy: "https://lemmy.world/feeds/c/lemmyworld.xml?sort=New",
       },
-      'link': 'https://lemmy.world/c/lemmyworld',
+      link: "https://lemmy.world/c/lemmyworld",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42-86c6108b553905422e6268948f22ba54',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42',
-      'title': 'LW Holiday Logos',
-      'link': 'https://lemmy.world/post/9036399',
-      'media':
-        'https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/lwCET">lwCET</a> to <a href="https://lemmy.world/c/lemmyworld">lemmyworld</a><br>361 points | <a href="https://lemmy.world/post/9036399">47 comments</a><br><a href="https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png">https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png</a><p>Hello World,</p>\n<p>You may have seen the LW holiday themed logos we have used for Halloween and Thanksgiving.  LWâ€™s users represent many countries around the world and we want to celebrate holidays and other special days that are local to you, but our team is fairly small and we arenâ€™t aware of a lot of the local customs out there.  So weâ€™re asking you what you would like to see represented in a LW themed logo.  What are some holidays/special days in your area and how do you celebrate them?  And not just major holidays, we would like to celebrate festivals, days of remembrance, and other special days.</p>\n<p>Please, comment below your suggestions and ideas on how we could represent them in the LW logo.</p>\n<p>EDIT: Mostly looking for events throughout the year.  Whatâ€™s left of 2023 is already in work.  Thanks!</p>',
-      'author': 'https://lemmy.world/u/lwCET',
-      'publishedAt': 1701495545,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42-797a3b386c90d913c61e1c831cba6f46',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42',
-      'title': 'Lemmy.World Junior Cloud Engineer',
-      'link': 'https://lemmy.world/post/8054956',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/lwadmin">lwadmin</a> to <a href="https://lemmy.world/c/lemmyworld">lemmyworld</a><br>501 points | <a href="https://lemmy.world/post/8054956">2 comments</a><p>Hello World!</p>\n<p>Lemmy.World is looking for new engineers to help with our growing community. Volunteers will assist our existing infrastructure team with monitoring, maintenance and automation development tasks. They will report to our <a href="https://team.lemmy.world/#-org-chart">head of infrastructure</a>.</p>\n<p>We are looking for junior admins for this role. You will learn a modern cloud infra stack, including Terraform, DataDog, CloudFlare and ma</p>\n<p>Keep in mind that while this is a volunteer gig, we would ask you to be able to commit to at least 5-10 hours a week. We also understand this is a hobby and that family and work comes first.</p>\n<p>Applicants must be okay with providing their CV, LinkedIn profile; along with sitting for a video interview.</p>\n<p>We are an international team that works from both North America EST time (-4) and Europe CEST (+2) so we would ask that candidates be flexible with their availability.</p>\n<p>To learn more and begin your application process, <a href="https://docs.google.com/forms/d/e/1FAIpQLSd0wXwY4V75_sVM1BmgFL8ObfwhT2jsUwxb9MP_TY8PyE3KfQ/viewform?pli=1">click here</a>. This is not a paid position.</p>',
-      'author': 'https://lemmy.world/u/lwadmin',
-      'publishedAt': 1699609701,
-    }]);
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42-86c6108b553905422e6268948f22ba54",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42",
+        title: "LW Holiday Logos",
+        link: "https://lemmy.world/post/9036399",
+        media:
+          "https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png",
+        description:
+          'submitted by <a href="https://lemmy.world/u/lwCET">lwCET</a> to <a href="https://lemmy.world/c/lemmyworld">lemmyworld</a><br>361 points | <a href="https://lemmy.world/post/9036399">47 comments</a><br><a href="https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png">https://lemmy.world/pictrs/image/f3189f30-f8c8-4c4f-b957-e3a7bfd1c784.png</a><p>Hello World,</p>\n<p>You may have seen the LW holiday themed logos we have used for Halloween and Thanksgiving.  LWâ€™s users represent many countries around the world and we want to celebrate holidays and other special days that are local to you, but our team is fairly small and we arenâ€™t aware of a lot of the local customs out there.  So weâ€™re asking you what you would like to see represented in a LW themed logo.  What are some holidays/special days in your area and how do you celebrate them?  And not just major holidays, we would like to celebrate festivals, days of remembrance, and other special days.</p>\n<p>Please, comment below your suggestions and ideas on how we could represent them in the LW logo.</p>\n<p>EDIT: Mostly looking for events throughout the year.  Whatâ€™s left of 2023 is already in work.  Thanks!</p>',
+        author: "https://lemmy.world/u/lwCET",
+        publishedAt: 1701495545,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42-797a3b386c90d913c61e1c831cba6f46",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-8024684791f06e280f6fbd7217099f42",
+        title: "Lemmy.World Junior Cloud Engineer",
+        link: "https://lemmy.world/post/8054956",
+        description:
+          'submitted by <a href="https://lemmy.world/u/lwadmin">lwadmin</a> to <a href="https://lemmy.world/c/lemmyworld">lemmyworld</a><br>501 points | <a href="https://lemmy.world/post/8054956">2 comments</a><p>Hello World!</p>\n<p>Lemmy.World is looking for new engineers to help with our growing community. Volunteers will assist our existing infrastructure team with monitoring, maintenance and automation development tasks. They will report to our <a href="https://team.lemmy.world/#-org-chart">head of infrastructure</a>.</p>\n<p>We are looking for junior admins for this role. You will learn a modern cloud infra stack, including Terraform, DataDog, CloudFlare and ma</p>\n<p>Keep in mind that while this is a volunteer gig, we would ask you to be able to commit to at least 5-10 hours a week. We also understand this is a hobby and that family and work comes first.</p>\n<p>Applicants must be okay with providing their CV, LinkedIn profile; along with sitting for a video interview.</p>\n<p>We are an international team that works from both North America EST time (-4) and Europe CEST (+2) so we would ask that candidates be flexible with their availability.</p>\n<p>To learn more and begin your application process, <a href="https://docs.google.com/forms/d/e/1FAIpQLSd0wXwY4V75_sVM1BmgFL8ObfwhT2jsUwxb9MP_TY8PyE3KfQ/viewform?pli=1">click here</a>. This is not a paid position.</p>',
+        author: "https://lemmy.world/u/lwadmin",
+        publishedAt: 1699609701,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://lemmy.world/feeds/c/lemmyworld.xml?sort=New',
-      { method: 'get' },
+      "https://lemmy.world/feeds/c/lemmyworld.xml?sort=New",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
@@ -355,10 +357,10 @@ Deno.test('getLemmyFeed - Community', async () => {
   assertSpyCalls(fetchWithTimeoutSpy, 1);
 });
 
-Deno.test('getLemmyFeed - Community - IIC', async () => {
+Deno.test("getLemmyFeed - Community - IIC", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseCommunityIIC, { status: 200 }));
@@ -373,137 +375,138 @@ Deno.test('getLemmyFeed - Community - IIC', async () => {
       mockProfile,
       {
         ...mockSource,
-        options: { lemmy: 'https://lemmy.world/feeds/c/idiotsincars.xml' },
+        options: { lemmy: "https://lemmy.world/feeds/c/idiotsincars.xml" },
       },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'lemmy',
-      'title': 'Lemmy.World - idiotsincars',
-      'options': {
-        'lemmy': 'https://lemmy.world/feeds/c/idiotsincars.xml?sort=New',
+      id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "lemmy",
+      title: "Lemmy.World - idiotsincars",
+      options: {
+        lemmy: "https://lemmy.world/feeds/c/idiotsincars.xml?sort=New",
       },
-      'link': 'https://lemmy.world/c/idiotsincars',
+      link: "https://lemmy.world/c/idiotsincars",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-33d0c935222609e6d7afe3d3054affec',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title': '9/30/23 Don\'t be this guy',
-      'link': 'https://lemmy.world/post/6063706',
-      'media': 'https://i.imgur.com/rGcxspg.mp4',
-      'description':
-        'submitted by <a href="https://lemm.ee/u/SuperSleuth">SuperSleuth</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>97 points | <a href="https://lemmy.world/post/6063706">4 comments</a><br><a href="https://i.imgur.com/rGcxspg.mp4">https://i.imgur.com/rGcxspg.mp4</a><p>use this <a href="https://imgur.com/a/XKwjyC3">link</a> if video doesnâ€™t load</p>',
-      'author': 'https://lemm.ee/u/SuperSleuth',
-      'publishedAt': 1696120927,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-44104b8b3612c665abe8b93a2cdd2ce0',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title':
-        'Dash Cam Owners Australia September 2023 On the Road Compilation',
-      'link': 'https://lemmy.world/post/5679506',
-      'media': 'https://youtu.be/6Xr6tsMCDzs?si=apq7rpNvByYnpXN2',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/BestTestInTheWest">BestTestInTheWest</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>22 points | <a href="https://lemmy.world/post/5679506">2 comments</a><br><a href="https://youtu.be/6Xr6tsMCDzs?si=apq7rpNvByYnpXN2">https://youtu.be/6Xr6tsMCDzs?si=apq7rpNvByYnpXN2</a>',
-      'author': 'https://lemmy.world/u/BestTestInTheWest',
-      'publishedAt': 1695595829,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-d36d08de3466c62c4feb90c491e68113',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title': 'I merge now!',
-      'link': 'https://lemmy.world/post/4072199',
-      'media': 'https://files.catbox.moe/7ino16.mp4',
-      'description':
-        'submitted by <a href="https://lemm.ee/u/Overstuff9499">Overstuff9499</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>13 points | <a href="https://lemmy.world/post/4072199">7 comments</a><br><a href="https://files.catbox.moe/7ino16.mp4">https://files.catbox.moe/7ino16.mp4</a><p>i guess i should read their minds.</p>',
-      'author': 'https://lemm.ee/u/Overstuff9499',
-      'publishedAt': 1693317400,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-325c767708c578205330addd91232fc8',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title': 'Dash Cam Owners Australia August 2023 On the Road Compilation',
-      'link': 'https://lemmy.world/post/3965818',
-      'media': 'https://youtu.be/TtWnAIcU6Cs?si=RQ9VJGcLF4xR0xsx',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/BestTestInTheWest">BestTestInTheWest</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>26 points | <a href="https://lemmy.world/post/3965818">1 comments</a><br><a href="https://youtu.be/TtWnAIcU6Cs?si=RQ9VJGcLF4xR0xsx">https://youtu.be/TtWnAIcU6Cs?si=RQ9VJGcLF4xR0xsx</a><p>Dash Cam Owners Australia August 2023 On the Road Compilation</p>',
-      'author': 'https://lemmy.world/u/BestTestInTheWest',
-      'publishedAt': 1693165987,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-6cea754fc3ac4867b66309151e8ef5eb',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title':
-        'Car playing PacMan with the double yellow line in a dangerous curve',
-      'link': 'https://lemmy.world/post/3303420',
-      'media': 'https://i.imgur.com/gHFeqCi.mp4',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/LazaroFilm">LazaroFilm</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>45 points | <a href="https://lemmy.world/post/3303420">1 comments</a><br><a href="https://i.imgur.com/gHFeqCi.mp4">https://i.imgur.com/gHFeqCi.mp4</a><p>And they honk backâ€½</p>',
-      'author': 'https://lemmy.world/u/LazaroFilm',
-      'publishedAt': 1692224778,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-08bb1f161a61a21a47457171e25c3fd1',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title': 'Cop car forgot how stop signs work',
-      'link': 'https://lemmy.world/post/3303348',
-      'media': 'https://i.imgur.com/hsaoKWm.mp4',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/LazaroFilm">LazaroFilm</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>49 points | <a href="https://lemmy.world/post/3303348">4 comments</a><br><a href="https://i.imgur.com/hsaoKWm.mp4">https://i.imgur.com/hsaoKWm.mp4</a>',
-      'author': 'https://lemmy.world/u/LazaroFilm',
-      'publishedAt': 1692224318,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-a567cf7498d0506a2f8a954354aa95c0',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title': 'Honey, I forgot the KeÅŸkek',
-      'link': 'https://lemmy.world/post/2916600',
-      'media': 'https://i.imgur.com/lXKg8Gn.mp4',
-      'description':
-        'submitted by <a href="https://lemm.ee/u/SuperSleuth">SuperSleuth</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>108 points | <a href="https://lemmy.world/post/2916600">5 comments</a><br><a href="https://i.imgur.com/lXKg8Gn.mp4">https://i.imgur.com/lXKg8Gn.mp4</a><p>A seven car pileup during a wedding convoy in Denizli, Turkey. Click <a href="https://imgur.com/a/XzQ2rCD">here</a> if you canâ€™t see the video.</p>',
-      'author': 'https://lemm.ee/u/SuperSleuth',
-      'publishedAt': 1691587204,
-    }, {
-      'id':
-        'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-ad7fbbbe7e47d9ca72aded5c66ab5bde',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f',
-      'title':
-        'BMW unexpectedly using blinkers before brake checking cargo truck [YT original in post]',
-      'link': 'https://lemmy.world/post/2370743',
-      'media': 'http://regna.nu/7u70dz.gif',
-      'description':
-        'submitted by <a href="https://lemmy.world/u/Regna">Regna</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>91 points | <a href="https://lemmy.world/post/2370743">11 comments</a><br><a href="http://regna.nu/7u70dz.gif">http://regna.nu/7u70dz.gif</a><p><em>Edit: Changed link for the pic to another site</em></p>\n<p>The guy behind <a href="https://www.youtube.com/@truckdriver1982">Trucker Dashcam // Sweden</a> is one of the nicest truckers Iâ€™ve ever heard of. He mainly does dashcam compilations nowadays, and includes videos from friends and subscibers as well.</p>\n<ul>\n<li>Original video is at: <a href="https://www.youtube.com/watch?v=6HivZOJ4-K4">Trucker Dashcam // Sweden</a></li>\n<li>Here is <a href="https://www.youtube.com/watch?v=6HivZOJ4-K4&t=55s">time when the BMW turns up</a></li>\n<li>Here is a <a href="https://piped.video/channel/UCfV0wtzumYCRuvLhY5n6hug">Piped link to the channel</a></li>\n</ul>',
-      'author': 'https://lemmy.world/u/Regna',
-      'publishedAt': 1690712351,
-    }]);
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-33d0c935222609e6d7afe3d3054affec",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title: "9/30/23 Don't be this guy",
+        link: "https://lemmy.world/post/6063706",
+        media: "https://i.imgur.com/rGcxspg.mp4",
+        description:
+          'submitted by <a href="https://lemm.ee/u/SuperSleuth">SuperSleuth</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>97 points | <a href="https://lemmy.world/post/6063706">4 comments</a><br><a href="https://i.imgur.com/rGcxspg.mp4">https://i.imgur.com/rGcxspg.mp4</a><p>use this <a href="https://imgur.com/a/XKwjyC3">link</a> if video doesnâ€™t load</p>',
+        author: "https://lemm.ee/u/SuperSleuth",
+        publishedAt: 1696120927,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-44104b8b3612c665abe8b93a2cdd2ce0",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title:
+          "Dash Cam Owners Australia September 2023 On the Road Compilation",
+        link: "https://lemmy.world/post/5679506",
+        media: "https://youtu.be/6Xr6tsMCDzs?si=apq7rpNvByYnpXN2",
+        description:
+          'submitted by <a href="https://lemmy.world/u/BestTestInTheWest">BestTestInTheWest</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>22 points | <a href="https://lemmy.world/post/5679506">2 comments</a><br><a href="https://youtu.be/6Xr6tsMCDzs?si=apq7rpNvByYnpXN2">https://youtu.be/6Xr6tsMCDzs?si=apq7rpNvByYnpXN2</a>',
+        author: "https://lemmy.world/u/BestTestInTheWest",
+        publishedAt: 1695595829,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-d36d08de3466c62c4feb90c491e68113",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title: "I merge now!",
+        link: "https://lemmy.world/post/4072199",
+        media: "https://files.catbox.moe/7ino16.mp4",
+        description:
+          'submitted by <a href="https://lemm.ee/u/Overstuff9499">Overstuff9499</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>13 points | <a href="https://lemmy.world/post/4072199">7 comments</a><br><a href="https://files.catbox.moe/7ino16.mp4">https://files.catbox.moe/7ino16.mp4</a><p>i guess i should read their minds.</p>',
+        author: "https://lemm.ee/u/Overstuff9499",
+        publishedAt: 1693317400,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-325c767708c578205330addd91232fc8",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title: "Dash Cam Owners Australia August 2023 On the Road Compilation",
+        link: "https://lemmy.world/post/3965818",
+        media: "https://youtu.be/TtWnAIcU6Cs?si=RQ9VJGcLF4xR0xsx",
+        description:
+          'submitted by <a href="https://lemmy.world/u/BestTestInTheWest">BestTestInTheWest</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>26 points | <a href="https://lemmy.world/post/3965818">1 comments</a><br><a href="https://youtu.be/TtWnAIcU6Cs?si=RQ9VJGcLF4xR0xsx">https://youtu.be/TtWnAIcU6Cs?si=RQ9VJGcLF4xR0xsx</a><p>Dash Cam Owners Australia August 2023 On the Road Compilation</p>',
+        author: "https://lemmy.world/u/BestTestInTheWest",
+        publishedAt: 1693165987,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-6cea754fc3ac4867b66309151e8ef5eb",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title:
+          "Car playing PacMan with the double yellow line in a dangerous curve",
+        link: "https://lemmy.world/post/3303420",
+        media: "https://i.imgur.com/gHFeqCi.mp4",
+        description:
+          'submitted by <a href="https://lemmy.world/u/LazaroFilm">LazaroFilm</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>45 points | <a href="https://lemmy.world/post/3303420">1 comments</a><br><a href="https://i.imgur.com/gHFeqCi.mp4">https://i.imgur.com/gHFeqCi.mp4</a><p>And they honk backâ€½</p>',
+        author: "https://lemmy.world/u/LazaroFilm",
+        publishedAt: 1692224778,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-08bb1f161a61a21a47457171e25c3fd1",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title: "Cop car forgot how stop signs work",
+        link: "https://lemmy.world/post/3303348",
+        media: "https://i.imgur.com/hsaoKWm.mp4",
+        description:
+          'submitted by <a href="https://lemmy.world/u/LazaroFilm">LazaroFilm</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>49 points | <a href="https://lemmy.world/post/3303348">4 comments</a><br><a href="https://i.imgur.com/hsaoKWm.mp4">https://i.imgur.com/hsaoKWm.mp4</a>',
+        author: "https://lemmy.world/u/LazaroFilm",
+        publishedAt: 1692224318,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-a567cf7498d0506a2f8a954354aa95c0",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title: "Honey, I forgot the KeÅŸkek",
+        link: "https://lemmy.world/post/2916600",
+        media: "https://i.imgur.com/lXKg8Gn.mp4",
+        description:
+          'submitted by <a href="https://lemm.ee/u/SuperSleuth">SuperSleuth</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>108 points | <a href="https://lemmy.world/post/2916600">5 comments</a><br><a href="https://i.imgur.com/lXKg8Gn.mp4">https://i.imgur.com/lXKg8Gn.mp4</a><p>A seven car pileup during a wedding convoy in Denizli, Turkey. Click <a href="https://imgur.com/a/XzQ2rCD">here</a> if you canâ€™t see the video.</p>',
+        author: "https://lemm.ee/u/SuperSleuth",
+        publishedAt: 1691587204,
+      },
+      {
+        id: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f-ad7fbbbe7e47d9ca72aded5c66ab5bde",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "lemmy-myuser-mycolumn-e5cb4d4594ce7d19987fd42ca1dd837f",
+        title:
+          "BMW unexpectedly using blinkers before brake checking cargo truck [YT original in post]",
+        link: "https://lemmy.world/post/2370743",
+        media: "http://regna.nu/7u70dz.gif",
+        description:
+          'submitted by <a href="https://lemmy.world/u/Regna">Regna</a> to <a href="https://lemmy.world/c/idiotsincars">idiotsincars</a><br>91 points | <a href="https://lemmy.world/post/2370743">11 comments</a><br><a href="http://regna.nu/7u70dz.gif">http://regna.nu/7u70dz.gif</a><p><em>Edit: Changed link for the pic to another site</em></p>\n<p>The guy behind <a href="https://www.youtube.com/@truckdriver1982">Trucker Dashcam // Sweden</a> is one of the nicest truckers Iâ€™ve ever heard of. He mainly does dashcam compilations nowadays, and includes videos from friends and subscibers as well.</p>\n<ul>\n<li>Original video is at: <a href="https://www.youtube.com/watch?v=6HivZOJ4-K4">Trucker Dashcam // Sweden</a></li>\n<li>Here is <a href="https://www.youtube.com/watch?v=6HivZOJ4-K4&t=55s">time when the BMW turns up</a></li>\n<li>Here is a <a href="https://piped.video/channel/UCfV0wtzumYCRuvLhY5n6hug">Piped link to the channel</a></li>\n</ul>',
+        author: "https://lemmy.world/u/Regna",
+        publishedAt: 1690712351,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://lemmy.world/feeds/c/idiotsincars.xml?sort=New',
-      { method: 'get' },
+      "https://lemmy.world/feeds/c/idiotsincars.xml?sort=New",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {

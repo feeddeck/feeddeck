@@ -1,19 +1,19 @@
-import * as cheerio from 'cheerio';
+import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
 
-import { fetchWithTimeout } from '../../utils/fetchWithTimeout.ts';
+import { fetchWithTimeout } from "../../utils/fetchWithTimeout.ts";
 
 export interface Favicon {
   url: string;
   size: number;
-  extension: 'ico' | 'png' | 'gif' | 'jpg' | 'jpeg' | 'svg';
+  extension: "ico" | "png" | "gif" | "jpg" | "jpeg" | "svg";
 }
 
 const rels = [
-  'shortcut icon',
-  'icon shortcut',
-  'icon',
-  'apple-touch-icon',
-  'apple-touch-icon-precomposed',
+  "shortcut icon",
+  "icon shortcut",
+  "icon",
+  "apple-touch-icon",
+  "apple-touch-icon-precomposed",
 ];
 
 /**
@@ -37,7 +37,7 @@ export async function getFavicon(
      * Get the html content from the provided `url` and extrace all favicons
      * from it.
      */
-    const response = await fetchWithTimeout(url, { method: 'get' }, 3000);
+    const response = await fetchWithTimeout(url, { method: "get" }, 3000);
     if (!response || !response.ok) {
       return undefined;
     }
@@ -79,7 +79,7 @@ const extractFavicons = (html: string): string[] => {
   const hrefs = rels
     .map((rel) => {
       return $(`link[rel="${rel}"]`)
-        .map((_, el) => $(el).attr('href'))
+        .map((_, el) => $(el).attr("href"))
         .get();
     })
     .flat();
@@ -103,15 +103,18 @@ const getFaviconsFrom = async (
       .map((href) =>
         getFaviconFrom(
           processURL(isRelativeURL(href) ? url + href : href, false),
-        )
+        ),
       ),
   ]);
-  return favicons.filter((x): x is Favicon => x !== undefined).filter((
-    favicon,
-  ) =>
-    favicon.extension === 'png' || favicon.extension === 'jpg' ||
-    favicon.extension === 'jpeg' || favicon.extension === 'gif'
-  );
+  return favicons
+    .filter((x): x is Favicon => x !== undefined)
+    .filter(
+      (favicon) =>
+        favicon.extension === "png" ||
+        favicon.extension === "jpg" ||
+        favicon.extension === "jpeg" ||
+        favicon.extension === "gif",
+    );
 };
 
 /**
@@ -120,16 +123,16 @@ const getFaviconsFrom = async (
  * and if the content type is an image.
  */
 const getFaviconFrom = async (url: string): Promise<Favicon | undefined> => {
-  const response = await fetchWithTimeout(url, { method: 'get' }, 1000);
+  const response = await fetchWithTimeout(url, { method: "get" }, 1000);
   if (!response || !response.ok) return undefined;
 
-  const contentType = response.headers.get('content-type') ?? '';
-  if (!response.ok || !contentType || !contentType.startsWith('image/')) {
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!response.ok || !contentType || !contentType.startsWith("image/")) {
     return undefined;
   }
 
   const size = (await response.blob()).size;
-  const extension = url.split('.').pop() as Favicon['extension'];
+  const extension = url.split(".").pop() as Favicon["extension"];
 
   return { url, size, extension } as Favicon;
 };
@@ -141,8 +144,8 @@ const getFaviconFrom = async (url: string): Promise<Favicon | undefined> => {
  */
 const processURL = (url: string, removeParams: boolean): string => {
   if (isRelativeURL(url)) return url;
-  if (url.startsWith('//')) url = 'https:' + url;
-  if (!url.startsWith('http')) url = 'https://' + url;
+  if (url.startsWith("//")) url = "https:" + url;
+  if (!url.startsWith("http")) url = "https://" + url;
   const parsed = new URL(url);
   return removeParams ? parsed.origin : parsed.toString();
 };
@@ -153,6 +156,7 @@ const processURL = (url: string, removeParams: boolean): string => {
  * `false`.
  */
 const isRelativeURL = (url: string): boolean => {
-  return url.startsWith('/') && !url.startsWith('//') &&
-    !url.startsWith('http');
+  return (
+    url.startsWith("/") && !url.startsWith("//") && !url.startsWith("http")
+  );
 };

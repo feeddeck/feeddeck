@@ -1,45 +1,45 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 const pinterestUrls = [
-  'pinterest.at',
-  'pinterest.ca',
-  'pinterest.ch',
-  'pinterest.cl',
-  'pinterest.co.kr',
-  'pinterest.com',
-  'pinterest.com.au',
-  'pinterest.com.mx',
-  'pinterest.co.uk',
-  'pinterest.de',
-  'pinterest.dk',
-  'pinterest.es',
-  'pinterest.fr',
-  'pinterest.ie',
-  'pinterest.info',
-  'pinterest.it',
-  'pinterest.jp',
-  'pinterest.net',
-  'pinterest.nz',
-  'pinterest.ph',
-  'pinterest.pt',
-  'pinterest.ru',
-  'pinterest.se',
+  "pinterest.at",
+  "pinterest.ca",
+  "pinterest.ch",
+  "pinterest.cl",
+  "pinterest.co.kr",
+  "pinterest.com",
+  "pinterest.com.au",
+  "pinterest.com.mx",
+  "pinterest.co.uk",
+  "pinterest.de",
+  "pinterest.dk",
+  "pinterest.es",
+  "pinterest.fr",
+  "pinterest.ie",
+  "pinterest.info",
+  "pinterest.it",
+  "pinterest.jp",
+  "pinterest.net",
+  "pinterest.nz",
+  "pinterest.ph",
+  "pinterest.pt",
+  "pinterest.ru",
+  "pinterest.se",
 ];
 
 /**
  * `isPinterestUrl` checks if the provided `url` is a valid Pinterest url.
  */
 export const isPinterestUrl = (url: string): boolean => {
-  if (!url.startsWith('https://www.')) {
+  if (!url.startsWith("https://www.")) {
     return false;
   }
 
@@ -64,8 +64,8 @@ export const parsePinterestOption = (input?: string): string => {
      * provided in the form of `@username` or `@username/board`. We then use
      * the provided username or board to generate a valid Pinterest feed url.
      */
-    if (input.length > 1 && input[0] === '@') {
-      if (input.includes('/')) {
+    if (input.length > 1 && input[0] === "@") {
+      if (input.includes("/")) {
         return `https://www.pinterest.com/${input.substring(1)}.rss`;
       } else {
         return `https://www.pinterest.com/${input.substring(1)}/feed.rss`;
@@ -85,27 +85,26 @@ export const parsePinterestOption = (input?: string): string => {
       if (isPinterestUrl(input)) {
         const pinterestDotComUrl = replaceDomain(input);
         if (
-          pinterestDotComUrl.endsWith('.rss') ||
-          pinterestDotComUrl.endsWith('/feed.rss')
+          pinterestDotComUrl.endsWith(".rss") ||
+          pinterestDotComUrl.endsWith("/feed.rss")
         ) {
           return pinterestDotComUrl;
         } else {
-          const urlParameters = pinterestDotComUrl.replace(
-            'https://www.pinterest.com/',
-            '',
-          ).replace(/\/$/, '');
-          if (urlParameters.includes('/')) {
+          const urlParameters = pinterestDotComUrl
+            .replace("https://www.pinterest.com/", "")
+            .replace(/\/$/, "");
+          if (urlParameters.includes("/")) {
             return `https://www.pinterest.com/${urlParameters}.rss`;
           } else {
             return `https://www.pinterest.com/${urlParameters}/feed.rss`;
           }
         }
       } else {
-        throw new feedutils.FeedValidationError('Invalid source options');
+        throw new feedutils.FeedValidationError("Invalid source options");
       }
     }
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 };
 
@@ -129,7 +128,7 @@ export const getPinterestFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -137,14 +136,14 @@ export const getPinterestFeed = async (
    * `pinterest` url. Besides that we also set the source type to `pinterest`and
    * set the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       parsedPinterestOption,
     );
   }
-  source.type = 'pinterest';
+  source.type = "pinterest";
   source.title = feed.title.value;
   source.options = { pinterest: parsedPinterestOption };
   if (feed.links.length > 0) {
@@ -168,8 +167,8 @@ export const getPinterestFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -185,13 +184,16 @@ export const getPinterestFeed = async (
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
-      title: entry.title?.value ?? '',
+      title: entry.title?.value ?? "",
       link: entry.links[0].href!,
       media: getMedia(entry),
       description: getItemDescription(entry),
       author: `@${
-        parsedPinterestOption.replace('https://www.pinterest.com/', '')
-          .replace('.rss', '').replace('/feed.rss', '').split('/')[0]
+        parsedPinterestOption
+          .replace("https://www.pinterest.com/", "")
+          .replace(".rss", "")
+          .replace("/feed.rss", "")
+          .split("/")[0]
       }`,
       publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
@@ -208,8 +210,8 @@ const replaceDomain = (url: string): string => {
   let finalUrl = url;
 
   for (const pinterestUrl of pinterestUrls) {
-    if (pinterestUrl !== 'pinterest.com') {
-      finalUrl = finalUrl.replace(pinterestUrl, 'pinterest.com');
+    if (pinterestUrl !== "pinterest.com") {
+      finalUrl = finalUrl.replace(pinterestUrl, "pinterest.com");
     }
   }
   return finalUrl;
@@ -235,11 +237,11 @@ const skipEntry = (
     return true;
   }
 
-  if ((entry.links.length === 0 || !entry.links[0].href) || !entry.published) {
+  if (entry.links.length === 0 || !entry.links[0].href || !entry.published) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -294,7 +296,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
       unescape(entry.description.value),
     );
-    if (matches && matches.length == 2 && matches[1].startsWith('https://')) {
+    if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
       return matches[1];
     }
   }

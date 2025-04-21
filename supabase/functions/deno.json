@@ -1,11 +1,7 @@
 {
-  "fmt": {
-    "useTabs": false,
-    "lineWidth": 80,
-    "indentWidth": 2,
-    "semiColons": true,
-    "singleQuote": true,
-    "proseWrap": "preserve"
-  },
-  "importMap": "import_map.json"
+  "tasks": {
+    "start": "deno run --allow-net --watch=static/,routes/,data/ dev.ts",
+    "test": "deno test --allow-env",
+    "lint": "deno lint"
+  }
 }

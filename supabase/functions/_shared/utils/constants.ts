@@ -1,5 +1,4 @@
-export const FEEDDECK_LOG_LEVEL = Deno.env.get('FEEDDECK_LOG_LEVEL') ??
-  'info';
+export const FEEDDECK_LOG_LEVEL = Deno.env.get("FEEDDECK_LOG_LEVEL") ?? "info";
 
 /**
  * Supabase Configuration
@@ -14,15 +13,20 @@ export const FEEDDECK_LOG_LEVEL = Deno.env.get('FEEDDECK_LOG_LEVEL') ??
  *   project as it is shown in the Project Settings -> API section in the
  *   Supabase Studio.
  */
-export const FEEDDECK_SUPABASE_SITE_URL = Deno.env.get('SUPABASE_SITE_URL') ??
-  Deno.env.get('FEEDDECK_SUPABASE_SITE_URL') ?? '';
-export const FEEDDECK_SUPABASE_URL = Deno.env.get('SUPABASE_URL') ??
-  Deno.env.get('FEEDDECK_SUPABASE_URL') ?? '';
-export const FEEDDECK_SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ??
-  Deno.env.get('FEEDDECK_SUPABASE_ANON_KEY') ?? '';
+export const FEEDDECK_SUPABASE_SITE_URL =
+  Deno.env.get("SUPABASE_SITE_URL") ??
+  Deno.env.get("FEEDDECK_SUPABASE_SITE_URL") ??
+  "";
+export const FEEDDECK_SUPABASE_URL =
+  Deno.env.get("SUPABASE_URL") ?? Deno.env.get("FEEDDECK_SUPABASE_URL") ?? "";
+export const FEEDDECK_SUPABASE_ANON_KEY =
+  Deno.env.get("SUPABASE_ANON_KEY") ??
+  Deno.env.get("FEEDDECK_SUPABASE_ANON_KEY") ??
+  "";
 export const FEEDDECK_SUPABASE_SERVICE_ROLE_KEY =
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ??
-    Deno.env.get('FEEDDECK_SUPABASE_SERVICE_ROLE_KEY') ?? '';
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ??
+  Deno.env.get("FEEDDECK_SUPABASE_SERVICE_ROLE_KEY") ??
+  "";
 
 /**
  * Encryption Configuration for Accounts
@@ -34,12 +38,12 @@ export const FEEDDECK_SUPABASE_SERVICE_ROLE_KEY =
  *
  * Note: The FEEDDECK_ENCRYPTION_KEY and FEEDDECK_ENCRYPTION_IV can be generated
  * using the following command:
- *   deno run --allow-net --allow-env --import-map=./supabase/functions/import_map.json ./supabase/functions/_cmd/cmd.ts tools generate-key
+ *   deno run --allow-net --allow-env ./supabase/functions/_cmd/cmd.ts tools generate-key
  */
 export const FEEDDECK_ENCRYPTION_KEY =
-  Deno.env.get('FEEDDECK_ENCRYPTION_KEY') ?? '';
-export const FEEDDECK_ENCRYPTION_IV = Deno.env.get('FEEDDECK_ENCRYPTION_IV') ??
-  '';
+  Deno.env.get("FEEDDECK_ENCRYPTION_KEY") ?? "";
+export const FEEDDECK_ENCRYPTION_IV =
+  Deno.env.get("FEEDDECK_ENCRYPTION_IV") ?? "";
 
 /**
  * Redis Configuration
@@ -53,12 +57,12 @@ export const FEEDDECK_ENCRYPTION_IV = Deno.env.get('FEEDDECK_ENCRYPTION_IV') ??
  *   connection.
  */
 export const FEEDDECK_REDIS_HOSTNAME =
-  Deno.env.get('FEEDDECK_REDIS_HOSTNAME') ?? '127.0.0.1';
-export const FEEDDECK_REDIS_PORT = Deno.env.get('FEEDDECK_REDIS_PORT') ?? 6379;
+  Deno.env.get("FEEDDECK_REDIS_HOSTNAME") ?? "127.0.0.1";
+export const FEEDDECK_REDIS_PORT = Deno.env.get("FEEDDECK_REDIS_PORT") ?? 6379;
 export const FEEDDECK_REDIS_USERNAME =
-  Deno.env.get('FEEDDECK_REDIS_USERNAME') ?? undefined;
+  Deno.env.get("FEEDDECK_REDIS_USERNAME") ?? undefined;
 export const FEEDDECK_REDIS_PASSWORD =
-  Deno.env.get('FEEDDECK_REDIS_PASSWORD') ?? undefined;
+  Deno.env.get("FEEDDECK_REDIS_PASSWORD") ?? undefined;
 
 /**
  * Stripe Configuration
@@ -70,13 +74,13 @@ export const FEEDDECK_REDIS_PASSWORD =
  *   send by RevenueCat.
  */
 export const FEEDDECK_STRIPE_API_KEY =
-  Deno.env.get('FEEDDECK_STRIPE_API_KEY') ?? '';
+  Deno.env.get("FEEDDECK_STRIPE_API_KEY") ?? "";
 export const FEEDDECK_STRIPE_PRICE_ID =
-  Deno.env.get('FEEDDECK_STRIPE_PRICE_ID') ?? '';
+  Deno.env.get("FEEDDECK_STRIPE_PRICE_ID") ?? "";
 export const FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET =
-  Deno.env.get('FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET') ?? '';
+  Deno.env.get("FEEDDECK_STRIPE_WEBHOOK_SIGNING_SECRET") ?? "";
 export const FEEDDECK_REVENUECAT_WEBHOOK_HEADER =
-  Deno.env.get('FEEDDECK_REVENUECAT_WEBHOOK_HEADER') ?? '';
+  Deno.env.get("FEEDDECK_REVENUECAT_WEBHOOK_HEADER") ?? "";
 
 /**
  * Source Configuration
@@ -88,8 +92,8 @@ export const FEEDDECK_REVENUECAT_WEBHOOK_HEADER =
  *   API.
  */
 export const FEEDDECK_SOURCE_NITTER_INSTANCE =
-  Deno.env.get('FEEDDECK_SOURCE_NITTER_INSTANCE') ?? '';
+  Deno.env.get("FEEDDECK_SOURCE_NITTER_INSTANCE") ?? "";
 export const FEEDDECK_SOURCE_NITTER_BASIC_AUTH =
-  Deno.env.get('FEEDDECK_SOURCE_NITTER_BASIC_AUTH') ?? '';
+  Deno.env.get("FEEDDECK_SOURCE_NITTER_BASIC_AUTH") ?? "";
 export const FEEDDECK_SOURCE_YOUTUBE_API_KEY =
-  Deno.env.get('FEEDDECK_SOURCE_YOUTUBE_API_KEY') ?? '';
+  Deno.env.get("FEEDDECK_SOURCE_YOUTUBE_API_KEY") ?? "";

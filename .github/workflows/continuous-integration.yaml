@@ -40,6 +40,9 @@ jobs:
   deno:
     name: Deno
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "supabase/functions"
 
     steps:
       - name: Checkout
@@ -48,8 +51,12 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v1.45.2
+
+      - name: Lint
+        run: |
+          deno task lint
 
       - name: Test
         run: |
-          deno test --allow-env --import-map=supabase/functions/import_map.json supabase/functions
+          deno task test

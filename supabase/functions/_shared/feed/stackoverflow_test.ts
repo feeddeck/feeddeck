@@ -1,30 +1,30 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getStackoverflowFeed } from './stackoverflow.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getStackoverflowFeed } from "./stackoverflow.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responseTag = `<?xml version="1.0" encoding="UTF-8"?>
@@ -116,10 +116,10 @@ spec:
    </entry>
 </feed>`;
 
-Deno.test('getStackoverflowFeed', async () => {
+Deno.test("getStackoverflowFeed", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseTag, { status: 200 }));
@@ -135,65 +135,62 @@ Deno.test('getStackoverflowFeed', async () => {
       {
         ...mockSource,
         options: {
-          stackoverflow: { type: 'tag', tag: 'kubernetes', sort: 'newest' },
+          stackoverflow: { type: "tag", tag: "kubernetes", sort: "newest" },
         },
       },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'stackoverflow',
-      'title': 'Newest questions tagged kubernetes - Stack Overflow',
-      'options': {
-        'stackoverflow': {
-          'type': 'tag',
-          'tag': 'kubernetes',
-          'sort': 'newest',
-          'url':
-            'https://stackoverflow.com/feeds/tag?tagnames=kubernetes&sort=newest',
+      id: "stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "stackoverflow",
+      title: "Newest questions tagged kubernetes - Stack Overflow",
+      options: {
+        stackoverflow: {
+          type: "tag",
+          tag: "kubernetes",
+          sort: "newest",
+          url: "https://stackoverflow.com/feeds/tag?tagnames=kubernetes&sort=newest",
         },
       },
-      'link':
-        'https://stackoverflow.com/feeds/tag?tagnames=kubernetes&sort=newest',
+      link: "https://stackoverflow.com/feeds/tag?tagnames=kubernetes&sort=newest",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7-4ccc40394df08fa6092fa370ad44fa79',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId':
-        'stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7',
-      'title': 'Kubernetes Ingress behind Cloud Load Balancer',
-      'link':
-        'https://stackoverflow.com/questions/77635559/kubernetes-ingress-behind-cloud-load-balancer',
-      'description':
-        '<p>When using an Ingress Controller in Kubernetes the Ingress service is usually exposed via Load Balancer. Now I’m trining to understand on how this exactly works.\nAs I understand it the Ingress Controller is just running as an Pod like any other app and gets exposed via the Load Balancer.\nWhen configuring the external load balancer what target do I set, the Worker nodes or the master nodes, or does this even matter because I use a Service and then it’s automatically internally Load balanced?</p>\n<p>I try to get this Right so I can setup a Kubernetes Cluster in the Hetzner Cloud, because it has no managed service I need to do basically everything on my on but it provides the services to theoretically host a full HA cluster.\nSo the plan is to have for the beginning 3 Master Nodes and 2/3 Worker Nodes and an Managed Load Balancer in front of everything.\nI thought about having 2 Cloud Networks one lb-network for the master nodes and the load balancer and a second one cluster network for the master and worker nodes. But with that approach every incoming traffic needs to get through the Masters to get terminated at the Ingress Controller which is running on the Worker, I like that approach because it allows me to use fewer targets on the Load Balancer to save some money also I could mostly isolate the workers from incoming traffic on a network level. Is that approach possible and even best practices or what do you recommend?</p>',
-      'publishedAt': 1702226384,
-    }, {
-      'id':
-        'stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7-6f932d7a7105a5e38fa70de9bbad6fe5',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId':
-        'stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7',
-      'title':
-        'Application (valhalla-server) not running (or accessible) )when exposed through clusterIP or NodePort service',
-      'link':
-        'https://stackoverflow.com/questions/77635466/application-valhalla-server-not-running-or-accessible-when-exposed-through',
-      'description':
-        '<p>I have created a pod to deploy valhalla-server, yaml below:</p>\n<pre><code>apiVersion: v1\nkind: Pod\nmetadata:\n  name: valahalla-pod\n  labels:\n    app: valahalla-app-pod  # Updated label name\nspec:\n  containers:\n  - name: docker-valahalla\n    image: ghcr.io/gis-ops/docker-valhalla/valhalla\n    env:\n      - name: tile_urls\n        value: "https://download.geofabrik.de/europe/andorra-latest.osm.pbf ghcr.io/gis-ops/docker-valhalla/valhalla:latest"\n    ports:\n    - containerPort: 8002\n    volumeMounts:\n    - name: my-local-folder\n      mountPath: /custom_files\n  volumes:\n  - name: my-local-folder\n    hostPath:\n      path: /home/ubuntu/custom_files\n</code></pre>\n<p>When I exec into this pod, I am able to access the valhalla server on localhost on port 8002. But I have created a service for the pod, yaml below:</p>\n<pre><code>apiVersion: v1\nkind: Service\nmetadata:\n  name: valahalla-service\nspec:\n  selector:\n    app: valahalla-app-pod\n  ports:\n    - protocol: TCP\n      port: 80  # Port exposed by the service\n      targetPort: 8002\n  type: NodePort\n</code></pre>\n<p>I am not able to access my application through this! It gives output when I curl by going into the pod but not when I try to access it from outisde.</p>\n<p>I am using EKS on AWS for this.</p>\n<p>I was using deployment before, I\'ve tried using pod instead and changed service from clusterIP to NodePort.</p>',
-      'publishedAt': 1702224436,
-    }]);
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7-4ccc40394df08fa6092fa370ad44fa79",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId:
+          "stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7",
+        title: "Kubernetes Ingress behind Cloud Load Balancer",
+        link: "https://stackoverflow.com/questions/77635559/kubernetes-ingress-behind-cloud-load-balancer",
+        description:
+          "<p>When using an Ingress Controller in Kubernetes the Ingress service is usually exposed via Load Balancer. Now I’m trining to understand on how this exactly works.\nAs I understand it the Ingress Controller is just running as an Pod like any other app and gets exposed via the Load Balancer.\nWhen configuring the external load balancer what target do I set, the Worker nodes or the master nodes, or does this even matter because I use a Service and then it’s automatically internally Load balanced?</p>\n<p>I try to get this Right so I can setup a Kubernetes Cluster in the Hetzner Cloud, because it has no managed service I need to do basically everything on my on but it provides the services to theoretically host a full HA cluster.\nSo the plan is to have for the beginning 3 Master Nodes and 2/3 Worker Nodes and an Managed Load Balancer in front of everything.\nI thought about having 2 Cloud Networks one lb-network for the master nodes and the load balancer and a second one cluster network for the master and worker nodes. But with that approach every incoming traffic needs to get through the Masters to get terminated at the Ingress Controller which is running on the Worker, I like that approach because it allows me to use fewer targets on the Load Balancer to save some money also I could mostly isolate the workers from incoming traffic on a network level. Is that approach possible and even best practices or what do you recommend?</p>",
+        publishedAt: 1702226384,
+      },
+      {
+        id: "stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7-6f932d7a7105a5e38fa70de9bbad6fe5",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId:
+          "stackoverflow-myuser-mycolumn-b33aefc859cbc9c75f22dc8de83b59e7",
+        title:
+          "Application (valhalla-server) not running (or accessible) )when exposed through clusterIP or NodePort service",
+        link: "https://stackoverflow.com/questions/77635466/application-valhalla-server-not-running-or-accessible-when-exposed-through",
+        description:
+          '<p>I have created a pod to deploy valhalla-server, yaml below:</p>\n<pre><code>apiVersion: v1\nkind: Pod\nmetadata:\n  name: valahalla-pod\n  labels:\n    app: valahalla-app-pod  # Updated label name\nspec:\n  containers:\n  - name: docker-valahalla\n    image: ghcr.io/gis-ops/docker-valhalla/valhalla\n    env:\n      - name: tile_urls\n        value: "https://download.geofabrik.de/europe/andorra-latest.osm.pbf ghcr.io/gis-ops/docker-valhalla/valhalla:latest"\n    ports:\n    - containerPort: 8002\n    volumeMounts:\n    - name: my-local-folder\n      mountPath: /custom_files\n  volumes:\n  - name: my-local-folder\n    hostPath:\n      path: /home/ubuntu/custom_files\n</code></pre>\n<p>When I exec into this pod, I am able to access the valhalla server on localhost on port 8002. But I have created a service for the pod, yaml below:</p>\n<pre><code>apiVersion: v1\nkind: Service\nmetadata:\n  name: valahalla-service\nspec:\n  selector:\n    app: valahalla-app-pod\n  ports:\n    - protocol: TCP\n      port: 80  # Port exposed by the service\n      targetPort: 8002\n  type: NodePort\n</code></pre>\n<p>I am not able to access my application through this! It gives output when I curl by going into the pod but not when I try to access it from outisde.</p>\n<p>I am using EKS on AWS for this.</p>\n<p>I was using deployment before, I\'ve tried using pod instead and changed service from clusterIP to NodePort.</p>',
+        publishedAt: 1702224436,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://stackoverflow.com/feeds/tag?tagnames=kubernetes&sort=newest',
-      { method: 'get' },
+      "https://stackoverflow.com/feeds/tag?tagnames=kubernetes&sort=newest",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
