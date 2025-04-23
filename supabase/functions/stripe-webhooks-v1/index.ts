@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import Stripe from "https://esm.sh/stripe@14.8.0?target=deno&no-check";
 
 import { log } from "../_shared/utils/log.ts";
 import {

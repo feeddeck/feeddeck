@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { feedutils } from './utils/index.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { feedutils } from "./utils/index.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
 
 export const getMastodonFeed = async (
   supabaseClient: SupabaseClient,
@@ -17,25 +17,25 @@ export const getMastodonFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.mastodon || source.options.mastodon.length === 0) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
-  if (source.options.mastodon[0] === '@') {
-    const lastIndex = source.options.mastodon.lastIndexOf('@');
+  if (source.options.mastodon[0] === "@") {
+    const lastIndex = source.options.mastodon.lastIndexOf("@");
     const username = source.options.mastodon.slice(0, lastIndex);
     const instance = source.options.mastodon.slice(lastIndex + 1);
     source.options.mastodon = `https://${instance}/${username}.rss`;
-  } else if (source.options.mastodon[0] === '#') {
-    source.options.mastodon = `https://${getInstance()}/tags/${
-      source.options.mastodon.slice(1)
-    }.rss`;
+  } else if (source.options.mastodon[0] === "#") {
+    source.options.mastodon = `https://${getInstance()}/tags/${source.options.mastodon.slice(
+      1,
+    )}.rss`;
   } else if (
-    source.options.mastodon.startsWith('https://') &&
-    !source.options.mastodon.endsWith('.rss')
+    source.options.mastodon.startsWith("https://") &&
+    !source.options.mastodon.endsWith(".rss")
   ) {
     source.options.mastodon = `${source.options.mastodon}.rss`;
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   /**
@@ -48,7 +48,7 @@ export const getMastodonFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -58,14 +58,14 @@ export const getMastodonFeed = async (
    * the title of the feed as the title for the source, instead we are using the
    * user input as title.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.mastodon,
     );
   }
-  source.type = 'mastodon';
+  source.type = "mastodon";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -99,8 +99,8 @@ export const getMastodonFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -122,11 +122,11 @@ export const getMastodonFeed = async (
     const options: { media?: string[]; videos?: string[] } = {};
     const media = getMedia(entry);
     if (media && media.length > 0) {
-      options['media'] = media;
+      options["media"] = media;
     }
     const videos = getVideos(entry);
     if (videos && videos.length > 0) {
-      options['videos'] = videos;
+      options["videos"] = videos;
     }
 
     items.push({
@@ -134,7 +134,7 @@ export const getMastodonFeed = async (
       userId: source.userId,
       columnId: source.columnId,
       sourceId: source.id,
-      title: '',
+      title: "",
       link: entry.links[0].href!,
       options: Object.keys(options).length === 0 ? undefined : options,
       description: entry.description?.value
@@ -167,11 +167,11 @@ const skipEntry = (
     return true;
   }
 
-  if ((entry.links.length === 0 || !entry.links[0].href) || !entry.published) {
+  if (entry.links.length === 0 || !entry.links[0].href || !entry.published) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -208,10 +208,10 @@ const generateItemId = async (
  * `media:content` field. If we could not get an image we return `undefined`.
  */
 const getMedia = (entry: FeedEntry): string[] | undefined => {
-  if (entry['media:content']) {
+  if (entry["media:content"]) {
     const images = [];
-    for (const media of entry['media:content']) {
-      if (media.medium === 'image' && media.url) {
+    for (const media of entry["media:content"]) {
+      if (media.medium === "image" && media.url) {
         images.push(media.url);
       }
     }
@@ -227,10 +227,10 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
  * `media:content` field. If we could not get a video we return `undefined`.
  */
 const getVideos = (entry: FeedEntry): string[] | undefined => {
-  if (entry['media:content']) {
+  if (entry["media:content"]) {
     const videos = [];
-    for (const media of entry['media:content']) {
-      if (media.medium === 'video' && media.url) {
+    for (const media of entry["media:content"]) {
+      if (media.medium === "video" && media.url) {
         videos.push(media.url);
       }
     }
@@ -247,7 +247,7 @@ const getVideos = (entry: FeedEntry): string[] | undefined => {
  */
 const getAuthor = (entry: FeedEntry): string | undefined => {
   if (entry.links.length > 0 && entry.links[0].href) {
-    const urlParts = entry.links[0].href.replace('https://', '').split('/');
+    const urlParts = entry.links[0].href.replace("https://", "").split("/");
     if (urlParts.length === 3) {
       return `${urlParts[1]}@${urlParts[0]}`;
     }
@@ -258,16 +258,16 @@ const getAuthor = (entry: FeedEntry): string | undefined => {
 
 const getInstance = (): string => {
   const instances = [
-    'mastodon.social',
-    'fediscience.org',
-    'fosstodon.org',
-    'hachyderm.io',
-    'hci.social',
-    'indieweb.social',
-    'ioc.exchange',
-    'mindly.social',
-    'techhub.social',
-    'universeodon.com',
+    "mastodon.social",
+    "fediscience.org",
+    "fosstodon.org",
+    "hachyderm.io",
+    "hci.social",
+    "indieweb.social",
+    "ioc.exchange",
+    "mindly.social",
+    "techhub.social",
+    "universeodon.com",
   ];
 
   return instances[Math.floor(Math.random() * instances.length)];

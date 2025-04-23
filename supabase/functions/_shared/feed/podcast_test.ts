@@ -1,31 +1,31 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getPodcastFeed } from './podcast.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
-import { assertEqualsItems, assertEqualsSource } from './utils/test.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getPodcastFeed } from "./podcast.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
+import { assertEqualsItems, assertEqualsSource } from "./utils/test.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responsePodcastRSS = `<?xml version="1.0" encoding="UTF-8"?>
@@ -101,10 +101,10 @@ const responsePodcastRSS = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getPodcastFeed - RSS', async () => {
+Deno.test("getPodcastFeed - RSS", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responsePodcastRSS, { status: 200 }));
@@ -114,11 +114,11 @@ Deno.test('getPodcastFeed - RSS', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(
-          'https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png',
+          "https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png",
         );
       }),
     ]),
@@ -131,49 +131,48 @@ Deno.test('getPodcastFeed - RSS', async () => {
       mockProfile,
       {
         ...mockSource,
-        options: { podcast: 'https://kubernetespodcast.com/feeds/audio.xml' },
+        options: { podcast: "https://kubernetespodcast.com/feeds/audio.xml" },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'podcast',
-      'title': 'Kubernetes Podcast from Google',
-      'options': { 'podcast': 'https://kubernetespodcast.com/feeds/audio.xml' },
-      'link': 'https://kubernetespodcast.com',
-      'icon':
-        'https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png',
+      id: "podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "podcast",
+      title: "Kubernetes Podcast from Google",
+      options: { podcast: "https://kubernetespodcast.com/feeds/audio.xml" },
+      link: "https://kubernetespodcast.com",
+      icon: "https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef-b7986c0276dcd01cdce685b148530a99',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef',
-      'title': 'KubeCon NA 2023',
-      'link': 'http://sites.libsyn.com/419861/kubecon-na-2023',
-      'media':
-        'https://traffic.libsyn.com/secure/e780d51f-f115-44a6-8252-aed9216bb521/KPOD214.mp3?dest-id=3486674',
-      'description':
-        '<p dir="ltr">This episode Kaslin went to KubeCon North America In Chicago. She spoke to folks on the ground, asked them about their impressions of the conference, and collected a bunch of cool responses.</p> <p dir="ltr">Do you have something cool to share? Some questions? Let us know:</p> <p dir="ltr">- web: <a href= "https://kubernetespodcast.com">kubernetespodcast.com</a></p> <p dir="ltr">- mail: <a href= "mailto:kubernetespodcast@google.com">kubernetespodcast@google.com</a></p> <p dir="ltr">- twitter: <a href= "https://twitter.com/kubernetespod">@kubernetespod</a></p> <h2 dir="ltr">News of the week</h2> <p dir="ltr"><a href= "https://cloud.google.com/blog/products/identity-security/google-researchers-discover-reptar-a-new-cpu-vulnerability"> Google researchers discover \'Reptar,’ a new CPU vulnerability</a></p> <p dir="ltr"><a href= "https://lock.cmpxchg8b.com/reptar.html">Reptar by Tavis Ormandy</a></p> <p dir="ltr"><a href= "https://thenewstack.io/tim-hockin-kubernetes-needs-a-complexity-budget/"> Tim Hockin: Kubernetes Needs a Complexity Budget</a></p> <p dir="ltr"><a href= "https://www.theregister.com/2023/11/13/kubernetes_tim_hockin_on_ai/"> Kubernetes\' Tim Hockin on a decade of dominance and the future of AI in open source</a> </p> <p dir="ltr"><a href= "https://www.youtube.com/watch?v=WqeShpaztZY&list=PLj6h78yzYM2MYc0X1465RzF_7Cqf7bnqL&index=19"> Keynote: A Vision for Vision - Kubernetes in Its Second Decade - Tim Hockin</a></p> <p dir="ltr"><a href= "https://github.com/cncf/tag-security/blob/main/assessments/Open_and_Secure.pdf"> Open and Secure: A Manual for Practicing Thread Modeling to Assess and Fortify Open Source and Security</a></p> <p dir="ltr"><a href= "https://www.cncf.io/blog/2023/11/22/announcing-our-latest-book-release-a-comprehensive-security-guide-to-assess-and-fortify-open-source-security/"> Announcing our latest book release: a comprehensive security guide to assess and fortify open source security</a></p> <h2 dir="ltr">Links from the interview</h2> <p dir="ltr"><a href= "https://github.com/cncf/llm-starter-pack">CNCF LLM Starter Pack</a></p> <p dir="ltr"><a href= "https://www.crossplane.io/">Crossplane</a></p> <p dir="ltr"><a href="https://webassembly.org/">Web Assembly</a></p> <p dir="ltr"><a href="https://gateway-api.sigs.k8s.io/">Intro to Kubernetes Gateway API</a></p> <h2 dir="ltr">Links from the post-interview chat</h2> <p dir="ltr"><a href= "https://twitter.com/birthmarkbart/status/1389960932395294725?s=20">  SIG ContribEx Comms Team Rap by Bart Farrell</a></p>',
-      'publishedAt': 1701819420,
-    }, {
-      'id':
-        'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef-4c7c98567f8fbe488d28b0cd032f7a72',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef',
-      'title': 'Kubernetes Pen Testing, with Jesper Larsson',
-      'link':
-        'http://sites.libsyn.com/419861/kubernetes-pen-testing-with-jesper-larsson',
-      'media':
-        'https://traffic.libsyn.com/secure/e780d51f-f115-44a6-8252-aed9216bb521/KPOD213.mp3?dest-id=3486674',
-      'description':
-        '<p dir="ltr">Jesper Larsson is a Freelance PenTester. Jesper works with a hacker community called Cure53. Co-organizes SecurityFest in Gothenburg, Sweden. Hosts Säkerhetspodcasten or The Security Podcast. Jesper is also a Star on Hackad, a Swedish TV Series about hacking.</p> <p><strong> </strong></p> <p dir="ltr">Do you have something cool to share? Some questions? Let us know:</p> <p dir="ltr">- web: <a href= "https://kubernetespodcast.com">kubernetespodcast.com</a></p> <p dir="ltr">- mail: <a href= "mailto:kubernetespodcast@google.com">kubernetespodcast@google.com</a></p> <p dir="ltr">- twitter: <a href= "https://twitter.com/kubernetespod">@kubernetespod</a></p> <p><strong> </strong></p> <h2 dir="ltr">News of the week</h2> <p dir="ltr"><a href= "https://kubernetes.io/blog/2023/11/16/kubernetes-1-29-upcoming-changes/"> Kubernetes Removals, Deprecations, and Major Changes in Kubernetes 1.29</a></p> <p dir="ltr"><a href= "https://kubernetes.io/blog/2023/11/07/introducing-sig-etcd/">Introducing SIG etcd</a></p> <p dir="ltr"><a href= "https://kubernetespodcast.com/episode/211-etcd/">etcd, with Marek Siarkowicz and Wenjia Zhang</a> (The Kubernetes Podcast from Google)</p> <p dir="ltr"><a href= "https://cloud.redhat.com/blog/webassembly-wasm-and-openshift-a-powerful-duo-for-modern-applications"> WebAssembly (WASM) and OpenShift: A Powerful Duo for Modern Applications</a></p> <p dir="ltr"><a href="https://events.linuxfoundation.org/">Linux Foundation Events</a></p> <p dir="ltr"><a href= "https://github.com/kubernetes/community/pull/7603">Pass the torch in ContribEx #7603</a></p> <h2 dir="ltr">Links from the interview</h2> <p dir="ltr"><a href="https://cure53.de/">Cure53 Hacker Community</a></p> <p dir="ltr"><a href= "https://sakerhetspodcasten.se/">Säkerhetspodcasten</a></p> <p dir="ltr"><a href= "https://www.imdb.com/title/tt15746988/">Hackad TV Show on IMDB</a></p> <p dir="ltr"><a href="https://securityfest.com/">SecurityFest Gothenburg</a></p> <p dir="ltr"><a href="https://falco.org/">Falco</a> by <a href= "https://sysdig.com/">Sysdig</a></p> <p dir="ltr"><a href="https://github.com/wolfi-dev">Wolfi</a> by <a href="https://www.chainguard.dev/">Chainguard</a></p> <p dir="ltr"><a href= "https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/"> The Untold Story of NotPetya, the Most Devastating Cyberattack in History</a></p> <h2 dir="ltr">Links from the post-interview chat</h2> <p dir="ltr"><a href= "https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/"> The Untold Story of NotPetya, the Most Devastating Cyberattack in History</a></p>',
-      'publishedAt': 1701217080,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef-b7986c0276dcd01cdce685b148530a99",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef",
+        title: "KubeCon NA 2023",
+        link: "http://sites.libsyn.com/419861/kubecon-na-2023",
+        media:
+          "https://traffic.libsyn.com/secure/e780d51f-f115-44a6-8252-aed9216bb521/KPOD214.mp3?dest-id=3486674",
+        description:
+          '<p dir="ltr">This episode Kaslin went to KubeCon North America In Chicago. She spoke to folks on the ground, asked them about their impressions of the conference, and collected a bunch of cool responses.</p> <p dir="ltr">Do you have something cool to share? Some questions? Let us know:</p> <p dir="ltr">- web: <a href= "https://kubernetespodcast.com">kubernetespodcast.com</a></p> <p dir="ltr">- mail: <a href= "mailto:kubernetespodcast@google.com">kubernetespodcast@google.com</a></p> <p dir="ltr">- twitter: <a href= "https://twitter.com/kubernetespod">@kubernetespod</a></p> <h2 dir="ltr">News of the week</h2> <p dir="ltr"><a href= "https://cloud.google.com/blog/products/identity-security/google-researchers-discover-reptar-a-new-cpu-vulnerability"> Google researchers discover \'Reptar,’ a new CPU vulnerability</a></p> <p dir="ltr"><a href= "https://lock.cmpxchg8b.com/reptar.html">Reptar by Tavis Ormandy</a></p> <p dir="ltr"><a href= "https://thenewstack.io/tim-hockin-kubernetes-needs-a-complexity-budget/"> Tim Hockin: Kubernetes Needs a Complexity Budget</a></p> <p dir="ltr"><a href= "https://www.theregister.com/2023/11/13/kubernetes_tim_hockin_on_ai/"> Kubernetes\' Tim Hockin on a decade of dominance and the future of AI in open source</a> </p> <p dir="ltr"><a href= "https://www.youtube.com/watch?v=WqeShpaztZY&list=PLj6h78yzYM2MYc0X1465RzF_7Cqf7bnqL&index=19"> Keynote: A Vision for Vision - Kubernetes in Its Second Decade - Tim Hockin</a></p> <p dir="ltr"><a href= "https://github.com/cncf/tag-security/blob/main/assessments/Open_and_Secure.pdf"> Open and Secure: A Manual for Practicing Thread Modeling to Assess and Fortify Open Source and Security</a></p> <p dir="ltr"><a href= "https://www.cncf.io/blog/2023/11/22/announcing-our-latest-book-release-a-comprehensive-security-guide-to-assess-and-fortify-open-source-security/"> Announcing our latest book release: a comprehensive security guide to assess and fortify open source security</a></p> <h2 dir="ltr">Links from the interview</h2> <p dir="ltr"><a href= "https://github.com/cncf/llm-starter-pack">CNCF LLM Starter Pack</a></p> <p dir="ltr"><a href= "https://www.crossplane.io/">Crossplane</a></p> <p dir="ltr"><a href="https://webassembly.org/">Web Assembly</a></p> <p dir="ltr"><a href="https://gateway-api.sigs.k8s.io/">Intro to Kubernetes Gateway API</a></p> <h2 dir="ltr">Links from the post-interview chat</h2> <p dir="ltr"><a href= "https://twitter.com/birthmarkbart/status/1389960932395294725?s=20">  SIG ContribEx Comms Team Rap by Bart Farrell</a></p>',
+        publishedAt: 1701819420,
+      },
+      {
+        id: "podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef-4c7c98567f8fbe488d28b0cd032f7a72",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef",
+        title: "Kubernetes Pen Testing, with Jesper Larsson",
+        link: "http://sites.libsyn.com/419861/kubernetes-pen-testing-with-jesper-larsson",
+        media:
+          "https://traffic.libsyn.com/secure/e780d51f-f115-44a6-8252-aed9216bb521/KPOD213.mp3?dest-id=3486674",
+        description:
+          '<p dir="ltr">Jesper Larsson is a Freelance PenTester. Jesper works with a hacker community called Cure53. Co-organizes SecurityFest in Gothenburg, Sweden. Hosts Säkerhetspodcasten or The Security Podcast. Jesper is also a Star on Hackad, a Swedish TV Series about hacking.</p> <p><strong> </strong></p> <p dir="ltr">Do you have something cool to share? Some questions? Let us know:</p> <p dir="ltr">- web: <a href= "https://kubernetespodcast.com">kubernetespodcast.com</a></p> <p dir="ltr">- mail: <a href= "mailto:kubernetespodcast@google.com">kubernetespodcast@google.com</a></p> <p dir="ltr">- twitter: <a href= "https://twitter.com/kubernetespod">@kubernetespod</a></p> <p><strong> </strong></p> <h2 dir="ltr">News of the week</h2> <p dir="ltr"><a href= "https://kubernetes.io/blog/2023/11/16/kubernetes-1-29-upcoming-changes/"> Kubernetes Removals, Deprecations, and Major Changes in Kubernetes 1.29</a></p> <p dir="ltr"><a href= "https://kubernetes.io/blog/2023/11/07/introducing-sig-etcd/">Introducing SIG etcd</a></p> <p dir="ltr"><a href= "https://kubernetespodcast.com/episode/211-etcd/">etcd, with Marek Siarkowicz and Wenjia Zhang</a> (The Kubernetes Podcast from Google)</p> <p dir="ltr"><a href= "https://cloud.redhat.com/blog/webassembly-wasm-and-openshift-a-powerful-duo-for-modern-applications"> WebAssembly (WASM) and OpenShift: A Powerful Duo for Modern Applications</a></p> <p dir="ltr"><a href="https://events.linuxfoundation.org/">Linux Foundation Events</a></p> <p dir="ltr"><a href= "https://github.com/kubernetes/community/pull/7603">Pass the torch in ContribEx #7603</a></p> <h2 dir="ltr">Links from the interview</h2> <p dir="ltr"><a href="https://cure53.de/">Cure53 Hacker Community</a></p> <p dir="ltr"><a href= "https://sakerhetspodcasten.se/">Säkerhetspodcasten</a></p> <p dir="ltr"><a href= "https://www.imdb.com/title/tt15746988/">Hackad TV Show on IMDB</a></p> <p dir="ltr"><a href="https://securityfest.com/">SecurityFest Gothenburg</a></p> <p dir="ltr"><a href="https://falco.org/">Falco</a> by <a href= "https://sysdig.com/">Sysdig</a></p> <p dir="ltr"><a href="https://github.com/wolfi-dev">Wolfi</a> by <a href="https://www.chainguard.dev/">Chainguard</a></p> <p dir="ltr"><a href= "https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/"> The Untold Story of NotPetya, the Most Devastating Cyberattack in History</a></p> <h2 dir="ltr">Links from the post-interview chat</h2> <p dir="ltr"><a href= "https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/"> The Untold Story of NotPetya, the Most Devastating Cyberattack in History</a></p>',
+        publishedAt: 1701217080,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     uploadSourceIconSpy.restore();
@@ -181,8 +180,8 @@ Deno.test('getPodcastFeed - RSS', async () => {
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://kubernetespodcast.com/feeds/audio.xml',
-      { method: 'get' },
+      "https://kubernetespodcast.com/feeds/audio.xml",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
@@ -193,22 +192,21 @@ Deno.test('getPodcastFeed - RSS', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'podcast',
-        'title': 'Kubernetes Podcast from Google',
-        'options': {
-          'podcast': 'https://kubernetespodcast.com/feeds/audio.xml',
+        id: "podcast-myuser-mycolumn-9d151d96e51e542b848a39982f685eef",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "podcast",
+        title: "Kubernetes Podcast from Google",
+        options: {
+          podcast: "https://kubernetespodcast.com/feeds/audio.xml",
         },
-        'link': 'https://kubernetespodcast.com',
-        'icon':
-          'https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png',
+        link: "https://kubernetespodcast.com",
+        icon: "https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png",
       },
     ],
     returned: new Promise((resolve) => {
       resolve(
-        'https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png',
+        "https://static.libsyn.com/p/assets/7/2/d/d/72ddd143dc0d42c316c3140a3186d450/Kubernetes-Podcast-Logo_1400x1400.png",
       );
     }),
   });
@@ -375,10 +373,10 @@ const responsePodcastAppleRSS = `<?xml version="1.0" encoding="UTF-8"?>
          </channel>
 </rss>`;
 
-Deno.test('getPodcastFeed - Apple', async () => {
+Deno.test("getPodcastFeed - Apple", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responsePodcastApple, { status: 200 }));
@@ -391,11 +389,11 @@ Deno.test('getPodcastFeed - Apple', async () => {
 
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(
-          'https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357',
+          "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357",
         );
       }),
     ]),
@@ -410,51 +408,51 @@ Deno.test('getPodcastFeed - Apple', async () => {
         ...mockSource,
         options: {
           podcast:
-            'https://podcasts.apple.com/de/podcast/go-time-golang-software-engineering/id1120964487',
+            "https://podcasts.apple.com/de/podcast/go-time-golang-software-engineering/id1120964487",
         },
       },
       undefined,
     );
     assertEqualsSource(source, {
-      'id': 'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'podcast',
-      'title': 'Go Time: Golang, Software Engineering',
-      'options': { 'podcast': 'https://changelog.com/gotime/feed' },
-      'link': 'https://changelog.com/gotime',
-      'icon':
-        'https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357',
+      id: "podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "podcast",
+      title: "Go Time: Golang, Software Engineering",
+      options: { podcast: "https://changelog.com/gotime/feed" },
+      link: "https://changelog.com/gotime",
+      icon: "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357",
     });
-    assertEqualsItems(items, [{
-      'id':
-        'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163-04c1e4407a4e70983deb0950f6afc8b2',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163',
-      'title': 'Event-driven systems &architecture',
-      'link': 'https://changelog.com/gotime/297',
-      'media':
-        'https://op3.dev/e/https://cdn.changelog.com/uploads/gotime/297/go-time-297.mp3',
-      'description':
-        'Event-driven systems may not be the go-to solution for everyone because of the challenges they can add. While the system reacting to events published in other parts of the system seem elegant, some of the complexities they bring can be challenging.  However, they do offer durability, autonomy &flexibility. In this episode, we’ll define event-driven architecture, discuss the problems it solves, challenges it poses &potential solutions.',
-      'author': 'Changelog Media',
-      'publishedAt': 1699999500,
-    }, {
-      'id':
-        'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163-2eb33370a9f9245ca2b1fc4491983383',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163',
-      'title': 'Principles of simplicity',
-      'link': 'https://changelog.com/gotime/296',
-      'media':
-        'https://op3.dev/e/https://cdn.changelog.com/uploads/gotime/296/go-time-296.mp3',
-      'description':
-        'Rob Pike says, “Simplicity is the art of hiding complexity.” If that’s true, what is simplicity in the context of writing software in Go? Is it even something we should strive for? Can software be too simple? Ian &Kris discuss with return guest  sam boyer.',
-      'author': 'Changelog Media',
-      'publishedAt': 1699449300,
-    }]);
+    assertEqualsItems(items, [
+      {
+        id: "podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163-04c1e4407a4e70983deb0950f6afc8b2",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163",
+        title: "Event-driven systems &architecture",
+        link: "https://changelog.com/gotime/297",
+        media:
+          "https://op3.dev/e/https://cdn.changelog.com/uploads/gotime/297/go-time-297.mp3",
+        description:
+          "Event-driven systems may not be the go-to solution for everyone because of the challenges they can add. While the system reacting to events published in other parts of the system seem elegant, some of the complexities they bring can be challenging.  However, they do offer durability, autonomy &flexibility. In this episode, we’ll define event-driven architecture, discuss the problems it solves, challenges it poses &potential solutions.",
+        author: "Changelog Media",
+        publishedAt: 1699999500,
+      },
+      {
+        id: "podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163-2eb33370a9f9245ca2b1fc4491983383",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163",
+        title: "Principles of simplicity",
+        link: "https://changelog.com/gotime/296",
+        media:
+          "https://op3.dev/e/https://cdn.changelog.com/uploads/gotime/296/go-time-296.mp3",
+        description:
+          "Rob Pike says, “Simplicity is the art of hiding complexity.” If that’s true, what is simplicity in the context of writing software in Go? Is it even something we should strive for? Can software be too simple? Ian &Kris discuss with return guest  sam boyer.",
+        author: "Changelog Media",
+        publishedAt: 1699449300,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     uploadSourceIconSpy.restore();
@@ -462,8 +460,8 @@ Deno.test('getPodcastFeed - Apple', async () => {
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
     args: [
-      'https://itunes.apple.com/lookup?id=1120964487&entity=podcast',
-      { method: 'get' },
+      "https://itunes.apple.com/lookup?id=1120964487&entity=podcast",
+      { method: "get" },
       5000,
     ],
     returned: new Promise((resolve) => {
@@ -471,11 +469,7 @@ Deno.test('getPodcastFeed - Apple', async () => {
     }),
   });
   assertSpyCall(fetchWithTimeoutSpy, 1, {
-    args: [
-      'https://changelog.com/gotime/feed',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://changelog.com/gotime/feed", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responsePodcastAppleRSS, { status: 200 }));
     }),
@@ -484,20 +478,19 @@ Deno.test('getPodcastFeed - Apple', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'podcast',
-        'title': 'Go Time: Golang, Software Engineering',
-        'options': { 'podcast': 'https://changelog.com/gotime/feed' },
-        'link': 'https://changelog.com/gotime',
-        'icon':
-          'https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357',
+        id: "podcast-myuser-mycolumn-aad37b7b4ebb1f79286d7b9e24bb4163",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "podcast",
+        title: "Go Time: Golang, Software Engineering",
+        options: { podcast: "https://changelog.com/gotime/feed" },
+        link: "https://changelog.com/gotime",
+        icon: "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357",
       },
     ],
     returned: new Promise((resolve) => {
       resolve(
-        'https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357',
+        "https://cdn.changelog.com/uploads/covers/go-time-original.png?v=63725770357",
       );
     }),
   });

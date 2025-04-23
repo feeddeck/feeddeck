@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 /**
  * `isRedditUrl` checks if the provided `url` is a valid Reddit url. A url is
@@ -15,7 +15,7 @@ import { feedutils } from './utils/index.ts';
  */
 export const isRedditUrl = (url: string): boolean => {
   const parsedUrl = new URL(url);
-  return parsedUrl.hostname.endsWith('reddit.com');
+  return parsedUrl.hostname.endsWith("reddit.com");
 };
 
 export const getRedditFeed = async (
@@ -26,17 +26,16 @@ export const getRedditFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.reddit) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   if (
-    source.options.reddit.startsWith('/r/') ||
-    source.options.reddit.startsWith('/u/')
+    source.options.reddit.startsWith("/r/") ||
+    source.options.reddit.startsWith("/u/")
   ) {
-    source.options.reddit =
-      `https://www.reddit.com${source.options.reddit}.rss`;
+    source.options.reddit = `https://www.reddit.com${source.options.reddit}.rss`;
   } else if (isRedditUrl(source.options.reddit)) {
-    if (!source.options.reddit.endsWith('.rss')) {
+    if (!source.options.reddit.endsWith(".rss")) {
       source.options.reddit = `${source.options.reddit}.rss`;
     }
   }
@@ -52,7 +51,7 @@ export const getRedditFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -60,14 +59,14 @@ export const getRedditFeed = async (
    * `youtube` url. Besides that we also set the source type to `youtube` and
    * set the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.reddit,
     );
   }
-  source.type = 'reddit';
+  source.type = "reddit";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -90,8 +89,8 @@ export const getRedditFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -140,12 +139,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -186,13 +187,13 @@ const generateItemId = async (
 const getDescription = (entry: FeedEntry): string | undefined => {
   if (entry.content?.value) {
     const content = unescape(entry.content.value);
-    return content.replaceAll('<table>', '').replaceAll('<tr>', '').replaceAll(
-      '<td>',
-      '',
-    ).replaceAll('</table>', '').replaceAll('</tr>', '').replaceAll(
-      '</td>',
-      '',
-    );
+    return content
+      .replaceAll("<table>", "")
+      .replaceAll("<tr>", "")
+      .replaceAll("<td>", "")
+      .replaceAll("</table>", "")
+      .replaceAll("</tr>", "")
+      .replaceAll("</td>", "");
   }
 
   return undefined;
@@ -206,10 +207,12 @@ const getDescription = (entry: FeedEntry): string | undefined => {
 const getMedia = (entry: FeedEntry): string | undefined => {
   if (
     // deno-lint-ignore no-explicit-any
-    (entry as any)['media:thumbnail'] && (entry as any)['media:thumbnail'].url
+    (entry as any)["media:thumbnail"] &&
+    // deno-lint-ignore no-explicit-any
+    (entry as any)["media:thumbnail"].url
   ) {
     // deno-lint-ignore no-explicit-any
-    return (entry as any)['media:thumbnail'].url;
+    return (entry as any)["media:thumbnail"].url;
   }
 
   return undefined;

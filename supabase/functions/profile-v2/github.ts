@@ -1,8 +1,8 @@
-import { SupabaseClient, User } from '@supabase/supabase-js';
+import { SupabaseClient, User } from "jsr:@supabase/supabase-js@2";
 
-import { corsHeaders } from '../_shared/utils/cors.ts';
-import { log } from '../_shared/utils/log.ts';
-import { encrypt } from '../_shared/utils/encrypt.ts';
+import { corsHeaders } from "../_shared/utils/cors.ts";
+import { log } from "../_shared/utils/log.ts";
+import { encrypt } from "../_shared/utils/encrypt.ts";
 
 /**
  * `githubAddAccount` adds a new GitHub account to the users profile. A user
@@ -15,46 +15,41 @@ export const githubAddAccount = async (
   data: { token?: string } | null,
 ): Promise<Response> => {
   if (!data || !data.token) {
-    return new Response(JSON.stringify({ error: 'Bad Request' }), {
+    return new Response(JSON.stringify({ error: "Bad Request" }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json; charset=utf-8',
+        "Content-Type": "application/json; charset=utf-8",
       },
       status: 400,
     });
   }
 
-  const { error: updateError } = await supabaseClient.from(
-    'profiles',
-  ).update({
-    'accountGithub': { token: await encrypt(data.token) },
-  }).eq('id', user.id);
+  const { error: updateError } = await supabaseClient
+    .from("profiles")
+    .update({
+      accountGithub: { token: await encrypt(data.token) },
+    })
+    .eq("id", user.id);
   if (updateError) {
-    log('error', 'Failed to update user profile', {
-      'user': user,
-      'error': updateError,
+    log("error", "Failed to update user profile", {
+      user: user,
+      error: updateError,
     });
-    return new Response(
-      JSON.stringify({ error: 'Failed to update profile' }),
-      {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        status: 500,
-      },
-    );
-  }
-  return new Response(
-    undefined,
-    {
+    return new Response(JSON.stringify({ error: "Failed to update profile" }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json; charset=utf-8',
+        "Content-Type": "application/json; charset=utf-8",
       },
-      status: 200,
+      status: 500,
+    });
+  }
+  return new Response(undefined, {
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json; charset=utf-8",
     },
-  );
+    status: 200,
+  });
 };
 
 /**
@@ -65,35 +60,30 @@ export const githubDeleteAccount = async (
   supabaseClient: SupabaseClient,
   user: User,
 ): Promise<Response> => {
-  const { error: updateError } = await supabaseClient.from(
-    'profiles',
-  ).update({
-    'accountGithub': null,
-  }).eq('id', user.id);
+  const { error: updateError } = await supabaseClient
+    .from("profiles")
+    .update({
+      accountGithub: null,
+    })
+    .eq("id", user.id);
   if (updateError) {
-    log('error', 'Failed to update user profile', {
-      'user': user,
-      'error': updateError,
+    log("error", "Failed to update user profile", {
+      user: user,
+      error: updateError,
     });
-    return new Response(
-      JSON.stringify({ error: 'Failed to update profile' }),
-      {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        status: 500,
-      },
-    );
-  }
-  return new Response(
-    undefined,
-    {
+    return new Response(JSON.stringify({ error: "Failed to update profile" }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json; charset=utf-8',
+        "Content-Type": "application/json; charset=utf-8",
       },
-      status: 200,
+      status: 500,
+    });
+  }
+  return new Response(undefined, {
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json; charset=utf-8",
     },
-  );
+    status: 200,
+  });
 };

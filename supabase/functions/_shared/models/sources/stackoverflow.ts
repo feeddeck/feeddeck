@@ -1,10 +1,10 @@
-export type TSourceStackOverflowType = 'url' | 'tag';
+export type TSourceStackOverflowType = "url" | "tag";
 
 export type TSourceStackOverflowSort =
-  | 'newest'
-  | 'active'
-  | 'featured'
-  | 'votes';
+  | "newest"
+  | "active"
+  | "featured"
+  | "votes";
 
 export interface ISourceOptionsStackOverflow {
   type?: TSourceStackOverflowType;

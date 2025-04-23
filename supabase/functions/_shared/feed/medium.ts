@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { Favicon, feedutils } from './utils/index.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { Favicon, feedutils } from "./utils/index.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
 
 /**
  * `faviconFilter` is a filter function for the favicons. It filters out all the
@@ -15,7 +15,7 @@ import { utils } from '../utils/index.ts';
  */
 export const faviconFilter = (favicons: Favicon[]): Favicon[] => {
   return favicons.filter((favicon) => {
-    return favicon.url.startsWith('https://cdn-images');
+    return favicon.url.startsWith("https://cdn-images");
   });
 };
 
@@ -26,31 +26,33 @@ export const faviconFilter = (favicons: Favicon[]): Favicon[] => {
  */
 export const parseMediumOption = (input?: string): string => {
   if (input) {
-    if (input.length > 1 && input[0] === '#') {
+    if (input.length > 1 && input[0] === "#") {
       return `https://medium.com/feed/tag/${input.slice(1)}`;
-    } else if (input.length > 1 && input[0] === '@') {
+    } else if (input.length > 1 && input[0] === "@") {
       return `https://medium.com/feed/${input}`;
     } else {
       const parsedUrl = new URL(input);
-      const parsedHostname = parsedUrl.hostname.split('.');
+      const parsedHostname = parsedUrl.hostname.split(".");
       if (
-        parsedHostname.length === 2 && parsedHostname[0] === 'medium' &&
-        parsedHostname[1] === 'com'
+        parsedHostname.length === 2 &&
+        parsedHostname[0] === "medium" &&
+        parsedHostname[1] === "com"
       ) {
-        return `https://medium.com/feed/${
-          input.replace('https://medium.com/', '').replace('feed/', '')
-        }`;
+        return `https://medium.com/feed/${input
+          .replace("https://medium.com/", "")
+          .replace("feed/", "")}`;
       } else if (
-        parsedHostname.length === 3 && parsedHostname[1] === 'medium' &&
-        parsedHostname[2] === 'com'
+        parsedHostname.length === 3 &&
+        parsedHostname[1] === "medium" &&
+        parsedHostname[2] === "com"
       ) {
         return `https://${parsedHostname[0]}.medium.com/feed`;
       } else {
-        throw new feedutils.FeedValidationError('Invalid source options');
+        throw new feedutils.FeedValidationError("Invalid source options");
       }
     }
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 };
 
@@ -60,7 +62,7 @@ export const parseMediumOption = (input?: string): string => {
  */
 export const isMediumUrl = (url: string): boolean => {
   const parsedUrl = new URL(url);
-  return parsedUrl.hostname.endsWith('medium.com');
+  return parsedUrl.hostname.endsWith("medium.com");
 };
 
 export const getMediumFeed = async (
@@ -83,7 +85,7 @@ export const getMediumFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -91,10 +93,10 @@ export const getMediumFeed = async (
    * feed for the source. We check if the source has an id because we only want
    * to try to get the favicon when the source is created the first time.
    */
-  if (source.id === '' && feed.links.length > 0) {
+  if (source.id === "" && feed.links.length > 0) {
     const favicon = await feedutils.getFavicon(feed.links[0], faviconFilter);
 
-    if (favicon && favicon.url.startsWith('https://')) {
+    if (favicon && favicon.url.startsWith("https://")) {
       source.icon = favicon.url;
       source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
     }
@@ -105,14 +107,14 @@ export const getMediumFeed = async (
    * `medium` url. Besides that we also set the source type to `medium` and set
    * the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       parsedMediumOption,
     );
   }
-  source.type = 'medium';
+  source.type = "medium";
   source.title = feed.title.value;
   source.options = { medium: parsedMediumOption };
   if (feed.links.length > 0) {
@@ -136,8 +138,8 @@ export const getMediumFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -157,7 +159,7 @@ export const getMediumFeed = async (
       link: entry.links[0].href!,
       media: getMedia(entry),
       description: getItemDescription(entry),
-      author: entry['dc:creator']?.join(', '),
+      author: entry["dc:creator"]?.join(", "),
       publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
   }
@@ -187,12 +189,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -202,23 +206,23 @@ const skipEntry = (
    * more of these words we consider the entry as spam.
    */
   const filterWords = [
-    'cash',
-    'loan',
-    'customer',
-    'care',
-    'helpline',
-    'number',
-    'patti',
-    'toll',
-    'free',
-    'paisa',
-    'call',
-    'kup',
-    'niewykrywalnych',
-    'fałszywych',
-    'pieniędzy',
-    'whatsapp',
-    'money',
+    "cash",
+    "loan",
+    "customer",
+    "care",
+    "helpline",
+    "number",
+    "patti",
+    "toll",
+    "free",
+    "paisa",
+    "call",
+    "kup",
+    "niewykrywalnych",
+    "fałszywych",
+    "pieniędzy",
+    "whatsapp",
+    "money",
   ];
   const title = entry.title.value.toLowerCase();
   let score = 0;
@@ -287,7 +291,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
       unescape(entry.content.value),
     );
-    if (matches && matches.length == 2 && matches[1].startsWith('https://')) {
+    if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
       return matches[1];
     }
   }
@@ -296,7 +300,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
       unescape(entry.description.value),
     );
-    if (matches && matches.length == 2 && matches[1].startsWith('https://')) {
+    if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
       return matches[1];
     }
   }

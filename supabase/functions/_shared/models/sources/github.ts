@@ -1,11 +1,11 @@
 export type TSourceGithubType =
-  | 'notifications'
-  | 'repositorynotifications'
-  | 'searchissuesandpullrequests'
-  | 'useractivities'
-  | 'repositoryactivities'
-  | 'organizationactivitiespublic'
-  | 'organizationactivitiesprivate';
+  | "notifications"
+  | "repositorynotifications"
+  | "searchissuesandpullrequests"
+  | "useractivities"
+  | "repositoryactivities"
+  | "organizationactivitiespublic"
+  | "organizationactivitiesprivate";
 
 export interface ISourceOptionsGithub {
   type?: TSourceGithubType;

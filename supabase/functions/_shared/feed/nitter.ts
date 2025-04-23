@@ -1,17 +1,17 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
 import {
   FEEDDECK_SOURCE_NITTER_BASIC_AUTH,
   FEEDDECK_SOURCE_NITTER_INSTANCE,
-} from '../utils/constants.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+} from "../utils/constants.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 export const getNitterFeed = async (
   supabaseClient: SupabaseClient,
@@ -21,7 +21,7 @@ export const getNitterFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.nitter || source.options.nitter.length === 0) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   const nitterOptions = parseNitterOptions(source.options.nitter);
@@ -34,15 +34,17 @@ export const getNitterFeed = async (
     nitterOptions.feedUrl,
     source,
     feedData,
-    nitterOptions.isCustomInstance ? undefined : {
-      headers: {
-        'Authorization': `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
-      },
-    },
+    nitterOptions.isCustomInstance
+      ? undefined
+      : {
+          headers: {
+            Authorization: `Basic ${FEEDDECK_SOURCE_NITTER_BASIC_AUTH}`,
+          },
+        },
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -52,14 +54,14 @@ export const getNitterFeed = async (
    * title of the feed as the title for the source, instead we are using the
    * user input as title.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.nitter,
     );
   }
-  source.type = 'nitter';
+  source.type = "nitter";
   source.title = nitterOptions.sourceTitle;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -91,8 +93,8 @@ export const getNitterFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -119,7 +121,7 @@ export const getNitterFeed = async (
       description: entry.description?.value
         ? unescape(entry.description.value)
         : undefined,
-      author: entry['dc:creator']?.join(', '),
+      author: entry["dc:creator"]?.join(", "),
       publishedAt: Math.floor(entry.published!.getTime() / 1000),
     });
   }
@@ -148,12 +150,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -177,16 +181,14 @@ export const parseNitterOptions = (
   isUsername: boolean;
   isCustomInstance: boolean;
 } => {
-  if (options.startsWith('http://') || options.startsWith('https://')) {
-    if (options.endsWith('/rss')) {
+  if (options.startsWith("http://") || options.startsWith("https://")) {
+    if (options.endsWith("/rss")) {
       return {
         feedUrl: options,
-        sourceTitle: `@${
-          options.slice(
-            options.replace('/rss', '').lastIndexOf('/') + 1,
-            options.replace('/rss', '').length,
-          )
-        }`,
+        sourceTitle: `@${options.slice(
+          options.replace("/rss", "").lastIndexOf("/") + 1,
+          options.replace("/rss", "").length,
+        )}`,
         isUsername: true,
         isCustomInstance: true,
       };
@@ -195,13 +197,13 @@ export const parseNitterOptions = (
     const url = new URL(options);
     return {
       feedUrl: options,
-      sourceTitle: url.searchParams.get('q') || options,
+      sourceTitle: url.searchParams.get("q") || options,
       isUsername: false,
       isCustomInstance: true,
     };
   }
 
-  if (options[0] === '@') {
+  if (options[0] === "@") {
     return {
       feedUrl: `${FEEDDECK_SOURCE_NITTER_INSTANCE}/${options.slice(1)}/rss`,
       sourceTitle: options,
@@ -211,9 +213,9 @@ export const parseNitterOptions = (
   }
 
   return {
-    feedUrl: `${FEEDDECK_SOURCE_NITTER_INSTANCE}/search/rss?f=tweets&q=${
-      encodeURIComponent(options)
-    }`,
+    feedUrl: `${FEEDDECK_SOURCE_NITTER_INSTANCE}/search/rss?f=tweets&q=${encodeURIComponent(
+      options,
+    )}`,
     sourceTitle: options,
     isUsername: false,
     isCustomInstance: false,
@@ -258,12 +260,10 @@ const getMedia = (entry: FeedEntry): string[] | undefined => {
 
     do {
       matches = re.exec(unescape(entry.description.value));
-      if (
-        matches && matches.length == 2
-      ) {
-        if (matches[1].startsWith('http://')) {
-          images.push(matches[1].replace('http://', 'https://'));
-        } else if (matches[1].startsWith('https://')) {
+      if (matches && matches.length == 2) {
+        if (matches[1].startsWith("http://")) {
+          images.push(matches[1].replace("http://", "https://"));
+        } else if (matches[1].startsWith("https://")) {
           images.push(matches[1]);
         }
       }

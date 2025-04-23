@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { feedutils } from './utils/index.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { feedutils } from "./utils/index.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
 
 /**
  * `isBoard` checks if the provided `board` is a valid 4chan board.
@@ -16,82 +16,82 @@ import { utils } from '../utils/index.ts';
  */
 const isBoard = (board: string): boolean => {
   const boards = [
-    'a',
-    'c',
-    'w',
-    'm',
-    'cgl',
-    'cm',
-    'f',
-    'n',
-    'jp',
-    'vt',
-    'v',
-    'vg',
-    'vm',
-    'vmg',
-    'vp',
-    'vr',
-    'vrpg',
-    'vst',
-    'co',
-    'g',
-    'tv',
-    'k',
-    'o',
-    'an',
-    'tg',
-    'sp',
-    'xs',
-    'pw',
-    'sci',
-    'his',
-    'int',
-    'out',
-    'toy',
-    'i',
-    'po',
-    'p',
-    'ck',
-    'ic',
-    'wg',
-    'lit',
-    'mu',
-    'fa',
-    '3',
-    'gd',
-    'diy',
-    'wsg',
-    'qst',
-    'biz',
-    'trv',
-    'fit',
-    'x',
-    'adv',
-    'lgbt',
-    'mlp',
-    'news',
-    'wsr',
-    'vip',
-    'b',
-    'r9k',
-    'pol',
-    'bant',
-    'soc',
-    's4s',
-    's',
-    'hc',
-    'hm',
-    'h',
-    'e',
-    'u',
-    'd',
-    'y',
-    't',
-    'hr',
-    'gif',
-    'aco',
-    'r',
+    "a",
+    "c",
+    "w",
+    "m",
+    "cgl",
+    "cm",
+    "f",
+    "n",
+    "jp",
+    "vt",
+    "v",
+    "vg",
+    "vm",
+    "vmg",
+    "vp",
+    "vr",
+    "vrpg",
+    "vst",
+    "co",
+    "g",
+    "tv",
+    "k",
+    "o",
+    "an",
+    "tg",
+    "sp",
+    "xs",
+    "pw",
+    "sci",
+    "his",
+    "int",
+    "out",
+    "toy",
+    "i",
+    "po",
+    "p",
+    "ck",
+    "ic",
+    "wg",
+    "lit",
+    "mu",
+    "fa",
+    "3",
+    "gd",
+    "diy",
+    "wsg",
+    "qst",
+    "biz",
+    "trv",
+    "fit",
+    "x",
+    "adv",
+    "lgbt",
+    "mlp",
+    "news",
+    "wsr",
+    "vip",
+    "b",
+    "r9k",
+    "pol",
+    "bant",
+    "soc",
+    "s4s",
+    "s",
+    "hc",
+    "hm",
+    "h",
+    "e",
+    "u",
+    "d",
+    "y",
+    "t",
+    "hr",
+    "gif",
+    "aco",
+    "r",
   ];
 
   return boards.includes(board);
@@ -102,7 +102,7 @@ const isBoard = (board: string): boolean => {
  * considered valid if it starts with `https://boards.4chan.org/`.
  */
 export const isFourChanUrl = (url: string): boolean => {
-  return url.startsWith('https://boards.4chan.org/');
+  return url.startsWith("https://boards.4chan.org/");
 };
 
 export const getFourChanFeed = async (
@@ -118,23 +118,22 @@ export const getFourChanFeed = async (
    * get the feed.
    */
   if (!source.options?.fourchan) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   if (
-    source.options.fourchan.startsWith('https://boards.4chan.org/') &&
-    source.options.fourchan.endsWith('/index.rss')
+    source.options.fourchan.startsWith("https://boards.4chan.org/") &&
+    source.options.fourchan.endsWith("/index.rss")
   ) {
     /**
      * Do nothing since the provided options are already an 4chan RSS feed.
      */
-  } else if (source.options.fourchan.startsWith('https://boards.4chan.org/')) {
+  } else if (source.options.fourchan.startsWith("https://boards.4chan.org/")) {
     source.options.fourchan = `${source.options.fourchan}index.rss`;
   } else if (isBoard(source.options.fourchan)) {
-    source.options.fourchan =
-      `https://boards.4chan.org/${source.options.fourchan}/index.rss`;
+    source.options.fourchan = `https://boards.4chan.org/${source.options.fourchan}/index.rss`;
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   const feed = await feedutils.getAndParseFeed(
@@ -148,7 +147,7 @@ export const getFourChanFeed = async (
    * error.
    */
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -157,14 +156,14 @@ export const getFourChanFeed = async (
    * user id, the column id and the link of the RSS feed. We also set the type
    * of the source to `rss` and the title to the title of the feed.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.fourchan,
     );
   }
-  source.type = 'fourchan';
+  source.type = "fourchan";
   source.title = feed.title.value;
 
   /**
@@ -192,7 +191,7 @@ export const getFourChanFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
+    let itemId = "";
     if (entry.id) {
       itemId = await generateItemId(source.id, entry.id);
     } else {
@@ -240,7 +239,8 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) ||
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
     !entry.published
   ) {
     return true;
@@ -248,7 +248,7 @@ const skipEntry = (
 
   if (
     entry.published &&
-    Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)
+    Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10
   ) {
     return true;
   }
@@ -303,9 +303,10 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       unescape(entry.description.value),
     );
     if (
-      matches && matches.length == 2 &&
-      (matches[1].startsWith('https://') || matches[1].startsWith('http://')) &&
-      !matches[1].endsWith('.svg')
+      matches &&
+      matches.length == 2 &&
+      (matches[1].startsWith("https://") || matches[1].startsWith("http://")) &&
+      !matches[1].endsWith(".svg")
     ) {
       return matches[1];
     }
