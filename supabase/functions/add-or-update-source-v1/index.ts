@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/utils/cors.ts";
 import { getFeed } from "../_shared/feed/feed.ts";

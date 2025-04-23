@@ -245,14 +245,14 @@ docker run ghcr.io/feeddeck/feeddeck:dev tools get-feed '{"type": "reddit", "opt
 To run the tests for our code, the following command can be used:
 
 ```sh
-deno test --allow-env --import-map=supabase/functions/import_map.json supabase/functions
+deno test --allow-env supabase/functions
 ```
 
 To check the test coverage the `--coverage` flag can be added to the command and
 an HTML report can be generated:
 
 ```sh
-deno test --allow-env --import-map=supabase/functions/import_map.json supabase/functions --coverage=coverage_deno
+deno test --allow-env supabase/functions --coverage=coverage_deno
 
 # To generate the HTML report lcov is required, which can be installed via Homebrew:
 brew install lcov
@@ -283,17 +283,17 @@ supabase secrets set --env-file supabase/.env
 supabase secrets list
 
 # Deploy all functions
-supabase functions deploy add-or-update-source-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy add-source-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy delete-user-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy generate-magic-link-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy profile-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy profile-v2 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy stripe-create-checkout-session-v1 --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
-supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID> --import-map supabase/functions/import_map.json
+supabase functions deploy add-or-update-source-v1 --project-ref <PROJECT-ID>
+supabase functions deploy add-source-v1 --project-ref <PROJECT-ID>
+supabase functions deploy delete-user-v1 --project-ref <PROJECT-ID>
+supabase functions deploy generate-magic-link-v1 --project-ref <PROJECT-ID>
+supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref <PROJECT-ID>
+supabase functions deploy profile-v1 --project-ref <PROJECT-ID>
+supabase functions deploy profile-v2 --project-ref <PROJECT-ID>
+supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID>
+supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref <PROJECT-ID>
+supabase functions deploy stripe-create-checkout-session-v1 --project-ref <PROJECT-ID>
+supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref <PROJECT-ID>
 ```
 
 Now we have to do some manual steps to finish the setup of our Supabase project:

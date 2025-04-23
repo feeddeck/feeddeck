@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 /**
  * `instances` contains a list of known Lemmy instances. This list is used to
@@ -15,94 +15,94 @@ import { feedutils } from './utils/index.ts';
  * is based on the list of instances from https://join-lemmy.org/instances.
  */
 const instances = [
-  'lemmy.world',
-  'lemm.ee',
-  'programming.dev',
-  'sh.itjust.works',
-  'hexbear.net',
-  'feddit.de',
-  'lemmy.ca',
-  'beehaw.org',
-  'lemmy.dbzer0.com',
-  'lemmy.blahaj.zone',
-  'discuss.tchncs.de',
-  'lemmygrad.ml',
-  'sopuli.xyz',
-  'aussie.zone',
-  'lemmy.one',
-  'feddit.nl',
-  'feddit.uk',
-  'lemmy.zip',
-  'midwest.social',
-  'infosec.pub',
-  'jlai.lu',
-  'slrpnk.net',
-  'startrek.website',
-  'feddit.it',
-  'pawb.social',
-  'ttrpg.network',
-  'lemmings.world',
-  'lemmy.eco.br',
-  'mander.xyz',
-  'lemmy.today',
-  'lemdro.id',
-  'lemmy.nz',
-  'monero.town',
-  'feddit.dk',
-  'szmer.info',
-  'feddit.ch',
-  'yiffit.net',
-  'iusearchlinux.fyi',
-  'lemmus.org',
-  'lemmy.whynotdrs.org',
-  'ani.social',
-  'awful.systems',
-  'monyet.cc',
-  'feddit.cl',
-  'feddit.nu',
-  'mujico.org',
-  'lemmy.wtf',
-  'leminal.space',
-  'thelemmy.club',
-  'literature.cafe',
-  'fanaticus.social',
-  'r.nf',
-  'dormi.zone',
-  'pornlemmy.com',
-  'lemmy.cafe',
-  'lemmy.studio',
-  'lemmy.myserv.one',
-  'lemmy.kde.social',
-  'bookwormstory.social',
-  'sub.wetshaving.social',
-  'endlesstalk.org',
-  'lemmy.my.id',
-  'yall.theatl.social',
-  'toast.ooo',
-  'links.hackliberty.org',
-  'eviltoast.org',
-  'futurology.today',
-  'dmv.social',
-  'lemmy.fmhy.net',
-  'eslemmy.es',
-  'suppo.fi',
-  'lemmy.frozeninferno.xyz',
-  'lemmyf.uk',
-  'mtgzone.com',
-  'linux.community',
-  'lemmy.pt',
-  'lemmy.radio',
-  'feddit.ro',
-  'kyberpunk.social',
-  'alien.top',
-  'sffa.community',
-  'lemmy.tf',
-  'blendit.bsd.cafe',
-  'lemmy.cat',
-  'rblind.com',
-  'bbs.9tail.net',
-  'communick.news',
-  'talk.macstack.net',
+  "lemmy.world",
+  "lemm.ee",
+  "programming.dev",
+  "sh.itjust.works",
+  "hexbear.net",
+  "feddit.de",
+  "lemmy.ca",
+  "beehaw.org",
+  "lemmy.dbzer0.com",
+  "lemmy.blahaj.zone",
+  "discuss.tchncs.de",
+  "lemmygrad.ml",
+  "sopuli.xyz",
+  "aussie.zone",
+  "lemmy.one",
+  "feddit.nl",
+  "feddit.uk",
+  "lemmy.zip",
+  "midwest.social",
+  "infosec.pub",
+  "jlai.lu",
+  "slrpnk.net",
+  "startrek.website",
+  "feddit.it",
+  "pawb.social",
+  "ttrpg.network",
+  "lemmings.world",
+  "lemmy.eco.br",
+  "mander.xyz",
+  "lemmy.today",
+  "lemdro.id",
+  "lemmy.nz",
+  "monero.town",
+  "feddit.dk",
+  "szmer.info",
+  "feddit.ch",
+  "yiffit.net",
+  "iusearchlinux.fyi",
+  "lemmus.org",
+  "lemmy.whynotdrs.org",
+  "ani.social",
+  "awful.systems",
+  "monyet.cc",
+  "feddit.cl",
+  "feddit.nu",
+  "mujico.org",
+  "lemmy.wtf",
+  "leminal.space",
+  "thelemmy.club",
+  "literature.cafe",
+  "fanaticus.social",
+  "r.nf",
+  "dormi.zone",
+  "pornlemmy.com",
+  "lemmy.cafe",
+  "lemmy.studio",
+  "lemmy.myserv.one",
+  "lemmy.kde.social",
+  "bookwormstory.social",
+  "sub.wetshaving.social",
+  "endlesstalk.org",
+  "lemmy.my.id",
+  "yall.theatl.social",
+  "toast.ooo",
+  "links.hackliberty.org",
+  "eviltoast.org",
+  "futurology.today",
+  "dmv.social",
+  "lemmy.fmhy.net",
+  "eslemmy.es",
+  "suppo.fi",
+  "lemmy.frozeninferno.xyz",
+  "lemmyf.uk",
+  "mtgzone.com",
+  "linux.community",
+  "lemmy.pt",
+  "lemmy.radio",
+  "feddit.ro",
+  "kyberpunk.social",
+  "alien.top",
+  "sffa.community",
+  "lemmy.tf",
+  "blendit.bsd.cafe",
+  "lemmy.cat",
+  "rblind.com",
+  "bbs.9tail.net",
+  "communick.news",
+  "talk.macstack.net",
 ];
 
 /**
@@ -122,26 +122,26 @@ export const getLemmyFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.lemmy) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   const parsedUrl = new URL(source.options.lemmy);
   if (
-    parsedUrl.pathname.startsWith('/feeds/') &&
-    parsedUrl.pathname.endsWith('.xml')
+    parsedUrl.pathname.startsWith("/feeds/") &&
+    parsedUrl.pathname.endsWith(".xml")
   ) {
     source.options.lemmy = `${parsedUrl.origin}${parsedUrl.pathname}?sort=New`;
   } else if (
-    parsedUrl.pathname.startsWith('/c/') || parsedUrl.pathname.startsWith('/u/')
+    parsedUrl.pathname.startsWith("/c/") ||
+    parsedUrl.pathname.startsWith("/u/")
   ) {
-    source.options.lemmy =
-      `${parsedUrl.origin}/feeds${parsedUrl.pathname}.xml?sort=New`;
-  } else if (parsedUrl.pathname === '/feeds/all.xml') {
+    source.options.lemmy = `${parsedUrl.origin}/feeds${parsedUrl.pathname}.xml?sort=New`;
+  } else if (parsedUrl.pathname === "/feeds/all.xml") {
     source.options.lemmy = `${parsedUrl.origin}/feeds/all.xml?sort=New`;
-  } else if (parsedUrl.pathname === '' || parsedUrl.pathname === '/') {
+  } else if (parsedUrl.pathname === "" || parsedUrl.pathname === "/") {
     source.options.lemmy = `${parsedUrl.origin}/feeds/all.xml?sort=New`;
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   /**
@@ -155,7 +155,7 @@ export const getLemmyFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -163,14 +163,14 @@ export const getLemmyFeed = async (
    * `lemmy` url. Besides that we also set the source type to `lemmy` and
    * set the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.lemmy,
     );
   }
-  source.type = 'lemmy';
+  source.type = "lemmy";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -234,13 +234,16 @@ const skipEntry = (
   }
 
   if (
-    !entry.id || !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    !entry.id ||
+    !entry.title?.value ||
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -297,25 +300,25 @@ const getMedia = (entry: FeedEntry): string | undefined => {
       /**
        * Images
        */
-      parsedUrl.pathname.endsWith('.jpg') ||
-      parsedUrl.pathname.endsWith('.jpeg') ||
-      parsedUrl.pathname.endsWith('.png') ||
-      parsedUrl.pathname.endsWith('.gif') ||
+      parsedUrl.pathname.endsWith(".jpg") ||
+      parsedUrl.pathname.endsWith(".jpeg") ||
+      parsedUrl.pathname.endsWith(".png") ||
+      parsedUrl.pathname.endsWith(".gif") ||
       /**
        * Videos
        */
-      parsedUrl.pathname.endsWith('.mp4') ||
+      parsedUrl.pathname.endsWith(".mp4") ||
       /**
        * YouTube
        */
-      entry.links[0].href.startsWith('https://youtu.be/') ||
-      entry.links[0].href.startsWith('https://www.youtube.com/watch?') ||
-      entry.links[0].href.startsWith('https://m.youtube.com/watch?') ||
+      entry.links[0].href.startsWith("https://youtu.be/") ||
+      entry.links[0].href.startsWith("https://www.youtube.com/watch?") ||
+      entry.links[0].href.startsWith("https://m.youtube.com/watch?") ||
       /**
        * Piped
        */
-      entry.links[0].href.startsWith('https://piped.video/watch?v=') ||
-      entry.links[0].href.startsWith('https://piped.video/')
+      entry.links[0].href.startsWith("https://piped.video/watch?v=") ||
+      entry.links[0].href.startsWith("https://piped.video/")
     ) {
       return entry.links[0].href;
     }

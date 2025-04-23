@@ -1,4 +1,4 @@
-import { Feed, parseFeed } from "rss";
+import { Feed, parseFeed } from "https://deno.land/x/rss@1.0.0/mod.ts";
 
 import { utils } from "../../utils/index.ts";
 import { feedutils } from "./index.ts";

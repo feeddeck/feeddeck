@@ -1,14 +1,14 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { IItem } from '../models/item.ts';
-import { ISource } from '../models/source.ts';
-import { feedutils } from './utils/index.ts';
-import { IProfile } from '../models/profile.ts';
-import { FEEDDECK_SOURCE_YOUTUBE_API_KEY } from '../utils/constants.ts';
-import { utils } from '../utils/index.ts';
+import { IItem } from "../models/item.ts";
+import { ISource } from "../models/source.ts";
+import { feedutils } from "./utils/index.ts";
+import { IProfile } from "../models/profile.ts";
+import { FEEDDECK_SOURCE_YOUTUBE_API_KEY } from "../utils/constants.ts";
+import { utils } from "../utils/index.ts";
 
 /**
  * `isYoutubeUrl` checks if the provided `url` is a valid Youtube url. A url is
@@ -16,9 +16,11 @@ import { utils } from '../utils/index.ts';
  * `https://m.youtube.com/`.
  */
 export const isYoutubeUrl = (url: string): boolean => {
-  return url.startsWith('https://www.youtube.com/') ||
-    url.startsWith('https://m.youtube.com/') ||
-    url.startsWith('https://youtube.com/');
+  return (
+    url.startsWith("https://www.youtube.com/") ||
+    url.startsWith("https://m.youtube.com/") ||
+    url.startsWith("https://youtube.com/")
+  );
 };
 
 export const getYoutubeFeed = async (
@@ -29,30 +31,22 @@ export const getYoutubeFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.youtube) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
-  if (source.options.youtube.startsWith('https://www.youtube.com/channel/')) {
-    source.options.youtube =
-      `https://www.youtube.com/feeds/videos.xml?channel_id=${
-        source.options.youtube.split('?')[0].replace(
-          'https://www.youtube.com/channel/',
-          '',
-        )
-      }`;
+  if (source.options.youtube.startsWith("https://www.youtube.com/channel/")) {
+    source.options.youtube = `https://www.youtube.com/feeds/videos.xml?channel_id=${source.options.youtube
+      .split("?")[0]
+      .replace("https://www.youtube.com/channel/", "")}`;
   } else if (
-    source.options.youtube.startsWith('https://m.youtube.com/channel/')
+    source.options.youtube.startsWith("https://m.youtube.com/channel/")
   ) {
-    source.options.youtube =
-      `https://m.youtube.com/feeds/videos.xml?channel_id=${
-        source.options.youtube.split('?')[0].replace(
-          'https://m.youtube.com/channel/',
-          '',
-        )
-      }`;
+    source.options.youtube = `https://m.youtube.com/feeds/videos.xml?channel_id=${source.options.youtube
+      .split("?")[0]
+      .replace("https://m.youtube.com/channel/", "")}`;
   } else if (
     source.options.youtube.startsWith(
-      'https://www.youtube.com/feeds/videos.xml?channel_id=',
+      "https://www.youtube.com/feeds/videos.xml?channel_id=",
     )
   ) {
     /**
@@ -61,13 +55,12 @@ export const getYoutubeFeed = async (
   } else if (isYoutubeUrl(source.options.youtube)) {
     const channelId = await getChannelId(source.options.youtube);
     if (channelId) {
-      source.options.youtube =
-        `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+      source.options.youtube = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
     } else {
-      throw new feedutils.FeedValidationError('Invalid source options');
+      throw new feedutils.FeedValidationError("Invalid source options");
     }
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   /**
@@ -81,7 +74,7 @@ export const getYoutubeFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -92,8 +85,8 @@ export const getYoutubeFeed = async (
   if (!source.id && !source.icon) {
     source.icon = await getChannelIcon(
       source.options.youtube.replace(
-        'https://www.youtube.com/feeds/videos.xml?channel_id=',
-        '',
+        "https://www.youtube.com/feeds/videos.xml?channel_id=",
+        "",
       ),
     );
     source.icon = await feedutils.uploadSourceIcon(supabaseClient, source);
@@ -104,14 +97,14 @@ export const getYoutubeFeed = async (
    * `youtube` url. Besides that we also set the source type to `youtube` and
    * set the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.youtube,
     );
   }
-  source.type = 'youtube';
+  source.type = "youtube";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -134,8 +127,8 @@ export const getYoutubeFeed = async (
      * entry or if the entry does not have an id we use the link of the first
      * link of the entry.
      */
-    let itemId = '';
-    if (entry.id != '') {
+    let itemId = "";
+    if (entry.id != "") {
       itemId = await generateItemId(source.id, entry.id);
     } else if (entry.links.length > 0 && entry.links[0].href) {
       itemId = await generateItemId(source.id, entry.links[0].href);
@@ -186,12 +179,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -228,8 +223,8 @@ const generateItemId = async (
  * not contain a description we return `undefined`.
  */
 const getDescription = (entry: FeedEntry): string | undefined => {
-  if (entry['media:group'] && entry['media:group']['media:description']) {
-    return unescape(entry['media:group']['media:description'].value);
+  if (entry["media:group"] && entry["media:group"]["media:description"]) {
+    return unescape(entry["media:group"]["media:description"].value);
   }
 
   return undefined;
@@ -242,11 +237,12 @@ const getDescription = (entry: FeedEntry): string | undefined => {
  */
 const getMedia = (entry: FeedEntry): string | undefined => {
   if (
+    entry["media:group"] &&
     // deno-lint-ignore no-explicit-any
-    entry['media:group'] && ((entry['media:group'] as any)['media:thumbnail'])
+    (entry["media:group"] as any)["media:thumbnail"]
   ) {
     // deno-lint-ignore no-explicit-any
-    return (entry['media:group'] as any)['media:thumbnail'].url;
+    return (entry["media:group"] as any)["media:thumbnail"].url;
   }
 
   return undefined;
@@ -259,7 +255,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
  */
 const getChannelId = async (url: string): Promise<string | undefined> => {
   try {
-    const response = await utils.fetchWithTimeout(url, { method: 'get' }, 5000);
+    const response = await utils.fetchWithTimeout(url, { method: "get" }, 5000);
     const html = await response.text();
     const match = html.match(
       /"https:\/\/www.youtube.com\/feeds\/videos.xml\?channel_id\=(.*?)"/,
@@ -287,13 +283,15 @@ const getChannelIcon = async (
   try {
     const response = await utils.fetchWithTimeout(
       `https://www.googleapis.com/youtube/v3/channels?id=${channelId}&part=id%2Csnippet&maxResults=1&key=${FEEDDECK_SOURCE_YOUTUBE_API_KEY}`,
-      { method: 'get' },
+      { method: "get" },
       5000,
     );
     const json = await response.json();
 
     if (
-      json.items && json.items.length === 1 && json.items[0].snippet &&
+      json.items &&
+      json.items.length === 1 &&
+      json.items[0].snippet &&
       json.items[0].snippet.thumbnails &&
       json.items[0].snippet.thumbnails.default &&
       json.items[0].snippet.thumbnails.default.url

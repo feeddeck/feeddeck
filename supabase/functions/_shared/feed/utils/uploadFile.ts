@@ -1,4 +1,4 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
 import { ISource } from "../../models/source.ts";
 import { fetchWithTimeout } from "../../utils/fetchWithTimeout.ts";

@@ -1,8 +1,11 @@
-import { decodeHex, encodeHex } from 'std/hex';
+import {
+  decodeHex,
+  encodeHex,
+} from "https://deno.land/std@0.208.0/encoding/hex.ts";
 import {
   FEEDDECK_ENCRYPTION_IV,
   FEEDDECK_ENCRYPTION_KEY,
-} from './constants.ts';
+} from "./constants.ts";
 
 /**
  * The `generateKey` function is used to generate the values for the
@@ -10,15 +13,16 @@ import {
  * which are used to encryt / decrypt the users account data, before it is
  * stored in the database.
  */
-export const generateKey = async (): Promise<
-  { rawKey: string; iv: string }
-> => {
+export const generateKey = async (): Promise<{
+  rawKey: string;
+  iv: string;
+}> => {
   const key = await crypto.subtle.generateKey(
-    { name: 'AES-CBC', length: 128 },
+    { name: "AES-CBC", length: 128 },
     true,
-    ['encrypt', 'decrypt'],
+    ["encrypt", "decrypt"],
   );
-  const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', key));
+  const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", key));
   return {
     rawKey: encodeHex(rawKey),
     iv: encodeHex(crypto.getRandomValues(new Uint8Array(16))),
@@ -33,16 +37,16 @@ export const generateKey = async (): Promise<
 export const encrypt = async (plainText: string): Promise<string> => {
   const rawKey = decodeHex(FEEDDECK_ENCRYPTION_KEY);
   const key = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     rawKey.buffer,
-    'AES-CBC',
+    "AES-CBC",
     true,
-    ['encrypt', 'decrypt'],
+    ["encrypt", "decrypt"],
   );
   const iv = decodeHex(FEEDDECK_ENCRYPTION_IV);
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-CBC', iv },
+    { name: "AES-CBC", iv },
     key,
     new TextEncoder().encode(plainText),
   );
@@ -58,16 +62,16 @@ export const encrypt = async (plainText: string): Promise<string> => {
 export const decrypt = async (encryptedText: string): Promise<string> => {
   const rawKey = decodeHex(FEEDDECK_ENCRYPTION_KEY);
   const key = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     rawKey.buffer,
-    'AES-CBC',
+    "AES-CBC",
     true,
-    ['encrypt', 'decrypt'],
+    ["encrypt", "decrypt"],
   );
   const iv = decodeHex(FEEDDECK_ENCRYPTION_IV);
 
   const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-CBC', iv },
+    { name: "AES-CBC", iv },
     key,
     decodeHex(encryptedText),
   );

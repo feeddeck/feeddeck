@@ -1,7 +1,7 @@
-import { FEEDDECK_LOG_LEVEL } from './constants.ts';
+import { FEEDDECK_LOG_LEVEL } from "./constants.ts";
 
 export const log = (
-  level: 'debug' | 'info' | 'warning' | 'error',
+  level: "debug" | "info" | "warning" | "error",
   message: string,
   // deno-lint-ignore no-explicit-any
   fields?: Record<string, any>,
@@ -12,18 +12,18 @@ export const log = (
    * the console, otherwise it will be ignored.
    */
   switch (FEEDDECK_LOG_LEVEL) {
-    case 'info':
-      if (level === 'debug') {
+    case "info":
+      if (level === "debug") {
         return;
       }
       break;
-    case 'warning':
-      if (level === 'debug' || level === 'info') {
+    case "warning":
+      if (level === "debug" || level === "info") {
         return;
       }
       break;
-    case 'error':
-      if (level === 'error' || level === 'warning' || level === 'info') {
+    case "error":
+      if (level === "error" || level === "warning" || level === "info") {
         return;
       }
       break;
@@ -32,24 +32,24 @@ export const log = (
   }
 
   const output = JSON.stringify({
-    'time': new Date().toUTCString(),
-    'level': level,
-    'caller': caller(),
+    time: new Date().toUTCString(),
+    level: level,
+    caller: caller(),
     message: message,
     ...fields,
   });
 
   switch (level) {
-    case 'debug':
+    case "debug":
       console.debug(output);
       break;
-    case 'info':
+    case "info":
       console.info(output);
       break;
-    case 'warning':
+    case "warning":
       console.warn(output);
       break;
-    case 'error':
+    case "error":
       console.error(output);
       break;
     default:
@@ -72,7 +72,7 @@ const up = 3;
 // deno-lint-ignore no-explicit-any
 function caller(this: Bind | any, levelUp = up) {
   const err = new Error();
-  const stack = err.stack?.split('\n')[levelUp];
+  const stack = err.stack?.split("\n")[levelUp];
   if (stack) {
     return getFile.bind(this)(stack);
   }
@@ -80,13 +80,13 @@ function caller(this: Bind | any, levelUp = up) {
 
 // deno-lint-ignore no-explicit-any
 function getFile(this: Bind | any, stack: string) {
-  stack = stack.substring(stack.indexOf('at ') + 3);
-  if (!stack.startsWith('file://')) {
-    stack = stack.substring(stack.lastIndexOf('(') + 1);
+  stack = stack.substring(stack.indexOf("at ") + 3);
+  if (!stack.startsWith("file://")) {
+    stack = stack.substring(stack.lastIndexOf("(") + 1);
   }
-  const path = stack.split(':');
+  const path = stack.split(":");
   let file;
-  if (Deno.build.os == 'windows') {
+  if (Deno.build.os == "windows") {
     file = `${path[0]}:${path[1]}:${path[2]}:${path[3]}`;
   } else {
     file = `${path[0]}:${path[1]}:${path[2]}`;

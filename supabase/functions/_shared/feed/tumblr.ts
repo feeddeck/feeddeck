@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { unescape } from 'lodash';
-import { Redis } from 'redis';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
 
-import { ISource } from '../models/source.ts';
-import { IItem } from '../models/item.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IItem } from "../models/item.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 /**
  * `isTumblrUrl` checks if the provided `url` is a valid Tumblr url. A url is
@@ -15,7 +15,7 @@ import { feedutils } from './utils/index.ts';
  */
 export const isTumblrUrl = (url: string): boolean => {
   const parsedUrl = new URL(url);
-  return parsedUrl.hostname.endsWith('tumblr.com');
+  return parsedUrl.hostname.endsWith("tumblr.com");
 };
 
 export const getTumblrFeed = async (
@@ -26,19 +26,19 @@ export const getTumblrFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.tumblr) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   const parsedUrl = new URL(source.options.tumblr);
-  const hostnameParts = parsedUrl.hostname.split('.');
+  const hostnameParts = parsedUrl.hostname.split(".");
   if (hostnameParts.length != 3) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
-  if (hostnameParts[0] === 'www') {
-    const pathParts = parsedUrl.pathname.split('/');
+  if (hostnameParts[0] === "www") {
+    const pathParts = parsedUrl.pathname.split("/");
     if (pathParts.length < 2) {
-      throw new feedutils.FeedValidationError('Invalid source options');
+      throw new feedutils.FeedValidationError("Invalid source options");
     }
     source.options.tumblr = `https://${pathParts[1]}.tumblr.com/rss`;
   } else {
@@ -56,7 +56,7 @@ export const getTumblrFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -64,14 +64,14 @@ export const getTumblrFeed = async (
    * `tumblr` url. Besides that we also set the source type to `tumblr` and set
    * the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.tumblr,
     );
   }
-  source.type = 'tumblr';
+  source.type = "tumblr";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -132,12 +132,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -179,7 +181,7 @@ const getMedia = (entry: FeedEntry): string | undefined => {
     const matches = /<img[^>]+\bsrc=["']([^"']+)["']/.exec(
       unescape(entry.description.value),
     );
-    if (matches && matches.length == 2 && matches[1].startsWith('https://')) {
+    if (matches && matches.length == 2 && matches[1].startsWith("https://")) {
       return matches[1];
     }
   }

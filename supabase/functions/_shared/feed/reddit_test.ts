@@ -1,31 +1,31 @@
-import { assertEquals } from 'std/assert';
-import { createClient } from '@supabase/supabase-js';
+import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getRedditFeed, isRedditUrl } from './reddit.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getRedditFeed, isRedditUrl } from "./reddit.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responseSubreddit = `<?xml version="1.0" encoding="UTF-8"?>
@@ -105,18 +105,15 @@ const responseSubreddit = `<?xml version="1.0" encoding="UTF-8"?>
    </entry>
 </feed>`;
 
-Deno.test('isRedditUrl', () => {
-  assertEquals(
-    isRedditUrl('https://www.reddit.com/r/kubernetes/'),
-    true,
-  );
-  assertEquals(isRedditUrl('https://www.google.de/'), false);
+Deno.test("isRedditUrl", () => {
+  assertEquals(isRedditUrl("https://www.reddit.com/r/kubernetes/"), true);
+  assertEquals(isRedditUrl("https://www.google.de/"), false);
 });
 
-Deno.test('getRedditFeed', async () => {
+Deno.test("getRedditFeed", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseSubreddit, { status: 200 }));
@@ -131,96 +128,88 @@ Deno.test('getRedditFeed', async () => {
       mockProfile,
       {
         ...mockSource,
-        options: { reddit: '/r/kubernetes' },
+        options: { reddit: "/r/kubernetes" },
       },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'reddit',
-      'title': 'Kubernetes',
-      'options': { 'reddit': 'https://www.reddit.com/r/kubernetes.rss' },
-      'link': 'https://www.reddit.com/r/kubernetes.rss',
+      id: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "reddit",
+      title: "Kubernetes",
+      options: { reddit: "https://www.reddit.com/r/kubernetes.rss" },
+      link: "https://www.reddit.com/r/kubernetes.rss",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-109de6824b3a6446882072dce0d4539d',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',
-      'title': 'Monthly: Who is hiring?',
-      'link':
-        'https://www.reddit.com/r/kubernetes/comments/18895rv/monthly_who_is_hiring/',
-      'description':
-        '<!-- SC_OFF --><div class="md"><p>This monthly post can be used to share Kubernetes-related job openings within <strong>your</strong> company. Please include:</p> <ul> <li>Name of the company</li> <li>Location requirements (or lack thereof)</li> <li>At least one of: a link to a job posting/application page or contact details<br/></li> </ul> <p>If you are interested in a job, please contact the poster directly. </p> <p>Common reasons for comment removal:</p> <ul> <li>Not meeting the above requirements</li> <li>Recruiter post / recruiter listings</li> <li>Negative, inflammatory, or abrasive tone</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gctaylor"> /u/gctaylor </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18895rv/monthly_who_is_hiring/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18895rv/monthly_who_is_hiring/">[Kommentare]</a></span>',
-      'author': '/u/gctaylor',
-      'publishedAt': 1701428417,
-    }, {
-      'id':
-        'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-eb77579ebc7a3ef77471fe91fb4feecc',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',
-      'title': 'Weekly: Share your victories thread',
-      'link':
-        'https://www.reddit.com/r/kubernetes/comments/18dkeyn/weekly_share_your_victories_thread/',
-      'description':
-        '<!-- SC_OFF --><div class="md"><p>Got something working? Figure something out? Make progress that you are excited about? Share here!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gctaylor"> /u/gctaylor </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18dkeyn/weekly_share_your_victories_thread/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18dkeyn/weekly_share_your_victories_thread/">[Kommentare]</a></span>',
-      'author': '/u/gctaylor',
-      'publishedAt': 1702033213,
-    }, {
-      'id':
-        'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-081da9534f66b5a2f9f345747197319d',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',
-      'title': 'Best way to deploy K8s to single VPS for dev environment',
-      'link':
-        'https://www.reddit.com/r/kubernetes/comments/18f3d7o/best_way_to_deploy_k8s_to_single_vps_for_dev/',
-      'description':
-        '<!-- SC_OFF --><div class="md"><p>My environment plan:</p> <p>Local: KinD</p> <p>Dev: Hetzner Single VPS</p> <p>Prod: Hetzner Multiple Servers</p> <p>What is the best way to deploy K8s on a single VPS to save money in dev environment? Control plane, worker nodes all on single VPS. The goal is to have the dev environment as similar to Prod (portable), but want to save money on cheap single VPS.</p> <p>I plan on self managing K8s. I know somebody in the comments is just going to be like, just do managed K8s. On that budget mode and want to learn. I really don’t think self managing K8s is that bad and only considered scary because most people just jump straight to managed immediately. I mean I will possibly do managed on PRD, but then Dev and PRD not portable.</p> <p>In terms of stateful Pods, I want dev to have all that in K8s. But PRD most likely will be managed database and session store. Unless having state full things in K8s isn’t that bad. But from what I’ve read nobody likes keeping state full things in K8s. You can kind of see my problem, making dev cheap makes it not as portable to PRD.</p> <p>Yes I’m aware that single VPS K8s is not HA, but that’s not a problem for Dev environment.</p> <p>I see so many tools for self managed K8s, and idk what is the way. Kops? Kubespray?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Lanky-Ad4698"> /u/Lanky-Ad4698 </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18f3d7o/best_way_to_deploy_k8s_to_single_vps_for_dev/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18f3d7o/best_way_to_deploy_k8s_to_single_vps_for_dev/">[Kommentare]</a></span>',
-      'author': '/u/Lanky-Ad4698',
-      'publishedAt': 1702214036,
-    }, {
-      'id':
-        'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-ea9508517c2f840daf415352c2c2eaf1',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',
-      'title':
-        'How to use NetApp SAN storage to provide Kubernetes Persistent Volumes?',
-      'link':
-        'https://www.reddit.com/r/kubernetes/comments/18f5b8v/how_to_use_netapp_san_storage_to_provide/',
-      'description':
-        '<!-- SC_OFF --><div class="md"><p>In our company, we utilize VMWare VSphere as our virtualization solution and a NetApp SAN for storage. The NetApp SAN is connected to VCenter, which is running in FC (Fibre Channel) mode. We have chosen not to support iSCSI or any TCP/IP bound protocol.</p> <p>Currently, we have a production-ready Kubernetes cluster running on nodes from VCenter, which supports our stateless applications. However, we encountered a challenge when we wanted to migrate our stateful workloads (databases, object storages, etc.) to K8S. We are in need of a resilient solution to provide PersistentVolumes in our cluster, and we prefer not to use hostpath. Therefore, we require a CSI plugin that can provide dynamic volumes.</p> <p>After exploring different options, it appears that the NetApp\'s CSI plugin (Trident) is not yet production-ready and does not support FC mode. This information is based on the documentation and an issue raised on the Trident GitHub repository.</p> <p>There is a CSI plugin compatible with FC SAN for Dell products, but it seems to be specific to Dell.</p> <p>Overall, we didn\'t find a proper way to connect the NetApp SAN directly to K8S and went for another solution and we reached VMWare CNS (Cloud Native Storage) plugin for VSphere, conceptually, it can do the job for us (in conjunction with VSphere CSI and/or VSphere CPI), but it seems that it only support vSAN as storage backend and not the SAN luns (I\'m not sure, it was not clear enough in the docs).</p> <p>I have two (or maybe three questions now):</p> <ol> <li>Is there any CSI plugin for NetApp SAN FC mode to directly use it in K8S?</li> <li>Is it possible to connect the CNS directly to SAN and to the VSphere CSI in K8S?</li> <li>If the answer to neither of the above is yes, what can we do to provide K8S storages with our existing hardware?</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/abexami"> /u/abexami </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18f5b8v/how_to_use_netapp_san_storage_to_provide/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18f5b8v/how_to_use_netapp_san_storage_to_provide/">[Kommentare]</a></span>',
-      'author': '/u/abexami',
-      'publishedAt': 1702220161,
-    }, {
-      'id':
-        'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-a0c951151b5cfea0d6f9281c791ade02',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8',
-      'title': '[Request for opinion] : CPU limits in the K8s world',
-      'link':
-        'https://www.reddit.com/r/kubernetes/comments/18exirq/request_for_opinion_cpu_limits_in_the_k8s_world/',
-      'description':
-        '<!-- SC_OFF --><div class="md"><p>Wanted some opinion on CPU limits in the K8s world.</p> <p>I understand CPU is a compressible resource.</p> <p>&#x200B;</p> <p>There are some school of thoughts which advocate NOT setting limits on CPU and let pods overuse when they need.</p> <ul> <li>advocated in - Kubernetes Patterns, 2nd Edition book - <a href="https://learning.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/">link</a></li> <li>an year write up here - <a href="https://home.robusta.dev/blog/stop-using-cpu-limits">link</a></li> <li>some old discussion here with POC-- <a href="https://www.reddit.com/r/kubernetes/comments/ulx54i/k8s_without_cpu_limits_we_put_it_on_the_lab_to/">link</a></li> </ul> <p>&#x200B;</p> <p>However, on the documentation, I see that the containers without limits could use all the resouces on the worker node.</p> <p><a href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#if-you-do-not-specify-a-cpu-limit">https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#if-you-do-not-specify-a-cpu-limit</a></p> <pre><code>The Container has no upper bound on the CPU resources it can use. The Container could use all of the CPU resources available on the Node where it is running. </code></pre> <p>&#x200B;</p> <p>My question is :</p> <ul> <li>If I don\'t set CPU limits, will the containers use all the CPU resources on the worker node ONLY if the worker node has the free/unused resource available?</li> <li>in the extreme scenario if CPU resources are exhausted, will all pods will get proportionally their cut "according to the CPU requests you set." ?</li> </ul> <p>Just being cautious if other containers in the worker node will suffer if I remove the CPU limits.</p> <p>&#x200B;</p> <p>Thanks much for any thoughts in advance.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ekayan"> /u/ekayan </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18exirq/request_for_opinion_cpu_limits_in_the_k8s_world/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18exirq/request_for_opinion_cpu_limits_in_the_k8s_world/">[Kommentare]</a></span>',
-      'author': '/u/ekayan',
-      'publishedAt': 1702190408,
-    }]);
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-109de6824b3a6446882072dce0d4539d",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8",
+        title: "Monthly: Who is hiring?",
+        link: "https://www.reddit.com/r/kubernetes/comments/18895rv/monthly_who_is_hiring/",
+        description:
+          '<!-- SC_OFF --><div class="md"><p>This monthly post can be used to share Kubernetes-related job openings within <strong>your</strong> company. Please include:</p> <ul> <li>Name of the company</li> <li>Location requirements (or lack thereof)</li> <li>At least one of: a link to a job posting/application page or contact details<br/></li> </ul> <p>If you are interested in a job, please contact the poster directly. </p> <p>Common reasons for comment removal:</p> <ul> <li>Not meeting the above requirements</li> <li>Recruiter post / recruiter listings</li> <li>Negative, inflammatory, or abrasive tone</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gctaylor"> /u/gctaylor </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18895rv/monthly_who_is_hiring/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18895rv/monthly_who_is_hiring/">[Kommentare]</a></span>',
+        author: "/u/gctaylor",
+        publishedAt: 1701428417,
+      },
+      {
+        id: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-eb77579ebc7a3ef77471fe91fb4feecc",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8",
+        title: "Weekly: Share your victories thread",
+        link: "https://www.reddit.com/r/kubernetes/comments/18dkeyn/weekly_share_your_victories_thread/",
+        description:
+          '<!-- SC_OFF --><div class="md"><p>Got something working? Figure something out? Make progress that you are excited about? Share here!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gctaylor"> /u/gctaylor </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18dkeyn/weekly_share_your_victories_thread/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18dkeyn/weekly_share_your_victories_thread/">[Kommentare]</a></span>',
+        author: "/u/gctaylor",
+        publishedAt: 1702033213,
+      },
+      {
+        id: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-081da9534f66b5a2f9f345747197319d",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8",
+        title: "Best way to deploy K8s to single VPS for dev environment",
+        link: "https://www.reddit.com/r/kubernetes/comments/18f3d7o/best_way_to_deploy_k8s_to_single_vps_for_dev/",
+        description:
+          '<!-- SC_OFF --><div class="md"><p>My environment plan:</p> <p>Local: KinD</p> <p>Dev: Hetzner Single VPS</p> <p>Prod: Hetzner Multiple Servers</p> <p>What is the best way to deploy K8s on a single VPS to save money in dev environment? Control plane, worker nodes all on single VPS. The goal is to have the dev environment as similar to Prod (portable), but want to save money on cheap single VPS.</p> <p>I plan on self managing K8s. I know somebody in the comments is just going to be like, just do managed K8s. On that budget mode and want to learn. I really don’t think self managing K8s is that bad and only considered scary because most people just jump straight to managed immediately. I mean I will possibly do managed on PRD, but then Dev and PRD not portable.</p> <p>In terms of stateful Pods, I want dev to have all that in K8s. But PRD most likely will be managed database and session store. Unless having state full things in K8s isn’t that bad. But from what I’ve read nobody likes keeping state full things in K8s. You can kind of see my problem, making dev cheap makes it not as portable to PRD.</p> <p>Yes I’m aware that single VPS K8s is not HA, but that’s not a problem for Dev environment.</p> <p>I see so many tools for self managed K8s, and idk what is the way. Kops? Kubespray?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Lanky-Ad4698"> /u/Lanky-Ad4698 </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18f3d7o/best_way_to_deploy_k8s_to_single_vps_for_dev/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18f3d7o/best_way_to_deploy_k8s_to_single_vps_for_dev/">[Kommentare]</a></span>',
+        author: "/u/Lanky-Ad4698",
+        publishedAt: 1702214036,
+      },
+      {
+        id: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-ea9508517c2f840daf415352c2c2eaf1",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8",
+        title:
+          "How to use NetApp SAN storage to provide Kubernetes Persistent Volumes?",
+        link: "https://www.reddit.com/r/kubernetes/comments/18f5b8v/how_to_use_netapp_san_storage_to_provide/",
+        description:
+          '<!-- SC_OFF --><div class="md"><p>In our company, we utilize VMWare VSphere as our virtualization solution and a NetApp SAN for storage. The NetApp SAN is connected to VCenter, which is running in FC (Fibre Channel) mode. We have chosen not to support iSCSI or any TCP/IP bound protocol.</p> <p>Currently, we have a production-ready Kubernetes cluster running on nodes from VCenter, which supports our stateless applications. However, we encountered a challenge when we wanted to migrate our stateful workloads (databases, object storages, etc.) to K8S. We are in need of a resilient solution to provide PersistentVolumes in our cluster, and we prefer not to use hostpath. Therefore, we require a CSI plugin that can provide dynamic volumes.</p> <p>After exploring different options, it appears that the NetApp\'s CSI plugin (Trident) is not yet production-ready and does not support FC mode. This information is based on the documentation and an issue raised on the Trident GitHub repository.</p> <p>There is a CSI plugin compatible with FC SAN for Dell products, but it seems to be specific to Dell.</p> <p>Overall, we didn\'t find a proper way to connect the NetApp SAN directly to K8S and went for another solution and we reached VMWare CNS (Cloud Native Storage) plugin for VSphere, conceptually, it can do the job for us (in conjunction with VSphere CSI and/or VSphere CPI), but it seems that it only support vSAN as storage backend and not the SAN luns (I\'m not sure, it was not clear enough in the docs).</p> <p>I have two (or maybe three questions now):</p> <ol> <li>Is there any CSI plugin for NetApp SAN FC mode to directly use it in K8S?</li> <li>Is it possible to connect the CNS directly to SAN and to the VSphere CSI in K8S?</li> <li>If the answer to neither of the above is yes, what can we do to provide K8S storages with our existing hardware?</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/abexami"> /u/abexami </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18f5b8v/how_to_use_netapp_san_storage_to_provide/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18f5b8v/how_to_use_netapp_san_storage_to_provide/">[Kommentare]</a></span>',
+        author: "/u/abexami",
+        publishedAt: 1702220161,
+      },
+      {
+        id: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8-a0c951151b5cfea0d6f9281c791ade02",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "reddit-myuser-mycolumn-87e62a33042b3fdf4eac36ae57d55fc8",
+        title: "[Request for opinion] : CPU limits in the K8s world",
+        link: "https://www.reddit.com/r/kubernetes/comments/18exirq/request_for_opinion_cpu_limits_in_the_k8s_world/",
+        description:
+          '<!-- SC_OFF --><div class="md"><p>Wanted some opinion on CPU limits in the K8s world.</p> <p>I understand CPU is a compressible resource.</p> <p>&#x200B;</p> <p>There are some school of thoughts which advocate NOT setting limits on CPU and let pods overuse when they need.</p> <ul> <li>advocated in - Kubernetes Patterns, 2nd Edition book - <a href="https://learning.oreilly.com/library/view/kubernetes-patterns-2nd/9781098131678/">link</a></li> <li>an year write up here - <a href="https://home.robusta.dev/blog/stop-using-cpu-limits">link</a></li> <li>some old discussion here with POC-- <a href="https://www.reddit.com/r/kubernetes/comments/ulx54i/k8s_without_cpu_limits_we_put_it_on_the_lab_to/">link</a></li> </ul> <p>&#x200B;</p> <p>However, on the documentation, I see that the containers without limits could use all the resouces on the worker node.</p> <p><a href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#if-you-do-not-specify-a-cpu-limit">https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/#if-you-do-not-specify-a-cpu-limit</a></p> <pre><code>The Container has no upper bound on the CPU resources it can use. The Container could use all of the CPU resources available on the Node where it is running. </code></pre> <p>&#x200B;</p> <p>My question is :</p> <ul> <li>If I don\'t set CPU limits, will the containers use all the CPU resources on the worker node ONLY if the worker node has the free/unused resource available?</li> <li>in the extreme scenario if CPU resources are exhausted, will all pods will get proportionally their cut "according to the CPU requests you set." ?</li> </ul> <p>Just being cautious if other containers in the worker node will suffer if I remove the CPU limits.</p> <p>&#x200B;</p> <p>Thanks much for any thoughts in advance.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ekayan"> /u/ekayan </a> <br/> <span><a href="https://www.reddit.com/r/kubernetes/comments/18exirq/request_for_opinion_cpu_limits_in_the_k8s_world/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/kubernetes/comments/18exirq/request_for_opinion_cpu_limits_in_the_k8s_world/">[Kommentare]</a></span>',
+        author: "/u/ekayan",
+        publishedAt: 1702190408,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://www.reddit.com/r/kubernetes.rss',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://www.reddit.com/r/kubernetes.rss", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(responseSubreddit, { status: 200 }));
     }),

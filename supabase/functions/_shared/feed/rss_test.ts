@@ -1,10 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from "std/testing/mock";
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
 import { ISource } from "../models/source.ts";
 import { IProfile } from "../models/profile.ts";

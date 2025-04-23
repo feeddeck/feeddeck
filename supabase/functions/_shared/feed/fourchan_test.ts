@@ -1,30 +1,30 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getFourChanFeed } from './fourchan.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getFourChanFeed } from "./fourchan.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const response = `<?xml version="1.0" encoding="UTF-8"?>
@@ -55,10 +55,10 @@ const response = `<?xml version="1.0" encoding="UTF-8"?>
    </channel>
 </rss>`;
 
-Deno.test('getFourChanFeed', async () => {
+Deno.test("getFourChanFeed", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(response, { status: 200 }));
@@ -71,49 +71,47 @@ Deno.test('getFourChanFeed', async () => {
       supabaseClient,
       undefined,
       mockProfile,
-      { ...mockSource, options: { fourchan: 'v' } },
+      { ...mockSource, options: { fourchan: "v" } },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'fourchan',
-      'title': '/v/ - Video Games',
-      'options': {
-        'fourchan': 'https://boards.4chan.org/v/index.rss',
+      id: "fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "fourchan",
+      title: "/v/ - Video Games",
+      options: {
+        fourchan: "https://boards.4chan.org/v/index.rss",
       },
-      'link': 'http://boards.4chan.org/v/./',
+      link: "http://boards.4chan.org/v/./",
     });
     feedutils.assertEqualsItems(items, [
       {
-        'id':
-          'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261-4cedc3982b91056cf239c4a546aceca7',
-        'userId': 'myuser',
-        'columnId': 'mycolumn',
-        'sourceId': 'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261',
-        'title':
-          'Will the Cyberpunk sequel manage to get to the level of hype...',
-        'link': 'http://boards.4chan.org/v/thread/666978687#666978687',
-        'media': 'http://i.4cdn.org/v/1707857944691136s.jpg',
-        'description':
+        id: "fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261-4cedc3982b91056cf239c4a546aceca7",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261",
+        title:
+          "Will the Cyberpunk sequel manage to get to the level of hype...",
+        link: "http://boards.4chan.org/v/thread/666978687#666978687",
+        media: "http://i.4cdn.org/v/1707857944691136s.jpg",
+        description:
           "<a href='http://i.4cdn.org/v/1707857944691136.png' target=_blank><img style='float:left;margin:8px' border=0 src='http://i.4cdn.org/v/1707857944691136s.jpg'></a> Will the Cyberpunk sequel manage to get to the level of hype that 2077 did? 2077 is basically a masterpiece now, but audiences won&#039;t forget the state it launched in. That&#039;s definitely going to affect the sequel.",
-        'author': 'Anonymous',
-        'publishedAt': 1707857944,
+        author: "Anonymous",
+        publishedAt: 1707857944,
       },
       {
-        'id':
-          'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261-2d682afe971ddf86fb31f588bbc9b808',
-        'userId': 'myuser',
-        'columnId': 'mycolumn',
-        'sourceId': 'fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261',
-        'title': "new games can't have this feel",
-        'link': 'http://boards.4chan.org/v/thread/666978663#666978663',
-        'media': 'http://i.4cdn.org/v/1707857926060804s.jpg',
-        'description':
+        id: "fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261-2d682afe971ddf86fb31f588bbc9b808",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "fourchan-myuser-mycolumn-720d65527443fd4e996f83f91a7a5261",
+        title: "new games can't have this feel",
+        link: "http://boards.4chan.org/v/thread/666978663#666978663",
+        media: "http://i.4cdn.org/v/1707857926060804s.jpg",
+        description:
           "<a href='http://i.4cdn.org/v/1707857926060804.jpg' target=_blank><img style='float:left;margin:8px' border=0 src='http://i.4cdn.org/v/1707857926060804s.jpg'></a> new games can&#039;t have this feel",
-        'author': 'Anonymous',
-        'publishedAt': 1707857926,
+        author: "Anonymous",
+        publishedAt: 1707857926,
       },
     ]);
   } finally {
@@ -121,11 +119,7 @@ Deno.test('getFourChanFeed', async () => {
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: [
-      'https://boards.4chan.org/v/index.rss',
-      { method: 'get' },
-      5000,
-    ],
+    args: ["https://boards.4chan.org/v/index.rss", { method: "get" }, 5000],
     returned: new Promise((resolve) => {
       resolve(new Response(response, { status: 200 }));
     }),

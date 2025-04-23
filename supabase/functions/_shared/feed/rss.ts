@@ -1,9 +1,9 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Feed } from "rss";
-import { FeedEntry } from "rss/types";
-import { Redis } from "redis";
-import { unescape } from "lodash";
-import * as cheerio from "cheerio";
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { Feed } from "https://deno.land/x/rss@1.0.0/mod.ts";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
+import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
 
 import { IItem } from "../models/item.ts";
 import { ISource } from "../models/source.ts";

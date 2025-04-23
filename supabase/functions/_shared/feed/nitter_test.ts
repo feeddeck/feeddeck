@@ -1,31 +1,31 @@
-import { assertEquals } from 'std/assert';
-import { createClient } from '@supabase/supabase-js';
+import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
   assertSpyCall,
   assertSpyCalls,
   returnsNext,
   stub,
-} from 'std/testing/mock';
+} from "https://deno.land/std@0.208.0/testing/mock.ts";
 
-import { ISource } from '../models/source.ts';
-import { IProfile } from '../models/profile.ts';
-import { getNitterFeed, parseNitterOptions } from './nitter.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IProfile } from "../models/profile.ts";
+import { getNitterFeed, parseNitterOptions } from "./nitter.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
-const supabaseClient = createClient('http://localhost:54321', 'test123');
+const supabaseClient = createClient("http://localhost:54321", "test123");
 const mockProfile: IProfile = {
-  id: '',
-  tier: 'free',
+  id: "",
+  tier: "free",
   createdAt: 0,
   updatedAt: 0,
 };
 const mockSource: ISource = {
-  id: '',
-  columnId: 'mycolumn',
-  userId: 'myuser',
-  type: 'medium',
-  title: '',
+  id: "",
+  columnId: "mycolumn",
+  userId: "myuser",
+  type: "medium",
+  title: "",
 };
 
 const responseTag = `<?xml version="1.0" encoding="UTF-8"?>
@@ -164,49 +164,40 @@ Read the announcement:<br>
    </channel>
 </rss>`;
 
-Deno.test('parseNitterOptions', () => {
+Deno.test("parseNitterOptions", () => {
+  assertEquals(parseNitterOptions("https://nitter.net/rico_berger/rss"), {
+    feedUrl: "https://nitter.net/rico_berger/rss",
+    sourceTitle: "@rico_berger",
+    isUsername: true,
+    isCustomInstance: true,
+  });
   assertEquals(
-    parseNitterOptions('https://nitter.net/rico_berger/rss'),
+    parseNitterOptions("https://nitter.net/search/rss?f=tweets&q=kubernetes"),
     {
-      feedUrl: 'https://nitter.net/rico_berger/rss',
-      sourceTitle: '@rico_berger',
-      isUsername: true,
-      isCustomInstance: true,
-    },
-  );
-  assertEquals(
-    parseNitterOptions('https://nitter.net/search/rss?f=tweets&q=kubernetes'),
-    {
-      feedUrl: 'https://nitter.net/search/rss?f=tweets&q=kubernetes',
-      sourceTitle: 'kubernetes',
+      feedUrl: "https://nitter.net/search/rss?f=tweets&q=kubernetes",
+      sourceTitle: "kubernetes",
       isUsername: false,
       isCustomInstance: true,
     },
   );
-  assertEquals(
-    parseNitterOptions('@rico_berger'),
-    {
-      feedUrl: '/rico_berger/rss',
-      sourceTitle: '@rico_berger',
-      isUsername: true,
-      isCustomInstance: false,
-    },
-  );
-  assertEquals(
-    parseNitterOptions('kubernetes'),
-    {
-      feedUrl: '/search/rss?f=tweets&q=kubernetes',
-      sourceTitle: 'kubernetes',
-      isUsername: false,
-      isCustomInstance: false,
-    },
-  );
+  assertEquals(parseNitterOptions("@rico_berger"), {
+    feedUrl: "/rico_berger/rss",
+    sourceTitle: "@rico_berger",
+    isUsername: true,
+    isCustomInstance: false,
+  });
+  assertEquals(parseNitterOptions("kubernetes"), {
+    feedUrl: "/search/rss?f=tweets&q=kubernetes",
+    sourceTitle: "kubernetes",
+    isUsername: false,
+    isCustomInstance: false,
+  });
 });
 
-Deno.test('getNitterFeed - Tag', async () => {
+Deno.test("getNitterFeed - Tag", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseTag, { status: 200 }));
@@ -222,91 +213,93 @@ Deno.test('getNitterFeed - Tag', async () => {
       {
         ...mockSource,
         options: {
-          nitter: 'https://nitter.net/search/rss?f=tweets&q=kubernetes',
+          nitter: "https://nitter.net/search/rss?f=tweets&q=kubernetes",
         },
       },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'nitter',
-      'title': 'kubernetes',
-      'options': {
-        'nitter': 'https://nitter.net/search/rss?f=tweets&q=kubernetes',
+      id: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "nitter",
+      title: "kubernetes",
+      options: {
+        nitter: "https://nitter.net/search/rss?f=tweets&q=kubernetes",
       },
-      'link': 'http://nitter.feeddeck.app/search',
+      link: "http://nitter.feeddeck.app/search",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-e15978ba81b685189dfb89c07aa969db',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e',
-      'title':
-        'RT by @lunacyyan: Kubernetes V1.27 : Safeguarding Pod with MemoryThrottlingFactor\n\nRead more: https://faun.pub/kubernetes-v1-27-safeguarding-pod-with-memorythrottlingfactor-cfbccde10de',
-      'link':
-        'http://nitter.feeddeck.app/CloudIslamabad/status/1733542748857483570#m',
-      'description':
-        '<p>Kubernetes V1.27 : Safeguarding Pod with MemoryThrottlingFactor<br>\n<br>\nRead more: <a href="https://faun.pub/kubernetes-v1-27-safeguarding-pod-with-memorythrottlingfactor-cfbccde10de">faun.pub/kubernetes-v1-27-sa…</a></p>',
-      'author': '@CloudIslamabad',
-      'publishedAt': 1702143773,
-    }, {
-      'id':
-        'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-34df7ecc085e3e91133b6912c0775e03',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e',
-      'title':
-        'RT by @mochizuki875: お疲れ様です！\n明日はCNDT2023のCommunity LTにて、16:10からKubernetes Meetup Noviceが登壇させて頂きます！\n\nぜひ遊びに来ていただけると嬉しいです！！\nよろしくお願いいたします！\nhttps://event.cloudnativedays.jp/cndt2023/community_lt\n\n#k8snovice #CNDT2023',
-      'link':
-        'http://nitter.feeddeck.app/URyo_0213/status/1733809409393099181#m',
-      'description':
-        '<p>お疲れ様です！<br>\n明日はCNDT2023のCommunity LTにて、16:10からKubernetes Meetup Noviceが登壇させて頂きます！<br>\n<br>\nぜひ遊びに来ていただけると嬉しいです！！<br>\nよろしくお願いいたします！<br>\n<a href="https://event.cloudnativedays.jp/cndt2023/community_lt">event.cloudnativedays.jp/cnd…</a><br>\n<br>\n<a href="http://nitter.feeddeck.app/search?q=%23k8snovice">#k8snovice</a> <a href="http://nitter.feeddeck.app/search?q=%23CNDT2023">#CNDT2023</a></p>',
-      'author': '@URyo_0213',
-      'publishedAt': 1702207350,
-    }, {
-      'id':
-        'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-475ee6bb2ed19e551d0547545ba4e5a0',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e',
-      'title':
-        'Did you pass the Kubernetes certified application developer (CKAD) exam on your first attempt?\n\n#Kubernetes #devops #cka',
-      'link': 'http://nitter.feeddeck.app/AbdelVA/status/1733814503551197653#m',
-      'description':
-        '<p>Did you pass the Kubernetes certified application developer (CKAD) exam on your first attempt?<br>\n<br>\n<a href="http://nitter.feeddeck.app/search?q=%23Kubernetes">#Kubernetes</a> <a href="http://nitter.feeddeck.app/search?q=%23devops">#devops</a> <a href="http://nitter.feeddeck.app/search?q=%23cka">#cka</a></p>',
-      'author': '@AbdelVA',
-      'publishedAt': 1702208565,
-    }, {
-      'id':
-        'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-d07f5752845c01a8288c393109770f3c',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e',
-      'title':
-        'RT by @eliyyov: Your app,\nin a container,\nin a pod,\nin Kubernetes,\nas a YAML file\nwith Helm Charts\ndeployed with ArgoCD',
-      'link':
-        'http://nitter.feeddeck.app/memenetes/status/1730270811548701061#m',
-      'options': {
-        'media': [
-          'https://nitter.feeddeck.app/pic/ext_tw_video_thumb%2F1730270796612788224%2Fpu%2Fimg%2Fn2of8rx2u0oXtVAw.jpg',
-        ],
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-e15978ba81b685189dfb89c07aa969db",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e",
+        title:
+          "RT by @lunacyyan: Kubernetes V1.27 : Safeguarding Pod with MemoryThrottlingFactor\n\nRead more: https://faun.pub/kubernetes-v1-27-safeguarding-pod-with-memorythrottlingfactor-cfbccde10de",
+        link: "http://nitter.feeddeck.app/CloudIslamabad/status/1733542748857483570#m",
+        description:
+          '<p>Kubernetes V1.27 : Safeguarding Pod with MemoryThrottlingFactor<br>\n<br>\nRead more: <a href="https://faun.pub/kubernetes-v1-27-safeguarding-pod-with-memorythrottlingfactor-cfbccde10de">faun.pub/kubernetes-v1-27-sa…</a></p>',
+        author: "@CloudIslamabad",
+        publishedAt: 1702143773,
       },
-      'description':
-        '<p>Your app,<br>\nin a container,<br>\nin a pod,<br>\nin Kubernetes,<br>\nas a YAML file<br>\nwith Helm Charts<br>\ndeployed with ArgoCD</p>\n<img src="http://nitter.feeddeck.app/pic/ext_tw_video_thumb%2F1730270796612788224%2Fpu%2Fimg%2Fn2of8rx2u0oXtVAw.jpg" style="max-width:250px;" />',
-      'author': '@memenetes',
-      'publishedAt': 1701363683,
-    }]);
+      {
+        id: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-34df7ecc085e3e91133b6912c0775e03",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e",
+        title:
+          "RT by @mochizuki875: お疲れ様です！\n明日はCNDT2023のCommunity LTにて、16:10からKubernetes Meetup Noviceが登壇させて頂きます！\n\nぜひ遊びに来ていただけると嬉しいです！！\nよろしくお願いいたします！\nhttps://event.cloudnativedays.jp/cndt2023/community_lt\n\n#k8snovice #CNDT2023",
+        link: "http://nitter.feeddeck.app/URyo_0213/status/1733809409393099181#m",
+        description:
+          '<p>お疲れ様です！<br>\n明日はCNDT2023のCommunity LTにて、16:10からKubernetes Meetup Noviceが登壇させて頂きます！<br>\n<br>\nぜひ遊びに来ていただけると嬉しいです！！<br>\nよろしくお願いいたします！<br>\n<a href="https://event.cloudnativedays.jp/cndt2023/community_lt">event.cloudnativedays.jp/cnd…</a><br>\n<br>\n<a href="http://nitter.feeddeck.app/search?q=%23k8snovice">#k8snovice</a> <a href="http://nitter.feeddeck.app/search?q=%23CNDT2023">#CNDT2023</a></p>',
+        author: "@URyo_0213",
+        publishedAt: 1702207350,
+      },
+      {
+        id: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-475ee6bb2ed19e551d0547545ba4e5a0",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e",
+        title:
+          "Did you pass the Kubernetes certified application developer (CKAD) exam on your first attempt?\n\n#Kubernetes #devops #cka",
+        link: "http://nitter.feeddeck.app/AbdelVA/status/1733814503551197653#m",
+        description:
+          '<p>Did you pass the Kubernetes certified application developer (CKAD) exam on your first attempt?<br>\n<br>\n<a href="http://nitter.feeddeck.app/search?q=%23Kubernetes">#Kubernetes</a> <a href="http://nitter.feeddeck.app/search?q=%23devops">#devops</a> <a href="http://nitter.feeddeck.app/search?q=%23cka">#cka</a></p>',
+        author: "@AbdelVA",
+        publishedAt: 1702208565,
+      },
+      {
+        id: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e-d07f5752845c01a8288c393109770f3c",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-14a83e961dc175e20f36e70373cbae6e",
+        title:
+          "RT by @eliyyov: Your app,\nin a container,\nin a pod,\nin Kubernetes,\nas a YAML file\nwith Helm Charts\ndeployed with ArgoCD",
+        link: "http://nitter.feeddeck.app/memenetes/status/1730270811548701061#m",
+        options: {
+          media: [
+            "https://nitter.feeddeck.app/pic/ext_tw_video_thumb%2F1730270796612788224%2Fpu%2Fimg%2Fn2of8rx2u0oXtVAw.jpg",
+          ],
+        },
+        description:
+          '<p>Your app,<br>\nin a container,<br>\nin a pod,<br>\nin Kubernetes,<br>\nas a YAML file<br>\nwith Helm Charts<br>\ndeployed with ArgoCD</p>\n<img src="http://nitter.feeddeck.app/pic/ext_tw_video_thumb%2F1730270796612788224%2Fpu%2Fimg%2Fn2of8rx2u0oXtVAw.jpg" style="max-width:250px;" />',
+        author: "@memenetes",
+        publishedAt: 1701363683,
+      },
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: ['https://nitter.net/search/rss?f=tweets&q=kubernetes', {
-      method: 'get',
-    }, 5000],
+    args: [
+      "https://nitter.net/search/rss?f=tweets&q=kubernetes",
+      {
+        method: "get",
+      },
+      5000,
+    ],
     returned: new Promise((resolve) => {
       resolve(new Response(responseTag, { status: 200 }));
     }),
@@ -314,10 +307,10 @@ Deno.test('getNitterFeed - Tag', async () => {
   assertSpyCalls(fetchWithTimeoutSpy, 1);
 });
 
-Deno.test('getNitterFeed - User', async () => {
+Deno.test("getNitterFeed - User", async () => {
   const fetchWithTimeoutSpy = stub(
     utils,
-    'fetchWithTimeout',
+    "fetchWithTimeout",
     returnsNext([
       new Promise((resolve) => {
         resolve(new Response(responseUser, { status: 200 }));
@@ -326,11 +319,11 @@ Deno.test('getNitterFeed - User', async () => {
   );
   const uploadSourceIconSpy = stub(
     feedutils,
-    'uploadSourceIcon',
+    "uploadSourceIcon",
     returnsNext([
       new Promise((resolve) => {
         resolve(
-          'https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png',
+          "https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png",
         );
       }),
     ]),
@@ -343,90 +336,92 @@ Deno.test('getNitterFeed - User', async () => {
       mockProfile,
       {
         ...mockSource,
-        options: { nitter: 'https://nitter.net/rico_berger/rss' },
+        options: { nitter: "https://nitter.net/rico_berger/rss" },
       },
       undefined,
     );
     feedutils.assertEqualsSource(source, {
-      'id': 'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90',
-      'columnId': 'mycolumn',
-      'userId': 'myuser',
-      'type': 'nitter',
-      'title': '@rico_berger',
-      'options': { 'nitter': 'https://nitter.net/rico_berger/rss' },
-      'link': 'http://nitter.feeddeck.app/rico_berger',
-      'icon':
-        'https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png',
+      id: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90",
+      columnId: "mycolumn",
+      userId: "myuser",
+      type: "nitter",
+      title: "@rico_berger",
+      options: { nitter: "https://nitter.net/rico_berger/rss" },
+      link: "http://nitter.feeddeck.app/rico_berger",
+      icon: "https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png",
     });
-    feedutils.assertEqualsItems(items, [{
-      'id':
-        'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90-ed3ded7ee38f30e9c7e5e9f181ed96c2',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90',
-      'title':
-        'RT by @rico_berger: Blog: Gateway API v1.0: GA Release - https://kubernetes.io/blog/2023/10/31/gateway-api-ga/ #Kubernetes',
-      'link':
-        'http://nitter.feeddeck.app/K8sContributors/status/1719424500591210559#m',
-      'options': {
-        'media': [
-          'https://nitter.feeddeck.app/pic/card_img%2F1729729773448970240%2F7PcfwkrY%3Fformat%3Dpng%26name%3D420x420_2',
-        ],
+    feedutils.assertEqualsItems(items, [
+      {
+        id: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90-ed3ded7ee38f30e9c7e5e9f181ed96c2",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90",
+        title:
+          "RT by @rico_berger: Blog: Gateway API v1.0: GA Release - https://kubernetes.io/blog/2023/10/31/gateway-api-ga/ #Kubernetes",
+        link: "http://nitter.feeddeck.app/K8sContributors/status/1719424500591210559#m",
+        options: {
+          media: [
+            "https://nitter.feeddeck.app/pic/card_img%2F1729729773448970240%2F7PcfwkrY%3Fformat%3Dpng%26name%3D420x420_2",
+          ],
+        },
+        description:
+          '<p>Blog: Gateway API v1.0: GA Release - <a href="https://kubernetes.io/blog/2023/10/31/gateway-api-ga/">kubernetes.io/blog/2023/10/3…</a> <a href="http://nitter.feeddeck.app/search?q=%23Kubernetes">#Kubernetes</a></p>\n<img src="http://nitter.feeddeck.app/pic/card_img%2F1729729773448970240%2F7PcfwkrY%3Fformat%3Dpng%26name%3D420x420_2" style="max-width:250px;" />',
+        author: "@K8sContributors",
+        publishedAt: 1698777720,
       },
-      'description':
-        '<p>Blog: Gateway API v1.0: GA Release - <a href="https://kubernetes.io/blog/2023/10/31/gateway-api-ga/">kubernetes.io/blog/2023/10/3…</a> <a href="http://nitter.feeddeck.app/search?q=%23Kubernetes">#Kubernetes</a></p>\n<img src="http://nitter.feeddeck.app/pic/card_img%2F1729729773448970240%2F7PcfwkrY%3Fformat%3Dpng%26name%3D420x420_2" style="max-width:250px;" />',
-      'author': '@K8sContributors',
-      'publishedAt': 1698777720,
-    }, {
-      'id':
-        'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90-d185c4fa2b5b22eb0ea0cfd5de56802a',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90',
-      'title':
-        'RT by @rico_berger: We are excited to announce the launch of OpenTofu, an open source alternative to Terraform\'s widely used infrastructure as code provisioning tool.\n\nRead the announcement:\nhttps://hubs.la/Q022JfPQ0\n#opensource #opentofu #ossummit',
-      'link':
-        'http://nitter.feeddeck.app/linuxfoundation/status/1704389933526299129#m',
-      'options': {
-        'media': [
-          'https://nitter.feeddeck.app/pic/media%2FF6c1nOIWIAAOSAy.jpg',
-        ],
+      {
+        id: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90-d185c4fa2b5b22eb0ea0cfd5de56802a",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90",
+        title:
+          "RT by @rico_berger: We are excited to announce the launch of OpenTofu, an open source alternative to Terraform's widely used infrastructure as code provisioning tool.\n\nRead the announcement:\nhttps://hubs.la/Q022JfPQ0\n#opensource #opentofu #ossummit",
+        link: "http://nitter.feeddeck.app/linuxfoundation/status/1704389933526299129#m",
+        options: {
+          media: [
+            "https://nitter.feeddeck.app/pic/media%2FF6c1nOIWIAAOSAy.jpg",
+          ],
+        },
+        description:
+          '<p>We are excited to announce the launch of OpenTofu, an open source alternative to Terraform\'s widely used infrastructure as code provisioning tool.<br>\n<br>\nRead the announcement:<br>\n<a href="https://hubs.la/Q022JfPQ0">hubs.la/Q022JfPQ0</a><br>\n<a href="http://nitter.feeddeck.app/search?q=%23opensource">#opensource</a> <a href="http://nitter.feeddeck.app/search?q=%23opentofu">#opentofu</a> <a href="http://nitter.feeddeck.app/search?q=%23ossummit">#ossummit</a></p>\n<img src="http://nitter.feeddeck.app/pic/media%2FF6c1nOIWIAAOSAy.jpg" style="max-width:250px;" />',
+        author: "@linuxfoundation",
+        publishedAt: 1695193200,
       },
-      'description':
-        '<p>We are excited to announce the launch of OpenTofu, an open source alternative to Terraform\'s widely used infrastructure as code provisioning tool.<br>\n<br>\nRead the announcement:<br>\n<a href="https://hubs.la/Q022JfPQ0">hubs.la/Q022JfPQ0</a><br>\n<a href="http://nitter.feeddeck.app/search?q=%23opensource">#opensource</a> <a href="http://nitter.feeddeck.app/search?q=%23opentofu">#opentofu</a> <a href="http://nitter.feeddeck.app/search?q=%23ossummit">#ossummit</a></p>\n<img src="http://nitter.feeddeck.app/pic/media%2FF6c1nOIWIAAOSAy.jpg" style="max-width:250px;" />',
-      'author': '@linuxfoundation',
-      'publishedAt': 1695193200,
-    }, {
-      'id':
-        'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90-708a757b055af5aa824ef6c361a4f30c',
-      'userId': 'myuser',
-      'columnId': 'mycolumn',
-      'sourceId': 'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90',
-      'title':
-        'RT by @rico_berger: 🎉🎉🎉 kubenav v4 is finally available and can be downloaded from the Apple App Store (https://apps.apple.com/us/app/kubenav/id1494512160) or Google Play (https://play.google.com/store/apps/details?id=io.kubenav.kubenav) 🥳🥳🥳 #Kubernetes',
-      'link': 'http://nitter.feeddeck.app/kubenav/status/1618299915129720832#m',
-      'options': {
-        'media': [
-          'https://nitter.feeddeck.app/pic/media%2FFnVbCgSXEBAg-am.jpg',
-          'https://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAk3St9.jpg',
-          'https://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAYOZFK.jpg',
-          'https://nitter.feeddeck.app/pic/media%2FFnVbH9hXEAEsd4I.jpg',
-        ],
+      {
+        id: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90-708a757b055af5aa824ef6c361a4f30c",
+        userId: "myuser",
+        columnId: "mycolumn",
+        sourceId: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90",
+        title:
+          "RT by @rico_berger: 🎉🎉🎉 kubenav v4 is finally available and can be downloaded from the Apple App Store (https://apps.apple.com/us/app/kubenav/id1494512160) or Google Play (https://play.google.com/store/apps/details?id=io.kubenav.kubenav) 🥳🥳🥳 #Kubernetes",
+        link: "http://nitter.feeddeck.app/kubenav/status/1618299915129720832#m",
+        options: {
+          media: [
+            "https://nitter.feeddeck.app/pic/media%2FFnVbCgSXEBAg-am.jpg",
+            "https://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAk3St9.jpg",
+            "https://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAYOZFK.jpg",
+            "https://nitter.feeddeck.app/pic/media%2FFnVbH9hXEAEsd4I.jpg",
+          ],
+        },
+        description:
+          '<p>🎉🎉🎉 kubenav v4 is finally available and can be downloaded from the Apple App Store (<a href="https://apps.apple.com/us/app/kubenav/id1494512160">apps.apple.com/us/app/kubena…</a>) or Google Play (<a href="https://play.google.com/store/apps/details?id=io.kubenav.kubenav">play.google.com/store/apps/d…</a>) 🥳🥳🥳 <a href="http://nitter.feeddeck.app/search?q=%23Kubernetes">#Kubernetes</a></p>\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbCgSXEBAg-am.jpg" style="max-width:250px;" />\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAk3St9.jpg" style="max-width:250px;" />\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAYOZFK.jpg" style="max-width:250px;" />\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbH9hXEAEsd4I.jpg" style="max-width:250px;" />',
+        author: "@kubenav",
+        publishedAt: 1674667740,
       },
-      'description':
-        '<p>🎉🎉🎉 kubenav v4 is finally available and can be downloaded from the Apple App Store (<a href="https://apps.apple.com/us/app/kubenav/id1494512160">apps.apple.com/us/app/kubena…</a>) or Google Play (<a href="https://play.google.com/store/apps/details?id=io.kubenav.kubenav">play.google.com/store/apps/d…</a>) 🥳🥳🥳 <a href="http://nitter.feeddeck.app/search?q=%23Kubernetes">#Kubernetes</a></p>\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbCgSXEBAg-am.jpg" style="max-width:250px;" />\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAk3St9.jpg" style="max-width:250px;" />\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbCgOXEAYOZFK.jpg" style="max-width:250px;" />\n<img src="http://nitter.feeddeck.app/pic/media%2FFnVbH9hXEAEsd4I.jpg" style="max-width:250px;" />',
-      'author': '@kubenav',
-      'publishedAt': 1674667740,
-    }]);
+    ]);
   } finally {
     fetchWithTimeoutSpy.restore();
     uploadSourceIconSpy.restore();
   }
 
   assertSpyCall(fetchWithTimeoutSpy, 0, {
-    args: ['https://nitter.net/rico_berger/rss', {
-      method: 'get',
-    }, 5000],
+    args: [
+      "https://nitter.net/rico_berger/rss",
+      {
+        method: "get",
+      },
+      5000,
+    ],
     returned: new Promise((resolve) => {
       resolve(new Response(responseUser, { status: 200 }));
     }),
@@ -435,20 +430,19 @@ Deno.test('getNitterFeed - User', async () => {
     args: [
       supabaseClient,
       {
-        'id': 'nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90',
-        'columnId': 'mycolumn',
-        'userId': 'myuser',
-        'type': 'nitter',
-        'title': '@rico_berger',
-        'options': { 'nitter': 'https://nitter.net/rico_berger/rss' },
-        'link': 'http://nitter.feeddeck.app/rico_berger',
-        'icon':
-          'https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png',
+        id: "nitter-myuser-mycolumn-2f69b5c79645e7868dbefdee825bbb90",
+        columnId: "mycolumn",
+        userId: "myuser",
+        type: "nitter",
+        title: "@rico_berger",
+        options: { nitter: "https://nitter.net/rico_berger/rss" },
+        link: "http://nitter.feeddeck.app/rico_berger",
+        icon: "https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png",
       },
     ],
     returned: new Promise((resolve) => {
       resolve(
-        'https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png',
+        "https://media.hachyderm.io/accounts/avatars/109/773/619/675/865/785/original/bf731ded4166a661.png",
       );
     }),
   });

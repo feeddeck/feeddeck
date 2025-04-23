@@ -1,23 +1,23 @@
-import { ISourceOptionsGithub } from './sources/github.ts';
-import { ISourceOptionsGoogleNews } from './sources/googlenews.ts';
-import { ISourceOptionsStackOverflow } from './sources/stackoverflow.ts';
+import { ISourceOptionsGithub } from "./sources/github.ts";
+import { ISourceOptionsGoogleNews } from "./sources/googlenews.ts";
+import { ISourceOptionsStackOverflow } from "./sources/stackoverflow.ts";
 
 export type TSourceType =
-  | 'fourchan'
-  | 'github'
-  | 'googlenews'
-  | 'lemmy'
-  | 'mastodon'
-  | 'medium'
-  | 'nitter'
-  | 'pinterest'
-  | 'podcast'
-  | 'reddit'
-  | 'rss'
-  | 'stackoverflow'
-  | 'tumblr'
-  | 'youtube'
-  | 'none';
+  | "fourchan"
+  | "github"
+  | "googlenews"
+  | "lemmy"
+  | "mastodon"
+  | "medium"
+  | "nitter"
+  | "pinterest"
+  | "podcast"
+  | "reddit"
+  | "rss"
+  | "stackoverflow"
+  | "tumblr"
+  | "youtube"
+  | "none";
 
 export interface ISource {
   id: string;

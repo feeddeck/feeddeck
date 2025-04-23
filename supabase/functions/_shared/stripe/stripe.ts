@@ -1,26 +1,23 @@
-import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
+import Stripe from "https://esm.sh/stripe@14.8.0?target=deno&no-check";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
-import { log } from '../utils/log.ts';
+import { log } from "../utils/log.ts";
 import {
   FEEDDECK_STRIPE_API_KEY,
   FEEDDECK_STRIPE_PRICE_ID,
   FEEDDECK_SUPABASE_SERVICE_ROLE_KEY,
   FEEDDECK_SUPABASE_SITE_URL,
   FEEDDECK_SUPABASE_URL,
-} from '../utils/constants.ts';
+} from "../utils/constants.ts";
 
 /**
  * Create a new Stripe client, based on the `FEEDDECK_STRIPE_API_KEY`
  * environment variable.
  */
-export const stripe = new Stripe(
-  FEEDDECK_STRIPE_API_KEY,
-  {
-    apiVersion: '2022-11-15',
-    httpClient: Stripe.createFetchHttpClient(),
-  },
-);
+export const stripe = new Stripe(FEEDDECK_STRIPE_API_KEY, {
+  apiVersion: "2022-11-15",
+  httpClient: Stripe.createFetchHttpClient(),
+});
 
 export const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
@@ -55,16 +52,15 @@ export const createOrRetrieveCustomer = async (
    * one profile, we return an error.
    */
   const { data: profile, error: profileError } = await adminSupabaseClient
-    .from(
-      'profiles',
-    )
-    .select('*').eq('id', userId);
+    .from("profiles")
+    .select("*")
+    .eq("id", userId);
   if (profileError || profile?.length !== 1) {
-    log('error', 'Failed to get user profile', {
-      'user': userId,
-      'error': profileError,
+    log("error", "Failed to get user profile", {
+      user: userId,
+      error: profileError,
     });
-    throw new Error('Failed to get user profile');
+    throw new Error("Failed to get user profile");
   }
 
   if (profile[0].stripeCustomerId) {
@@ -78,17 +74,19 @@ export const createOrRetrieveCustomer = async (
     },
   });
 
-  const { error: updateError } = await adminSupabaseClient.from('profiles')
+  const { error: updateError } = await adminSupabaseClient
+    .from("profiles")
     .update({
       stripeCustomerId: customer.id,
-    }).eq('id', userId);
+    })
+    .eq("id", userId);
   if (updateError) {
-    log('error', 'Failed to update user profile with Stripe customer id', {
-      'stripeCustomerId': customer.id,
-      'user': userId,
-      'error': updateError,
+    log("error", "Failed to update user profile with Stripe customer id", {
+      stripeCustomerId: customer.id,
+      user: userId,
+      error: updateError,
     });
-    throw new Error('Failed to update user profile with Stripe customer id');
+    throw new Error("Failed to update user profile with Stripe customer id");
   }
 
   return customer.id;
@@ -119,7 +117,7 @@ export const createCheckoutSession = async (stripeCustomerId: string) => {
   const { url } = await stripe.checkout.sessions.create({
     customer: stripeCustomerId,
     customer_update: {
-      address: 'auto',
+      address: "auto",
     },
     line_items: [
       {
@@ -127,7 +125,7 @@ export const createCheckoutSession = async (stripeCustomerId: string) => {
         quantity: 1,
       },
     ],
-    mode: 'subscription',
+    mode: "subscription",
     allow_promotion_codes: true,
     success_url: FEEDDECK_SUPABASE_SITE_URL,
     cancel_url: FEEDDECK_SUPABASE_SITE_URL,
@@ -161,29 +159,30 @@ export const manageSubscriptionStatusChange = async (
    * one profile, we return an error.
    */
   const { data: profile, error: profileError } = await adminSupabaseClient
-    .from(
-      'profiles',
-    )
-    .select('*').eq('stripeCustomerId', stripeCustomerId);
+    .from("profiles")
+    .select("*")
+    .eq("stripeCustomerId", stripeCustomerId);
   if (profileError || profile?.length !== 1) {
-    log('error', 'Failed to get user profile', {
-      'stripeCustomerId': stripeCustomerId,
-      'error': profileError,
+    log("error", "Failed to get user profile", {
+      stripeCustomerId: stripeCustomerId,
+      error: profileError,
     });
-    throw new Error('Failed to get user profile');
+    throw new Error("Failed to get user profile");
   }
 
-  const { error: updateError } = await adminSupabaseClient.from('profiles')
+  const { error: updateError } = await adminSupabaseClient
+    .from("profiles")
     .update({
-      tier: isCreated ? 'premium' : 'free',
-      subscriptionProvider: 'stripe',
-    }).eq('id', profile[0].id);
+      tier: isCreated ? "premium" : "free",
+      subscriptionProvider: "stripe",
+    })
+    .eq("id", profile[0].id);
   if (updateError) {
-    log('error', 'Failed to update user profile with new tier value', {
-      'stripeCustomerId': stripeCustomerId,
-      'user': profile[0].id,
-      'error': updateError,
+    log("error", "Failed to update user profile with new tier value", {
+      stripeCustomerId: stripeCustomerId,
+      user: profile[0].id,
+      error: updateError,
     });
-    throw new Error('Failed to update user profile with new tier value');
+    throw new Error("Failed to update user profile with new tier value");
   }
 };

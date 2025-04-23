@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { unescape } from 'lodash';
-import { Redis } from 'redis';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
 
-import { ISource } from '../models/source.ts';
-import { IItem } from '../models/item.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IItem } from "../models/item.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 export const getGooglenewsFeed = async (
   _supabaseClient: SupabaseClient,
@@ -17,11 +17,12 @@ export const getGooglenewsFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.googlenews || !source.options?.googlenews?.type) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   if (
-    source.options.googlenews.type === 'url' && source.options.googlenews.url
+    source.options.googlenews.type === "url" &&
+    source.options.googlenews.url
   ) {
     /**
      * If the user selected type is url, we check if the url already points to
@@ -29,32 +30,34 @@ export const getGooglenewsFeed = async (
      * and use it later.
      */
     if (
-      source.options.googlenews.url.startsWith('https://news.google.com/rss')
+      source.options.googlenews.url.startsWith("https://news.google.com/rss")
     ) {
       /**
        * Do nothing, since the user already provided an url to the Google News
        * RSS feed.
        */
     } else if (
-      source.options.googlenews.url.startsWith('https://news.google.com')
+      source.options.googlenews.url.startsWith("https://news.google.com")
     ) {
-      source.options.googlenews.url = `https://news.google.com/rss${
-        source.options.googlenews.url.replace('https://news.google.com', '')
-      }`;
+      source.options.googlenews.url = `https://news.google.com/rss${source.options.googlenews.url.replace(
+        "https://news.google.com",
+        "",
+      )}`;
     }
   } else if (
-    source.options.googlenews.type === 'search' &&
-    source.options.googlenews.search && source.options.googlenews.ceid &&
-    source.options.googlenews.gl && source.options.googlenews.hl
+    source.options.googlenews.type === "search" &&
+    source.options.googlenews.search &&
+    source.options.googlenews.ceid &&
+    source.options.googlenews.gl &&
+    source.options.googlenews.hl
   ) {
     /**
      * If the user selected type is earch we construct the RSS feed url with the
      * search term and the user selected language and region.
      */
-    source.options.googlenews.url =
-      `https://news.google.com/rss/search?q=${source.options.googlenews.search}&hl=${source.options.googlenews.hl}&gl=${source.options.googlenews.gl}&ceid=${source.options.googlenews.ceid}`;
+    source.options.googlenews.url = `https://news.google.com/rss/search?q=${source.options.googlenews.search}&hl=${source.options.googlenews.hl}&gl=${source.options.googlenews.gl}&ceid=${source.options.googlenews.ceid}`;
   } else {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   /**
@@ -68,7 +71,7 @@ export const getGooglenewsFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -76,14 +79,14 @@ export const getGooglenewsFeed = async (
    * `stackoverflow` url. Besides that we also set the source type to
    * `stackoverflow` and set the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.googlenews.url,
     );
   }
-  source.type = 'googlenews';
+  source.type = "googlenews";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -156,12 +159,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
@@ -217,7 +222,7 @@ const getMedia = async (
       }
 
       const favicon = await feedutils.getFavicon(entry.source?.url);
-      if (favicon && favicon.url.startsWith('https://')) {
+      if (favicon && favicon.url.startsWith("https://")) {
         await redisClient.set(cacheKey, favicon.url);
         return favicon.url;
       }

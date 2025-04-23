@@ -96,17 +96,17 @@ jobs:
 
           supabase db push
 
-          supabase functions deploy add-or-update-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          # supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          # supabase functions deploy profile-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy profile-v2 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy add-or-update-source-v1 --project-ref $PROJECT_ID
+          # supabase functions deploy add-source-v1 --project-ref $PROJECT_ID
+          supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID
+          supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID
+          supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID
+          # supabase functions deploy profile-v1 --project-ref $PROJECT_ID
+          supabase functions deploy profile-v2 --project-ref $PROJECT_ID
+          supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID
+          supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID
+          supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID
+          supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID
 
       - name: Push Database Migration and Deploy Functions
         if:
@@ -121,17 +121,17 @@ jobs:
 
           supabase db push
 
-          supabase functions deploy add-or-update-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy add-source-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy profile-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy profile-v2 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
-          supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID --import-map supabase/functions/import_map.json
+          supabase functions deploy add-or-update-source-v1 --project-ref $PROJECT_ID
+          supabase functions deploy add-source-v1 --project-ref $PROJECT_ID
+          supabase functions deploy delete-user-v1 --project-ref $PROJECT_ID
+          supabase functions deploy generate-magic-link-v1 --project-ref $PROJECT_ID
+          supabase functions deploy image-proxy-v1 --no-verify-jwt --project-ref $PROJECT_ID
+          supabase functions deploy profile-v1 --project-ref $PROJECT_ID
+          supabase functions deploy profile-v2 --project-ref $PROJECT_ID
+          supabase functions deploy revenuecat-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID
+          supabase functions deploy stripe-create-billing-portal-link-v1 --project-ref $PROJECT_ID
+          supabase functions deploy stripe-create-checkout-session-v1 --project-ref $PROJECT_ID
+          supabase functions deploy stripe-webhooks-v1 --no-verify-jwt --project-ref $PROJECT_ID
 
   # The "Web" job builds the Flutter web app and publishes it to Cloudflare
   # Pages. The job only runs on pull requests or when a commit is pushed to the

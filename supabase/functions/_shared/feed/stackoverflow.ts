@@ -1,13 +1,13 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { FeedEntry } from 'rss/types';
-import { Redis } from 'redis';
-import { unescape } from 'lodash';
+import { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import { FeedEntry } from "https://deno.land/x/rss@1.0.0/src/types/mod.ts";
+import { Redis } from "https://deno.land/x/redis@v0.32.0/mod.ts";
+import { unescape } from "https://raw.githubusercontent.com/lodash/lodash/4.17.21-es/lodash.js";
 
-import { ISource } from '../models/source.ts';
-import { IItem } from '../models/item.ts';
-import { IProfile } from '../models/profile.ts';
-import { utils } from '../utils/index.ts';
-import { feedutils } from './utils/index.ts';
+import { ISource } from "../models/source.ts";
+import { IItem } from "../models/item.ts";
+import { IProfile } from "../models/profile.ts";
+import { utils } from "../utils/index.ts";
+import { feedutils } from "./utils/index.ts";
 
 export const getStackoverflowFeed = async (
   _supabaseClient: SupabaseClient,
@@ -17,16 +17,15 @@ export const getStackoverflowFeed = async (
   feedData: string | undefined,
 ): Promise<{ source: ISource; items: IItem[] }> => {
   if (!source.options?.stackoverflow || !source.options?.stackoverflow?.type) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
-  if (source.options.stackoverflow.type === 'tag') {
-    source.options.stackoverflow.url =
-      `https://stackoverflow.com/feeds/tag?tagnames=${source.options.stackoverflow.tag}&sort=${source.options.stackoverflow.sort}`;
+  if (source.options.stackoverflow.type === "tag") {
+    source.options.stackoverflow.url = `https://stackoverflow.com/feeds/tag?tagnames=${source.options.stackoverflow.tag}&sort=${source.options.stackoverflow.sort}`;
   }
 
   if (!source.options?.stackoverflow.url) {
-    throw new feedutils.FeedValidationError('Invalid source options');
+    throw new feedutils.FeedValidationError("Invalid source options");
   }
 
   /**
@@ -40,7 +39,7 @@ export const getStackoverflowFeed = async (
   );
 
   if (!feed.title.value) {
-    throw new Error('Invalid feed');
+    throw new Error("Invalid feed");
   }
 
   /**
@@ -48,14 +47,14 @@ export const getStackoverflowFeed = async (
    * `stackoverflow` url. Besides that we also set the source type to
    * `stackoverflow` and set the title and link for the source.
    */
-  if (source.id === '') {
+  if (source.id === "") {
     source.id = await generateSourceId(
       source.userId,
       source.columnId,
       source.options.stackoverflow.url,
     );
   }
-  source.type = 'stackoverflow';
+  source.type = "stackoverflow";
   source.title = feed.title.value;
   if (feed.links.length > 0) {
     source.link = feed.links[0];
@@ -116,12 +115,14 @@ const skipEntry = (
 
   if (
     !entry.title?.value ||
-    (entry.links.length === 0 || !entry.links[0].href) || !entry.published
+    entry.links.length === 0 ||
+    !entry.links[0].href ||
+    !entry.published
   ) {
     return true;
   }
 
-  if (Math.floor(entry.published.getTime() / 1000) <= (sourceUpdatedAt - 10)) {
+  if (Math.floor(entry.published.getTime() / 1000) <= sourceUpdatedAt - 10) {
     return true;
   }
 
