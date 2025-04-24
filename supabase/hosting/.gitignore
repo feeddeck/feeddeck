@@ -1,4 +1,4 @@
-volumes/db/migrations.sql
+!volumes/db/_supabase.sql
 volumes/db/data
 volumes/functions/*
 !volumes/functions/main

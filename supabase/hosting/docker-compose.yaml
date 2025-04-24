@@ -18,6 +18,57 @@ services:
     ports:
       - 8080:80
 
+  redis:
+    container_name: redis
+    image: redis:7.4.2
+    restart: unless-stopped
+
+  feeddeck-scheduler:
+    container_name: feeddeck-scheduler
+    image: ghcr.io/feeddeck/feeddeck:v1.4.1
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_started
+      kong:
+        condition: service_healthy
+    command:
+      - scheduler
+    environment:
+      FEEDDECK_SUPABASE_SITE_URL: ${FEEDDECK_SUPABASE_SITE_URL}
+      FEEDDECK_SUPABASE_URL: ${FEEDDECK_SUPABASE_URL}
+      FEEDDECK_SUPABASE_ANON_KEY: ${FEEDDECK_SUPABASE_ANON_KEY}
+      FEEDDECK_SUPABASE_SERVICE_ROLE_KEY: ${FEEDDECK_SUPABASE_SERVICE_ROLE_KEY}
+      FEEDDECK_GOOGLE_CLIENT_ID: ${FEEDDECK_GOOGLE_CLIENT_ID}
+      FEEDDECK_ENCRYPTION_KEY: ${FEEDDECK_ENCRYPTION_KEY}
+      FEEDDECK_ENCRYPTION_IV: ${FEEDDECK_ENCRYPTION_IV}
+      FEEDDECK_REDIS_HOSTNAME: redis
+      FEEDDECK_REDIS_PORT: 6379
+
+  feeddeck-worker:
+    container_name: feeddeck-worker
+    image: ghcr.io/feeddeck/feeddeck:v1.4.1
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_started
+      feeddeck-scheduler:
+        condition: service_started
+      kong:
+        condition: service_healthy
+    command:
+      - worker
+    environment:
+      FEEDDECK_SUPABASE_SITE_URL: ${FEEDDECK_SUPABASE_SITE_URL}
+      FEEDDECK_SUPABASE_URL: ${FEEDDECK_SUPABASE_URL}
+      FEEDDECK_SUPABASE_ANON_KEY: ${FEEDDECK_SUPABASE_ANON_KEY}
+      FEEDDECK_SUPABASE_SERVICE_ROLE_KEY: ${FEEDDECK_SUPABASE_SERVICE_ROLE_KEY}
+      FEEDDECK_GOOGLE_CLIENT_ID: ${FEEDDECK_GOOGLE_CLIENT_ID}
+      FEEDDECK_ENCRYPTION_KEY: ${FEEDDECK_ENCRYPTION_KEY}
+      FEEDDECK_ENCRYPTION_IV: ${FEEDDECK_ENCRYPTION_IV}
+      FEEDDECK_REDIS_HOSTNAME: redis
+      FEEDDECK_REDIS_PORT: 6379
+
   studio:
     container_name: supabase-studio
     image: supabase/studio:20250317-6955350
@@ -199,12 +250,49 @@ services:
       SEED_SELF_HOST: true
       RUN_JANITOR: true
 
+  minio:
+    container_name: minio
+    image: minio/minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://minio:9000/minio/health/live"]
+      interval: 2s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./volumes/storage:/data:z
+
+  minio-createbucket:
+    container_name: minio-createbucket
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c " /usr/bin/mc alias set supa-minio http://minio:9000
+      ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; /usr/bin/mc mb supa-minio/stub;
+      exit 0; "
+
   storage:
     container_name: supabase-storage
-    image: supabase/storage-api:v1.19.3
+    image: supabase/storage-api:v1.11.13
     restart: unless-stopped
-    volumes:
-      - ./volumes/storage:/var/lib/storage:z
+    depends_on:
+      db:
+        condition: service_healthy
+      rest:
+        condition: service_started
+      imgproxy:
+        condition: service_started
+      minio:
+        condition: service_healthy
     healthcheck:
       test:
         [
@@ -213,18 +301,11 @@ services:
           "--no-verbose",
           "--tries=1",
           "--spider",
-          "http://storage:5000/status",
+          "http://localhost:5000/status",
         ]
       timeout: 5s
       interval: 5s
       retries: 3
-    depends_on:
-      db:
-        condition: service_healthy
-      rest:
-        condition: service_started
-      imgproxy:
-        condition: service_started
     environment:
       ANON_KEY: ${ANON_KEY}
       SERVICE_KEY: ${SERVICE_ROLE_KEY}
@@ -232,20 +313,26 @@ services:
       PGRST_JWT_SECRET: ${JWT_SECRET}
       DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
       FILE_SIZE_LIMIT: 52428800
-      STORAGE_BACKEND: file
+      STORAGE_BACKEND: s3
+      GLOBAL_S3_BUCKET: stub
+      GLOBAL_S3_ENDPOINT: http://minio:9000
+      GLOBAL_S3_PROTOCOL: http
+      GLOBAL_S3_FORCE_PATH_STYLE: true
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+      AWS_DEFAULT_REGION: stub
       FILE_STORAGE_BACKEND_PATH: /var/lib/storage
       TENANT_ID: stub
       REGION: stub
-      GLOBAL_S3_BUCKET: stub
       ENABLE_IMAGE_TRANSFORMATION: "true"
       IMGPROXY_URL: http://imgproxy:5001
+    volumes:
+      - ./volumes/storage:/var/lib/storage:z
 
   imgproxy:
     container_name: supabase-imgproxy
     image: darthsim/imgproxy:v3.8.0
     restart: unless-stopped
-    volumes:
-      - ./volumes/storage:/var/lib/storage:z
     healthcheck:
       test: ["CMD", "imgproxy", "health"]
       timeout: 5s
@@ -253,7 +340,6 @@ services:
       retries: 3
     environment:
       IMGPROXY_BIND: ":5001"
-      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
       IMGPROXY_USE_ETAG: "true"
       IMGPROXY_ENABLE_WEBP_DETECTION: ${IMGPROXY_ENABLE_WEBP_DETECTION}
 

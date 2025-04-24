@@ -1,10 +1,9 @@
-version: '3'
 services:
   redis:
     container_name: redis
     networks:
       - supabase_network_feeddeck
-    image: redis:7.0.11
+    image: redis:7.4.2
     ports:
       - 6379:6379
 
@@ -17,7 +16,7 @@ services:
       dockerfile: ./_cmd/Dockerfile
     networks:
       - supabase_network_feeddeck
-    image: feeddeck:dev
+    image: feeddeck:latest
     command:
       - scheduler
     env_file:
@@ -30,7 +29,7 @@ services:
       - feeddeck-scheduler
     networks:
       - supabase_network_feeddeck
-    image: feeddeck:dev
+    image: feeddeck:latest
     command:
       - worker
     env_file:
