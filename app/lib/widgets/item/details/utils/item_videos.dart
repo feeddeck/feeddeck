@@ -12,10 +12,7 @@ import 'package:feeddeck/utils/constants.dart';
 /// played by the user. If the [videos] list is empty or null, the widget will
 /// not be displayed.
 class ItemVideos extends StatelessWidget {
-  const ItemVideos({
-    super.key,
-    required this.videos,
-  });
+  const ItemVideos({super.key, required this.videos});
 
   final List<String>? videos;
 
@@ -38,10 +35,7 @@ class ItemVideos extends StatelessWidget {
 /// The [ItemVideoQuality] class is used to store the different qualities of a
 /// video. It is used in combination with the [ItemVideoPlayer] widget.
 class ItemVideoQuality {
-  const ItemVideoQuality({
-    required this.quality,
-    required this.video,
-  });
+  const ItemVideoQuality({required this.quality, required this.video});
 
   final String quality;
   final String video;
@@ -96,9 +90,7 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
           builder: (BuildContext context) {
             return SafeArea(
               child: Container(
-                margin: const EdgeInsets.all(
-                  Constants.spacingMiddle,
-                ),
+                margin: const EdgeInsets.all(Constants.spacingMiddle),
                 padding: const EdgeInsets.only(
                   left: Constants.spacingMiddle,
                   right: Constants.spacingMiddle,
@@ -112,41 +104,42 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                 child: Wrap(
                   alignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
-                  children: widget.qualities!
-                      .asMap()
-                      .entries
-                      .map((quality) {
-                        if (quality.key == widget.qualities!.length - 1) {
-                          return [
-                            ListTile(
-                              mouseCursor: SystemMouseCursors.click,
-                              onTap: () async {
-                                Navigator.of(context).pop();
-                                await _playerOpen(quality.value.video);
-                              },
-                              title: Text(quality.value.quality),
-                            ),
-                          ];
-                        }
+                  children:
+                      widget.qualities!
+                          .asMap()
+                          .entries
+                          .map((quality) {
+                            if (quality.key == widget.qualities!.length - 1) {
+                              return [
+                                ListTile(
+                                  mouseCursor: SystemMouseCursors.click,
+                                  onTap: () async {
+                                    Navigator.of(context).pop();
+                                    await _playerOpen(quality.value.video);
+                                  },
+                                  title: Text(quality.value.quality),
+                                ),
+                              ];
+                            }
 
-                        return [
-                          ListTile(
-                            mouseCursor: SystemMouseCursors.click,
-                            onTap: () async {
-                              Navigator.of(context).pop();
-                              await _playerOpen(quality.value.video);
-                            },
-                            title: Text(quality.value.quality),
-                          ),
-                          const Divider(
-                            color: Constants.dividerColor,
-                            height: 1,
-                            thickness: 1,
-                          ),
-                        ];
-                      })
-                      .expand((e) => e)
-                      .toList(),
+                            return [
+                              ListTile(
+                                mouseCursor: SystemMouseCursors.click,
+                                onTap: () async {
+                                  Navigator.of(context).pop();
+                                  await _playerOpen(quality.value.video);
+                                },
+                                title: Text(quality.value.quality),
+                              ),
+                              const Divider(
+                                color: Constants.dividerColor,
+                                height: 1,
+                                thickness: 1,
+                              ),
+                            ];
+                          })
+                          .expand((e) => e)
+                          .toList(),
                 ),
               ),
             );
@@ -209,20 +202,13 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
   /// [_playerOpen] opens the video player with the provided [video] and sets
   /// the audio track if it is provided via the [audio] parameter.
   Future<void> _playerOpen(String video) async {
-    await player.open(
-      Media(video),
-      play: false,
-    );
+    await player.open(Media(video), play: false);
 
     /// Load an external audio track when it is provided via the [audio]
     /// parameter.
     /// See: https://github.com/media-kit/media-kit?tab=readme-ov-file#load-external-audio-track
     if (widget.audio != null) {
-      await player.setAudioTrack(
-        AudioTrack.uri(
-          widget.audio!,
-        ),
-      );
+      await player.setAudioTrack(AudioTrack.uri(widget.audio!));
     }
   }
 
@@ -243,9 +229,7 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        bottom: Constants.spacingMiddle,
-      ),
+      padding: const EdgeInsets.only(bottom: Constants.spacingMiddle),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return Center(
@@ -274,12 +258,13 @@ class _ItemVideoPlayerState extends State<ItemVideoPlayer> {
                   ),
                   child: Video(
                     controller: controller,
-                    controls: kIsWeb ||
-                            Platform.isLinux ||
-                            Platform.isMacOS ||
-                            Platform.isWindows
-                        ? MaterialDesktopVideoControls
-                        : MaterialVideoControls,
+                    controls:
+                        kIsWeb ||
+                                Platform.isLinux ||
+                                Platform.isMacOS ||
+                                Platform.isWindows
+                            ? MaterialDesktopVideoControls
+                            : MaterialVideoControls,
                   ),
                 ),
               ),

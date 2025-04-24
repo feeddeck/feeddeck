@@ -6,6 +6,15 @@ import 'package:feeddeck/widgets/item/details/utils/item_media.dart';
 import 'package:feeddeck/widgets/item/details/utils/item_videos.dart';
 import 'item_youtube_video.dart';
 
+/// [FeFetchVideoUrlsResponse] is the model returned by the [_fetchVideoUrls]
+/// function. It contains a list of [videos] and an optional [audio] file.
+class FetchVideoUrlsResponse {
+  const FetchVideoUrlsResponse({required this.videos, required this.audio});
+
+  final List<ItemVideoQuality> videos;
+  final String? audio;
+}
+
 class ItemYoutubeVideoNative extends StatefulWidget
     implements ItemYoutubeVideo {
   const ItemYoutubeVideoNative({
@@ -23,21 +32,47 @@ class ItemYoutubeVideoNative extends StatefulWidget
 
 class _ItemYoutubeVideoNativeState extends State<ItemYoutubeVideoNative> {
   final yt = YoutubeExplode();
-  late Future<List<ItemVideoQuality>> _futureFetchVideoUrls;
+  late Future<FetchVideoUrlsResponse> _futureFetchVideoUrls;
 
-  Future<List<ItemVideoQuality>> _fetchVideoUrls() async {
+  /// [_fetchVideoUrls] fetches all video urls from YouTube via the
+  /// [youtube_explode_dart] package. If the `muxed` field contains any items,
+  /// we use them to return the video, because it contains the video and audio
+  /// file. If the list is empty we use the `videoOnly` list to get the list of
+  /// videos and the `audioOnly` field to get a corresponding audio track.
+  Future<FetchVideoUrlsResponse> _fetchVideoUrls() async {
     final streamManifest = await yt.videos.streamsClient.getManifest(
       widget.videoUrl,
     );
-    return streamManifest.muxed
-        .sortByVideoQuality()
-        .map(
-          (element) => ItemVideoQuality(
-            quality: element.qualityLabel,
-            video: element.url.toString(),
-          ),
-        )
-        .toList();
+
+    if (streamManifest.muxed.isNotEmpty) {
+      return FetchVideoUrlsResponse(
+        videos:
+            streamManifest.video
+                .sortByVideoQuality()
+                .map(
+                  (element) => ItemVideoQuality(
+                    quality: element.qualityLabel,
+                    video: element.url.toString(),
+                  ),
+                )
+                .toList(),
+        audio: null,
+      );
+    }
+
+    return FetchVideoUrlsResponse(
+      videos:
+          streamManifest.videoOnly
+              .sortByVideoQuality()
+              .map(
+                (element) => ItemVideoQuality(
+                  quality: element.qualityLabel,
+                  video: element.url.toString(),
+                ),
+              )
+              .toList(),
+      audio: streamManifest.audioOnly.sortByBitrate()[1].url.toString(),
+    );
   }
 
   @override
@@ -60,19 +95,20 @@ class _ItemYoutubeVideoNativeState extends State<ItemYoutubeVideoNative> {
       future: _futureFetchVideoUrls,
       builder: (
         BuildContext context,
-        AsyncSnapshot<List<ItemVideoQuality>> snapshot,
+        AsyncSnapshot<FetchVideoUrlsResponse> snapshot,
       ) {
         if (snapshot.connectionState == ConnectionState.none ||
             snapshot.connectionState == ConnectionState.waiting ||
             snapshot.hasError ||
             snapshot.data == null ||
-            snapshot.data!.isEmpty) {
+            snapshot.data!.videos.isEmpty) {
           return ItemMedia(itemMedia: widget.imageUrl);
         }
 
         return ItemVideoPlayer(
-          video: snapshot.data!.first.video,
-          qualities: snapshot.data,
+          video: snapshot.data!.videos.first.video,
+          audio: snapshot.data!.audio,
+          qualities: snapshot.data!.videos,
         );
       },
     );
@@ -80,7 +116,4 @@ class _ItemYoutubeVideoNativeState extends State<ItemYoutubeVideoNative> {
 }
 
 ItemYoutubeVideo getItemYoutubeVideo(String? imageUrl, String videoUrl) =>
-    ItemYoutubeVideoNative(
-      imageUrl: imageUrl,
-      videoUrl: videoUrl,
-    );
+    ItemYoutubeVideoNative(imageUrl: imageUrl, videoUrl: videoUrl);
