@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:feeddeck/repositories/profile_repository.dart';
 import 'package:feeddeck/utils/constants.dart';
 import 'package:feeddeck/widgets/settings/accounts/settings_accounts.dart';
+import 'package:feeddeck/widgets/settings/app_settings/app_settings.dart';
 import 'package:feeddeck/widgets/settings/decks/settings_decks.dart';
 import 'package:feeddeck/widgets/settings/premium/settings_premium.dart';
 import 'package:feeddeck/widgets/settings/profile/settings_profile.dart';
@@ -30,9 +31,10 @@ class _SettingsState extends State<Settings> {
     /// call the function multiple times we set the `force` parameter to
     /// `false`.
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<ProfileRepository>(context, listen: false)
-          .init(false)
-          .then((_) => {});
+      Provider.of<ProfileRepository>(
+        context,
+        listen: false,
+      ).init(false).then((_) => {});
     });
   }
 
@@ -42,18 +44,14 @@ class _SettingsState extends State<Settings> {
       color: Constants.surface,
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Settings'),
-          ),
+          appBar: AppBar(title: const Text('Settings')),
           body: SingleChildScrollView(
             child: Center(
               child: Container(
                 constraints: const BoxConstraints(
                   maxWidth: Constants.centeredFormMaxWidth,
                 ),
-                padding: const EdgeInsets.all(
-                  Constants.spacingMiddle,
-                ),
+                padding: const EdgeInsets.all(Constants.spacingMiddle),
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,6 +72,10 @@ class _SettingsState extends State<Settings> {
                     /// user can update his email address and password or delete
                     /// his account.
                     SettingsProfile(),
+
+                    /// Display the app settings. Here the user can customize
+                    /// the app and import / export data.
+                    SettingsAppSettings(),
 
                     /// Display some general information about the app, like the
                     /// version and the link to our website.

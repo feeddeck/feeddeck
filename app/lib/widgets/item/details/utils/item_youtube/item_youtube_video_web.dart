@@ -1,8 +1,8 @@
-import 'package:web/web.dart';
-
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
+import 'package:web/web.dart';
 
 import 'package:feeddeck/utils/constants.dart';
 import 'item_youtube_video.dart';

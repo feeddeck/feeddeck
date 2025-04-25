@@ -168,6 +168,19 @@ class AppRepository with ChangeNotifier {
     return List<FDDeck>.from(data.map((deck) => FDDeck.fromJson(deck)));
   }
 
+  /// [getDecksWithNotifiy] uses the [getDecks] function to get a list of all
+  /// decks for the user, but instead of returning the decks it updates the
+  /// [_decks] property and calls all the registered listeners.
+  ///
+  /// This function can be used to trigger an update of the decks when they are
+  /// created outside of the AppRepository, like it is done in the import
+  /// process.
+  Future<void> getDecksWithNotifiy() async {
+    final decks = await getDecks();
+    _decks = decks;
+    notifyListeners();
+  }
+
   /// [updateDeck] is called to update a deck for the user. The function takes
   /// a [deckId] and a [name] as parameters. The function calls the Supabase
   /// client to update the name of the deck. After the deck was updated, the
