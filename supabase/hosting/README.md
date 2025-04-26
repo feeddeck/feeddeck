@@ -11,14 +11,14 @@ be found in the FeedDeck contributing guide and the Supabase documentation.
    directory:
 
    ```sh
-   git clone git@github.com:feeddeck/feeddeck.git
+   git clone https://github.com/feeddeck/feeddeck.git
    cd feeddeck/supabase/hosting
    ```
 
 2. Copy all edge functions into the correct directory:
 
    ```sh
-   find ./volumes/functions -depth 1 ! -name main -exec rm -rf {} +
+   find ./volumes/functions -maxdepth 1 ! -name main -exec rm -rf {} +
    cp -a ../functions/. volumes/functions/
    ```
 
