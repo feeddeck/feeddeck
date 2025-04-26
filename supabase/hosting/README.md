@@ -18,8 +18,7 @@ be found in the FeedDeck contributing guide and the Supabase documentation.
 2. Copy all edge functions into the correct directory:
 
    ```sh
-   find ./volumes/functions -depth 1 ! -name main -exec rm -rf {} +
-   cp -a ../functions/. volumes/functions/
+   cp -r ../functions/. volumes/functions/
    ```
 
 3. Create a `.env` file and adjust the environment variables as needed:
@@ -59,4 +58,5 @@ be found in the FeedDeck contributing guide and the Supabase documentation.
    docker compose down -v
    rm -rf volumes/db/data/
    rm -rf volumes/storage/
+   rm -rf volumes/functions/
    ```

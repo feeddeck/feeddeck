@@ -1,6 +1,5 @@
 !volumes/db/_supabase.sql
 volumes/db/data
-volumes/functions/*
-!volumes/functions/main
+volumes/functions
 volumes/storage
 .env
