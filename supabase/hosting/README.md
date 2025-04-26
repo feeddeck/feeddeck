@@ -11,7 +11,7 @@ be found in the FeedDeck contributing guide and the Supabase documentation.
    directory:
 
    ```sh
-   git clone git@github.com:feeddeck/feeddeck.git
+   git clone https://github.com/feeddeck/feeddeck.git
    cd feeddeck/supabase/hosting
    ```
 
