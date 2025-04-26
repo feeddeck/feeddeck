@@ -1,9 +1,8 @@
+import 'package:xml/xml.dart';
+
 /// [FDStackOverflowType] is an enum value which defines the type for the
 /// StackOverflow source.
-enum FDStackOverflowType {
-  url,
-  tag,
-}
+enum FDStackOverflowType { url, tag }
 
 /// [FDStackOverflowTypeExtension] defines all extensions which are available for
 /// the [FDStackOverflowType] enum type.
@@ -42,12 +41,7 @@ FDStackOverflowType getStackOverflowTypeFromString(String state) {
 
 /// [FDStackOverflowSort] is an enum value which defines the available sort
 /// properties for the [FDStackOverflowOptions]
-enum FDStackOverflowSort {
-  newest,
-  active,
-  featured,
-  votes,
-}
+enum FDStackOverflowSort { newest, active, featured, votes }
 
 /// [FDStackOverflowSortExtension] defines all extensions which are available
 /// for the [FDStackOverflowSort] enum type.
@@ -100,27 +94,26 @@ class FDStackOverflowOptions {
   String? tag;
   FDStackOverflowSort? sort;
 
-  FDStackOverflowOptions({
-    this.type,
-    this.url,
-    this.tag,
-    this.sort,
-  });
+  FDStackOverflowOptions({this.type, this.url, this.tag, this.sort});
 
   factory FDStackOverflowOptions.fromJson(Map<String, dynamic> responseData) {
     return FDStackOverflowOptions(
-      type: responseData.containsKey('type') && responseData['type'] != null
-          ? getStackOverflowTypeFromString(responseData['type'])
-          : null,
-      url: responseData.containsKey('url') && responseData['url'] != null
-          ? responseData['url']
-          : null,
-      tag: responseData.containsKey('tag') && responseData['tag'] != null
-          ? responseData['tag']
-          : null,
-      sort: responseData.containsKey('sort') && responseData['sort'] != null
-          ? getStackOverflowSortFromString(responseData['sort'])
-          : null,
+      type:
+          responseData.containsKey('type') && responseData['type'] != null
+              ? getStackOverflowTypeFromString(responseData['type'])
+              : null,
+      url:
+          responseData.containsKey('url') && responseData['url'] != null
+              ? responseData['url']
+              : null,
+      tag:
+          responseData.containsKey('tag') && responseData['tag'] != null
+              ? responseData['tag']
+              : null,
+      sort:
+          responseData.containsKey('sort') && responseData['sort'] != null
+              ? getStackOverflowSortFromString(responseData['sort'])
+              : null,
     );
   }
 
@@ -131,5 +124,33 @@ class FDStackOverflowOptions {
       'tag': tag,
       'sort': sort?.toShortString(),
     };
+  }
+
+  factory FDStackOverflowOptions.fromXml(XmlElement element) {
+    return FDStackOverflowOptions(
+      type: getStackOverflowTypeFromString(
+        element.getAttribute('stackoverflowType') ?? '',
+      ),
+      url: element.getAttribute('stackoverflowUrl'),
+      tag: element.getAttribute('stackoverflowTag'),
+      sort: getStackOverflowSortFromString(
+        element.getAttribute('stackoverflowSort') ?? '',
+      ),
+    );
+  }
+
+  void toXml(XmlBuilder builder) {
+    if (type != null) {
+      builder.attribute('stackoverflowType', type!.toShortString());
+    }
+    if (url != null) {
+      builder.attribute('stackoverflowUrl', url);
+    }
+    if (tag != null) {
+      builder.attribute('stackoverflowTag', tag);
+    }
+    if (sort != null) {
+      builder.attribute('stackoverflowSort', sort);
+    }
   }
 }

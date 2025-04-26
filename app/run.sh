@@ -43,7 +43,11 @@ set -o allexport && source "../supabase/.env.${environment}" && set +o allexport
 # uses the Docker address of the Supabase instance.
 supabase_url=$FEEDDECK_SUPABASE_URL
 if [ "${environment}" == "local" ]; then
-  supabase_url="http://localhost:54321"
+  if [ "${device}" == "sdk gphone arm64" ]; then
+    supabase_url="http://10.0.2.2:54321"
+  else
+    supabase_url="http://localhost:54321"
+  fi
 fi
 
 # If the selected device is "chrome" we have to add some additional flags to the

@@ -1,3 +1,5 @@
+import 'package:xml/xml.dart';
+
 import 'package:feeddeck/models/source.dart';
 
 /// [FDColumn] is the model for a column in our app. The following fields are
@@ -26,11 +28,12 @@ class FDColumn {
       id: data['id'],
       name: data['name'],
       position: data['position'],
-      sources: data.containsKey('sources') && data['sources'] != null
-          ? List<FDSource>.from(
-              data['sources'].map((source) => FDSource.fromJson(source)),
-            )
-          : [],
+      sources:
+          data.containsKey('sources') && data['sources'] != null
+              ? List<FDSource>.from(
+                data['sources'].map((source) => FDSource.fromJson(source)),
+              )
+              : [],
     );
   }
 
@@ -39,5 +42,35 @@ class FDColumn {
   /// items, when the column is changed (e.g. source is added / deleted).
   String identifier() {
     return 'id: $id, sources: ${sources.map((source) => source.id).join(' ')}';
+  }
+
+  factory FDColumn.fromXml(XmlElement element) {
+    final sources = <FDSource>[];
+
+    element.findElements('outline').forEach((outline) {
+      final source = FDSource.fromXml(outline);
+      if (source.type != FDSourceType.none) {
+        sources.add(source);
+      }
+    });
+
+    return FDColumn(
+      id: '',
+      name: element.getAttribute('text') ?? 'Unknown',
+      position: 0,
+      sources: sources,
+    );
+  }
+
+  void toXml(XmlBuilder builder) {
+    builder.element(
+      'outline',
+      nest: () {
+        builder.attribute('text', name);
+        for (var i = 0; i < sources.length; i++) {
+          sources[i].toXml(builder);
+        }
+      },
+    );
   }
 }

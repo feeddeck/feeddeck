@@ -1,9 +1,8 @@
+import 'package:xml/xml.dart';
+
 /// [FDGoogleNewsType] is an enum value which defines the type for the Google
 /// News source.
-enum FDGoogleNewsType {
-  url,
-  search,
-}
+enum FDGoogleNewsType { url, search }
 
 /// [FDGoogleNewsTypeExtension] defines all extensions which are available for
 /// the [FDGoogleNewsType] enum type.
@@ -61,25 +60,30 @@ class FDGoogleNewsOptions {
 
   factory FDGoogleNewsOptions.fromJson(Map<String, dynamic> responseData) {
     return FDGoogleNewsOptions(
-      type: responseData.containsKey('type') && responseData['type'] != null
-          ? getGoogleNewsTypeFromString(responseData['type'])
-          : null,
-      url: responseData.containsKey('url') && responseData['url'] != null
-          ? responseData['url']
-          : null,
+      type:
+          responseData.containsKey('type') && responseData['type'] != null
+              ? getGoogleNewsTypeFromString(responseData['type'])
+              : null,
+      url:
+          responseData.containsKey('url') && responseData['url'] != null
+              ? responseData['url']
+              : null,
       search:
           responseData.containsKey('search') && responseData['search'] != null
               ? responseData['search']
               : null,
-      ceid: responseData.containsKey('ceid') && responseData['ceid'] != null
-          ? responseData['ceid']
-          : null,
-      gl: responseData.containsKey('gl') && responseData['gl'] != null
-          ? responseData['gl']
-          : null,
-      hl: responseData.containsKey('hl') && responseData['hl'] != null
-          ? responseData['hl']
-          : null,
+      ceid:
+          responseData.containsKey('ceid') && responseData['ceid'] != null
+              ? responseData['ceid']
+              : null,
+      gl:
+          responseData.containsKey('gl') && responseData['gl'] != null
+              ? responseData['gl']
+              : null,
+      hl:
+          responseData.containsKey('hl') && responseData['hl'] != null
+              ? responseData['hl']
+              : null,
     );
   }
 
@@ -92,5 +96,39 @@ class FDGoogleNewsOptions {
       'gl': gl,
       'hl': hl,
     };
+  }
+
+  factory FDGoogleNewsOptions.fromXml(XmlElement element) {
+    return FDGoogleNewsOptions(
+      type: getGoogleNewsTypeFromString(
+        element.getAttribute('googlenewsType') ?? '',
+      ),
+      url: element.getAttribute('googlenewsUrl'),
+      search: element.getAttribute('googlenewsSearch'),
+      ceid: element.getAttribute('googlenewsCeid'),
+      gl: element.getAttribute('googlenewsGl'),
+      hl: element.getAttribute('googlenewsHl'),
+    );
+  }
+
+  void toXml(XmlBuilder builder) {
+    if (type != null) {
+      builder.attribute('googlenewsType', type!.toShortString());
+    }
+    if (url != null) {
+      builder.attribute('googlenewsUrl', url);
+    }
+    if (search != null) {
+      builder.attribute('googlenewsSearch', search);
+    }
+    if (ceid != null) {
+      builder.attribute('googlenewsCeid', ceid);
+    }
+    if (gl != null) {
+      builder.attribute('googlenewsGl', gl);
+    }
+    if (hl != null) {
+      builder.attribute('googlenewsHl', hl);
+    }
   }
 }

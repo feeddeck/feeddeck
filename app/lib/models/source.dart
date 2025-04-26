@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:xml/xml.dart';
+
 import 'package:feeddeck/models/sources/github.dart';
 import 'package:feeddeck/models/sources/googlenews.dart';
 import 'package:feeddeck/models/sources/stackoverflow.dart';
@@ -236,20 +238,25 @@ class FDSource {
     required this.icon,
   });
 
+  String get prettyTitle => title.replaceAll(RegExp(r'(?! )\s+| \s+'), ' ');
+
   factory FDSource.fromJson(Map<String, dynamic> data) {
     return FDSource(
       id: data['id'],
       type: getSourceTypeFromString(data['type']),
       title: data['title'],
-      options: data.containsKey('options') && data['options'] != null
-          ? FDSourceOptions.fromJson(data['options'])
-          : null,
-      link: data.containsKey('link') && data['link'] != null
-          ? data['link']
-          : null,
-      icon: data.containsKey('icon') && data['icon'] != null
-          ? data['icon']
-          : null,
+      options:
+          data.containsKey('options') && data['options'] != null
+              ? FDSourceOptions.fromJson(data['options'])
+              : null,
+      link:
+          data.containsKey('link') && data['link'] != null
+              ? data['link']
+              : null,
+      icon:
+          data.containsKey('icon') && data['icon'] != null
+              ? data['icon']
+              : null,
     );
   }
 
@@ -262,6 +269,46 @@ class FDSource {
       'link': link,
       'icon': icon,
     };
+  }
+
+  factory FDSource.fromXml(XmlElement element) {
+    final type = getSourceTypeFromString(element.getAttribute('type') ?? '');
+    final text = element.getAttribute('text');
+
+    if (type == FDSourceType.none || text == null) {
+      return FDSource(
+        id: '',
+        type: FDSourceType.none,
+        title: '',
+        options: null,
+        link: null,
+        icon: null,
+      );
+    }
+
+    return FDSource(
+      id: '',
+      type: type,
+      title: text,
+      options: FDSourceOptions.fromXml(element),
+      link: null,
+      icon: null,
+    );
+  }
+
+  void toXml(XmlBuilder builder) {
+    builder.element(
+      'outline',
+      nest: () {
+        builder.attribute('type', type.toShortString());
+        builder.attribute('text', prettyTitle);
+        builder.attribute('htmlUrl', link);
+
+        if (options != null) {
+          options!.toXml(builder);
+        }
+      },
+    );
   }
 }
 
@@ -302,25 +349,29 @@ class FDSourceOptions {
 
   factory FDSourceOptions.fromJson(Map<String, dynamic> responseData) {
     return FDSourceOptions(
-      fourchan: responseData.containsKey('fourchan') &&
-              responseData['fourchan'] != null
-          ? responseData['fourchan']
-          : null,
+      fourchan:
+          responseData.containsKey('fourchan') &&
+                  responseData['fourchan'] != null
+              ? responseData['fourchan']
+              : null,
       github:
           responseData.containsKey('github') && responseData['github'] != null
               ? FDGitHubOptions.fromJson(responseData['github'])
               : null,
-      googlenews: responseData.containsKey('googlenews') &&
-              responseData['googlenews'] != null
-          ? FDGoogleNewsOptions.fromJson(responseData['googlenews'])
-          : null,
-      lemmy: responseData.containsKey('lemmy') && responseData['lemmy'] != null
-          ? responseData['lemmy']
-          : null,
-      mastodon: responseData.containsKey('mastodon') &&
-              responseData['mastodon'] != null
-          ? responseData['mastodon']
-          : null,
+      googlenews:
+          responseData.containsKey('googlenews') &&
+                  responseData['googlenews'] != null
+              ? FDGoogleNewsOptions.fromJson(responseData['googlenews'])
+              : null,
+      lemmy:
+          responseData.containsKey('lemmy') && responseData['lemmy'] != null
+              ? responseData['lemmy']
+              : null,
+      mastodon:
+          responseData.containsKey('mastodon') &&
+                  responseData['mastodon'] != null
+              ? responseData['mastodon']
+              : null,
       medium:
           responseData.containsKey('medium') && responseData['medium'] != null
               ? responseData['medium']
@@ -329,10 +380,11 @@ class FDSourceOptions {
           responseData.containsKey('nitter') && responseData['nitter'] != null
               ? responseData['nitter']
               : null,
-      pinterest: responseData.containsKey('pinterest') &&
-              responseData['pinterest'] != null
-          ? responseData['pinterest']
-          : null,
+      pinterest:
+          responseData.containsKey('pinterest') &&
+                  responseData['pinterest'] != null
+              ? responseData['pinterest']
+              : null,
       podcast:
           responseData.containsKey('podcast') && responseData['podcast'] != null
               ? responseData['podcast']
@@ -341,13 +393,15 @@ class FDSourceOptions {
           responseData.containsKey('reddit') && responseData['reddit'] != null
               ? responseData['reddit']
               : null,
-      rss: responseData.containsKey('rss') && responseData['rss'] != null
-          ? responseData['rss']
-          : null,
-      stackoverflow: responseData.containsKey('stackoverflow') &&
-              responseData['stackoverflow'] != null
-          ? FDStackOverflowOptions.fromJson(responseData['stackoverflow'])
-          : null,
+      rss:
+          responseData.containsKey('rss') && responseData['rss'] != null
+              ? responseData['rss']
+              : null,
+      stackoverflow:
+          responseData.containsKey('stackoverflow') &&
+                  responseData['stackoverflow'] != null
+              ? FDStackOverflowOptions.fromJson(responseData['stackoverflow'])
+              : null,
       tumblr:
           responseData.containsKey('tumblr') && responseData['tumblr'] != null
               ? responseData['tumblr']
@@ -376,5 +430,56 @@ class FDSourceOptions {
       'tumblr': tumblr,
       'youtube': youtube,
     };
+  }
+
+  factory FDSourceOptions.fromXml(XmlElement element) {
+    return FDSourceOptions(
+      fourchan: element.getAttribute('fourchan'),
+      github: FDGitHubOptions.fromXml(element),
+      googlenews: FDGoogleNewsOptions.fromXml(element),
+      lemmy: element.getAttribute('lemmy'),
+      mastodon: element.getAttribute('mastodon'),
+      medium: element.getAttribute('medium'),
+      nitter: element.getAttribute('nitter'),
+      pinterest: element.getAttribute('pinterest'),
+      podcast: element.getAttribute('podcast'),
+      reddit: element.getAttribute('reddit'),
+      rss: element.getAttribute('xmlUrl'),
+      stackoverflow: FDStackOverflowOptions.fromXml(element),
+      tumblr: element.getAttribute('tumblr'),
+      youtube: element.getAttribute('youtube'),
+    );
+  }
+
+  void toXml(XmlBuilder builder) {
+    if (fourchan != null) {
+      builder.attribute('fourchan', fourchan);
+    } else if (github != null) {
+      github!.toXml(builder);
+    } else if (googlenews != null) {
+      googlenews!.toXml(builder);
+    } else if (lemmy != null) {
+      builder.attribute('lemmy', lemmy);
+    } else if (mastodon != null) {
+      builder.attribute('mastodon', mastodon);
+    } else if (medium != null) {
+      builder.attribute('medium', medium);
+    } else if (nitter != null) {
+      builder.attribute('nitter', nitter);
+    } else if (pinterest != null) {
+      builder.attribute('pinterest', pinterest);
+    } else if (podcast != null) {
+      builder.attribute('podcast', podcast);
+    } else if (reddit != null) {
+      builder.attribute('reddit', reddit);
+    } else if (rss != null) {
+      builder.attribute('xmlUrl', rss);
+    } else if (stackoverflow != null) {
+      stackoverflow!.toXml(builder);
+    } else if (tumblr != null) {
+      builder.attribute('tumblr', tumblr);
+    } else if (youtube != null) {
+      builder.attribute('youtube', youtube);
+    }
   }
 }

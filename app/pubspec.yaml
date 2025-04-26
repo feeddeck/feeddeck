@@ -42,6 +42,7 @@ dependencies:
   carousel_slider: ^5.0.0
   collection: ^1.17.0
   crypto: ^3.0.6
+  file_picker: ^10.1.2
   flutter_cache_manager: ^3.4.0
   flutter_markdown: ^0.7.6
   flutter_native_splash: ^2.4.5
@@ -68,6 +69,7 @@ dependencies:
   url_launcher: ^6.3.1
   web: ^1.1.1
   window_manager: ^0.4.3
+  xml: ^6.5.0
   youtube_explode_dart: ^2.3.10
 
 dev_dependencies:

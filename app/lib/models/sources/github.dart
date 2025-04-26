@@ -1,3 +1,5 @@
+import 'package:xml/xml.dart';
+
 /// [FDGitHubType] is an enum value which defines the type for the GitHub
 /// source.
 enum FDGitHubType {
@@ -88,31 +90,38 @@ class FDGitHubOptions {
 
   factory FDGitHubOptions.fromJson(Map<String, dynamic> responseData) {
     return FDGitHubOptions(
-      type: responseData.containsKey('type') && responseData['type'] != null
-          ? getGitHubTypeFromString(responseData['type'])
-          : null,
-      participating: responseData.containsKey('participating') &&
-              responseData['participating'] != null
-          ? responseData['participating']
-          : null,
-      repository: responseData.containsKey('repository') &&
-              responseData['repository'] != null
-          ? responseData['repository']
-          : null,
-      user: responseData.containsKey('user') && responseData['user'] != null
-          ? responseData['user']
-          : null,
-      organization: responseData.containsKey('organization') &&
-              responseData['organization'] != null
-          ? responseData['organization']
-          : null,
-      queryName: responseData.containsKey('queryName') &&
-              responseData['queryName'] != null
-          ? responseData['queryName']
-          : null,
-      query: responseData.containsKey('query') && responseData['query'] != null
-          ? responseData['query']
-          : null,
+      type:
+          responseData.containsKey('type') && responseData['type'] != null
+              ? getGitHubTypeFromString(responseData['type'])
+              : null,
+      participating:
+          responseData.containsKey('participating') &&
+                  responseData['participating'] != null
+              ? responseData['participating']
+              : null,
+      repository:
+          responseData.containsKey('repository') &&
+                  responseData['repository'] != null
+              ? responseData['repository']
+              : null,
+      user:
+          responseData.containsKey('user') && responseData['user'] != null
+              ? responseData['user']
+              : null,
+      organization:
+          responseData.containsKey('organization') &&
+                  responseData['organization'] != null
+              ? responseData['organization']
+              : null,
+      queryName:
+          responseData.containsKey('queryName') &&
+                  responseData['queryName'] != null
+              ? responseData['queryName']
+              : null,
+      query:
+          responseData.containsKey('query') && responseData['query'] != null
+              ? responseData['query']
+              : null,
     );
   }
 
@@ -126,5 +135,41 @@ class FDGitHubOptions {
       'queryName': queryName,
       'query': query,
     };
+  }
+
+  factory FDGitHubOptions.fromXml(XmlElement element) {
+    return FDGitHubOptions(
+      type: getGitHubTypeFromString(element.getAttribute('githubType') ?? ''),
+      participating: element.getAttribute('githubParticipating') == 'true',
+      repository: element.getAttribute('githubRepository'),
+      user: element.getAttribute('githubUser'),
+      organization: element.getAttribute('githubOrganization'),
+      queryName: element.getAttribute('githubQueryName'),
+      query: element.getAttribute('githubQuery'),
+    );
+  }
+
+  void toXml(XmlBuilder builder) {
+    if (type != null) {
+      builder.attribute('githubType', type!.toShortString());
+    }
+    if (participating != null) {
+      builder.attribute('githubParticipating', participating);
+    }
+    if (repository != null) {
+      builder.attribute('githubRepository', repository);
+    }
+    if (user != null) {
+      builder.attribute('githubUser', user);
+    }
+    if (organization != null) {
+      builder.attribute('githubOrganization', organization);
+    }
+    if (queryName != null) {
+      builder.attribute('githubQueryName', queryName);
+    }
+    if (query != null) {
+      builder.attribute('githubQuery', query);
+    }
   }
 }

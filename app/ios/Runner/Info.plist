@@ -68,6 +68,8 @@
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false/>
+    <false/>
+    <key>UISupportsDocumentBrowser</key>
+    <true/>
 	</dict>
 </plist>

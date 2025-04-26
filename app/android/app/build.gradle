@@ -85,4 +85,7 @@ flutter {
 
 dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
+    // This is required for the "file_picker" Flutter package, because without the app crash when exporting a file with the following error:
+    // "java.lang.NoClassDefFoundError: Failed resolution of: Ljavax/xml/stream/XMLResolver;"
+    implementation 'javax.xml.stream:stax-api:1.0-2'
 }
