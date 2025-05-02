@@ -110,57 +110,64 @@ class _SourceListItemState extends State<SourceListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Constants.secondary,
-      margin: const EdgeInsets.only(bottom: Constants.spacingSmall),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(Constants.spacingMiddle),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        Characters(widget.source.title)
-                            .replaceAll(Characters(''), Characters('\u{200B}'))
-                            .toString(),
-                        maxLines: 1,
-                        style: const TextStyle(overflow: TextOverflow.ellipsis),
-                      ),
-                      Text(
-                        Characters(widget.source.type.toLocalizedString())
-                            .replaceAll(Characters(''), Characters('\u{200B}'))
-                            .toString(),
-                        maxLines: 1,
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 10.0,
+    return ReorderableDragStartListener(
+      index: widget.sourceIndex,
+      child: Card(
+        color: Constants.secondary,
+        margin: const EdgeInsets.only(bottom: Constants.spacingSmall),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(Constants.spacingMiddle),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          Characters(widget.source.title)
+                              .replaceAll(
+                                Characters(''),
+                                Characters('\u{200B}'),
+                              )
+                              .toString(),
+                          maxLines: 1,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ],
+                        Text(
+                          Characters(widget.source.type.toLocalizedString())
+                              .replaceAll(
+                                Characters(''),
+                                Characters('\u{200B}'),
+                              )
+                              .toString(),
+                          maxLines: 1,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 10.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () => _showDeleteDialog(),
-                  icon:
-                      _isLoading
-                          ? const ElevatedButtonProgressIndicator()
-                          : const Icon(Icons.delete),
-                ),
-                ReorderableDragStartListener(
-                  index: widget.sourceIndex,
-                  child: Icon(Icons.drag_handle),
-                ),
-              ],
+                  IconButton(
+                    onPressed: () => _showDeleteDialog(),
+                    icon:
+                        _isLoading
+                            ? const ElevatedButtonProgressIndicator()
+                            : const Icon(Icons.delete),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
