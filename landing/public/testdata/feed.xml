@@ -1,0 +1,15 @@
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>FeedDeck</title>
+    <link>https://feeddeck.app/</link>
+    <description>Follow your RSS and Social Media Feeds</description>
+    <item>
+      <title>Test Data</title>
+      <link>https://feeddeck.app/testdata/feed.xml</link>
+      <description>Test Data for the FeedDeck E2E Tests</description>
+      <pubDate>Fri, 02 May 2025 14:00:00 +0200</pubDate>
+      <guid>7d72145e-d750-43ff-8eaa-95256231a61f</guid>
+      <content:encoded><![CDATA[<p><img src="https://feeddeck.app/testdata/image.jpg" /><br/><br/>Test Data for the FeedDeck E2E Tests with an Image and <b>HTML Formatted Content</b>.</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>
