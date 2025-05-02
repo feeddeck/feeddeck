@@ -679,6 +679,14 @@ Deno.test("E2E Tests", async (t) => {
     },
   );
 
+  await t.step("should not be able to call database functions", async () => {
+    const res1 = await testUser1.client!.rpc("items_delete");
+    assertNotEquals(res1.error, null);
+
+    const res2 = await testUser1.client!.rpc("sources_delete_files");
+    assertNotEquals(res2.error, null);
+  });
+
   await t.step("should delete users", async () => {
     const res1 = await supabaseAdmin.auth.admin.deleteUser(testUser1.id);
     assertEquals(res1.error, null);
