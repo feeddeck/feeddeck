@@ -40,23 +40,44 @@ jobs:
   deno:
     name: Deno
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "supabase/functions"
+    env:
+      FEEDDECK_SUPABASE_URL: http://localhost:54321
+      FEEDDECK_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+      FEEDDECK_LOG_LEVEL: debug
+      FEEDDECK_SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Supabase
+        uses: supabase/setup-cli@v1
 
       - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
           deno-version: v1.45.2
 
+      - name: Start Supabase
+        run: |
+          echo "FEEDDECK_LOG_LEVEL=${FEEDDECK_LOG_LEVEL}" >> ./supabase/.env.test
+          echo "FEEDDECK_SUPABASE_URL=${FEEDDECK_SUPABASE_URL}" >> ./supabase/.env.test
+          echo "FEEDDECK_SUPABASE_ANON_KEY=${FEEDDECK_SUPABASE_ANON_KEY}" >> ./supabase/.env.test
+          echo "FEEDDECK_SUPABASE_SERVICE_ROLE_KEY=${FEEDDECK_SUPABASE_SERVICE_ROLE_KEY}" >> ./supabase/.env.test
+
+          supabase start
+          supabase db reset
+          supabase functions serve --no-verify-jwt --env-file supabase/.env.test &
+
+          psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -c "UPDATE settings SET value='http://kong:8000' WHERE name='supabase_api_url'"
+          psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -c "UPDATE settings SET value='${FEEDDECK_SUPABASE_SERVICE_ROLE_KEY}' WHERE name='supabase_service_role_key'"
+
       - name: Lint
+        working-directory: "supabase/functions"
         run: |
           deno task lint
 
       - name: Test
+        working-directory: "supabase/functions"
         run: |
           deno task test
