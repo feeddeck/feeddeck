@@ -4,24 +4,29 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:url_launcher/url_launcher.dart';
 
-/// [openUrl] can be used to open the given [url] in the platforms default
-/// browser.
+/// [openUrl] can be used to open the given [url] in the specified launch mode.
+/// For iOS and Android we are using the In-App-Browser to launch the url, for
+/// all other platforms we are using the external browser.
 ///
-/// On Android we are not using the default launch mode
-/// (`LaunchMode.platformDefault`), because the opened In-App-Browser is very
-/// limited, so that we decided to use `LaunchMode.externalApplication` to open
-/// the url.
+/// We do not have to check if the launch mode is really supported, because
+/// `launchUrl` will fallback to a supported launch mode, when our preferred
+/// mode is not supported.
 Future<void> openUrl(String url) async {
   var launchMode = LaunchMode.platformDefault;
 
-  if (!kIsWeb) {
-    if (Platform.isAndroid) {
-      launchMode = LaunchMode.externalApplication;
-    }
+  if (kIsWeb) {
+    launchMode = LaunchMode.externalApplication;
+  } else if (Platform.isAndroid) {
+    launchMode = LaunchMode.inAppBrowserView;
+  } else if (Platform.isIOS) {
+    launchMode = LaunchMode.inAppBrowserView;
+  } else if (Platform.isMacOS) {
+    launchMode = LaunchMode.externalApplication;
+  } else if (Platform.isLinux) {
+    launchMode = LaunchMode.externalApplication;
+  } else if (Platform.isWindows) {
+    launchMode = LaunchMode.externalApplication;
   }
 
-  await launchUrl(
-    Uri.parse(url),
-    mode: launchMode,
-  );
+  await launchUrl(Uri.parse(url), mode: launchMode);
 }
