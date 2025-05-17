@@ -60,3 +60,18 @@ updates:
       npm:
         patterns:
           - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/supabase/email-templates"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ricoberger"
+    assignees:
+      - "ricoberger"
+    labels:
+      - "changelog: changed"
+    groups:
+      npm:
+        patterns:
+          - "*"
