@@ -431,7 +431,7 @@ jobs:
   # when a new release is published.
   windows:
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     if:
       github.event_name == 'pull_request' || (github.event_name == 'release' &&
       github.event.action == 'published')
