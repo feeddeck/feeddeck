@@ -39,38 +39,38 @@ dependencies:
 
   app_links: ^6.4.0
   cached_network_image: ^3.4.1
-  carousel_slider: ^5.0.0
+  carousel_slider: ^5.1.1
   collection: ^1.17.0
   crypto: ^3.0.6
-  file_picker: ^10.1.2
+  file_picker: ^10.2.0
   flutter_cache_manager: ^3.4.0
-  flutter_markdown: ^0.7.6
-  flutter_native_splash: ^2.4.5
-  html: ^0.15.5
+  flutter_markdown: ^0.7.7+1
+  flutter_native_splash: ^2.4.6
+  html: ^0.15.6
   html2md: ^1.3.2
-  http: ^1.3.0
-  intl: ^0.19.0
-  just_audio: ^0.9.46
-  just_audio_background: ^0.0.1-beta.15
-  just_audio_media_kit: ^2.0.6
+  http: ^1.4.0
+  intl: ^0.20.2
+  just_audio: ^0.10.4
+  just_audio_background: ^0.0.1-beta.17
+  just_audio_media_kit: ^2.1.0
   media_kit: ^1.1.10+1
-  media_kit_video: ^1.2.5
-  media_kit_libs_video: ^1.0.5
+  media_kit_video: ^1.3.0
+  media_kit_libs_video: ^1.0.6
   package_info_plus: ^8.3.0
   piped_client: ^0.1.2
-  provider: ^6.1.2
-  purchases_flutter: ^8.6.1
+  provider: ^6.1.5
+  purchases_flutter: ^9.1.0
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  shared_preferences: ^2.5.2
-  sign_in_with_apple: ^6.1.4
-  supabase_flutter: ^2.8.4
+  shared_preferences: ^2.5.3
+  sign_in_with_apple: ^7.0.1
+  supabase_flutter: ^2.9.1
   timeago: ^3.7.0
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
   web: ^1.1.1
-  window_manager: ^0.4.3
+  window_manager: ^0.5.1
   xml: ^6.5.0
-  youtube_explode_dart: ^2.3.10
+  youtube_explode_dart: ^2.5.1
 
 dev_dependencies:
   flutter_test:
@@ -81,11 +81,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.4
   import_sorter: ^4.6.0
-  msix: ^3.16.8
+  msix: ^3.16.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
