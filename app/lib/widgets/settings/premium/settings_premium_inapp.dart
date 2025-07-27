@@ -33,15 +33,13 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
   Future<Offering?> _fetchOfferings() async {
     if (Platform.isAndroid) {
       await Purchases.configure(
-        PurchasesConfiguration(
-          SettingsRepository().revenueCatGooglePlayKey,
-        )..appUserID = supabase.Supabase.instance.client.auth.currentUser!.id,
+        PurchasesConfiguration(SettingsRepository().revenueCatGooglePlayKey)
+          ..appUserID = supabase.Supabase.instance.client.auth.currentUser!.id,
       );
     } else if (Platform.isMacOS || Platform.isIOS) {
       await Purchases.configure(
-        PurchasesConfiguration(
-          SettingsRepository().revenueCatAppStoreKey,
-        )..appUserID = supabase.Supabase.instance.client.auth.currentUser!.id,
+        PurchasesConfiguration(SettingsRepository().revenueCatAppStoreKey)
+          ..appUserID = supabase.Supabase.instance.client.auth.currentUser!.id,
       );
     }
 
@@ -62,16 +60,22 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
         _isLoading = true;
       });
 
-      CustomerInfo customerInfo = await Purchases.purchasePackage(package);
+      final purchaseResult = await Purchases.purchasePackage(package);
       setState(() {
         _isLoading = false;
       });
 
-      if (!customerInfo.entitlements.all.containsKey('FeedDeck Premium')) {
+      if (!purchaseResult.customerInfo.entitlements.all.containsKey(
+        'FeedDeck Premium',
+      )) {
         throw Exception('FeedDeck Premium entitlement not found.');
       }
 
-      if (customerInfo.entitlements.all['FeedDeck Premium']!.isActive) {
+      if (purchaseResult
+          .customerInfo
+          .entitlements
+          .all['FeedDeck Premium']!
+          .isActive) {
         if (!mounted) return;
         Provider.of<ProfileRepository>(
           context,
@@ -149,17 +153,12 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         shape: const Border(
-          bottom: BorderSide(
-            color: Constants.dividerColor,
-            width: 1,
-          ),
+          bottom: BorderSide(color: Constants.dividerColor, width: 1),
         ),
         title: const Text('FeedDeck Premium'),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.close,
-            ),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -169,17 +168,15 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
       body: SafeArea(
         child: FutureBuilder(
           future: _futureFetchOfferings,
-          builder: (
-            BuildContext context,
-            AsyncSnapshot<Offering?> snapshot,
-          ) {
+          builder: (BuildContext context, AsyncSnapshot<Offering?> snapshot) {
             return Column(
               children: [
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(Constants.spacingMiddle),
                     child: SingleChildScrollView(
-                      child: snapshot.connectionState == ConnectionState.none ||
+                      child:
+                          snapshot.connectionState == ConnectionState.none ||
                               snapshot.connectionState ==
                                   ConnectionState.waiting ||
                               snapshot.hasError ||
@@ -188,7 +185,8 @@ class _SettingsPremiumInAppState extends State<SettingsPremiumInApp> {
                           ? const Text('Loading ...')
                           : MarkdownBody(
                               selectable: true,
-                              data: '''
+                              data:
+                                  '''
 You are currently using the free version of FeedDeck, which allows you to add up
 to 10 sources for the first 7 days. After that trial period your sources will
 not be updated anymore.
@@ -202,9 +200,7 @@ canceled at any time.
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: Constants.spacingSmall,
-                ),
+                const SizedBox(height: Constants.spacingSmall),
                 const Divider(
                   color: Constants.dividerColor,
                   height: 1,
@@ -230,15 +226,16 @@ canceled at any time.
                     ),
                     onPressed:
                         snapshot.connectionState == ConnectionState.none ||
-                                snapshot.connectionState ==
-                                    ConnectionState.waiting ||
-                                snapshot.hasError ||
-                                snapshot.data == null ||
-                                snapshot.data?.monthly == null ||
-                                _isLoading
-                            ? null
-                            : () => _purchase(snapshot.data!.monthly!),
-                    icon: snapshot.connectionState == ConnectionState.none ||
+                            snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            snapshot.hasError ||
+                            snapshot.data == null ||
+                            snapshot.data?.monthly == null ||
+                            _isLoading
+                        ? null
+                        : () => _purchase(snapshot.data!.monthly!),
+                    icon:
+                        snapshot.connectionState == ConnectionState.none ||
                             snapshot.connectionState ==
                                 ConnectionState.waiting ||
                             snapshot.hasError ||

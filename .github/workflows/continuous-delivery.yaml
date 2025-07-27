@@ -187,7 +187,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
@@ -237,7 +237,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
@@ -251,6 +251,7 @@ jobs:
       - name: Build
         run: |
           flutter config --enable-macos-desktop
+          flutter config --enable-swift-package-manager
           FLUTTER_XCODE_CODE_SIGN_IDENTITY="" FLUTTER_XCODE_CODE_SIGNING_REQUIRED=NO flutter build macos --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
 
       - name: Package
@@ -306,7 +307,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
@@ -384,7 +385,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "master"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
@@ -448,7 +449,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
@@ -527,7 +528,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
@@ -541,6 +542,7 @@ jobs:
       - name: Build
         run: |
           flutter config --enable-ios
+          flutter config --enable-swift-package-manager
           flutter build ipa --no-codesign --release --dart-define SUPABASE_URL=${{ secrets.SUPABASE_PROD_URL }} --dart-define SUPABASE_ANON_KEY=${{ secrets.SUPABASE_PROD_ANON_KEY }} --dart-define SUPABASE_SITE_URL=${{ secrets.SUPABASE_PROD_SITE_URL }} --dart-define GOOGLE_CLIENT_ID=${{ secrets.SUPABASE_PROD_GOOGLE_CLIENT_ID }}
 
   # The "Android" job builds the Flutter Android app on every pull request. This
@@ -566,7 +568,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.29.3"
+          flutter-version: "3.32.7"
           channel: "stable"
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"

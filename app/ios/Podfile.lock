@@ -1,72 +1,30 @@
 PODS:
-  - app_links (0.0.2):
-    - Flutter
-  - audio_service (0.0.1):
-    - Flutter
-  - audio_session (0.0.1):
-    - Flutter
-  - file_picker (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
-  - flutter_native_splash (2.4.3):
-    - Flutter
-  - just_audio (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - media_kit_libs_ios_video (1.0.4):
-    - Flutter
-  - media_kit_native_event_loop (1.0.0):
     - Flutter
   - media_kit_video (0.0.1):
     - Flutter
-  - package_info_plus (0.4.5):
+  - purchases_flutter (9.1.0):
     - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - purchases_flutter (8.6.1):
-    - Flutter
-    - PurchasesHybridCommon (= 13.25.0)
-  - PurchasesHybridCommon (13.25.0):
-    - RevenueCat (= 5.19.0)
-  - RevenueCat (5.19.0)
-  - screen_brightness_ios (0.1.0):
-    - Flutter
-  - shared_preferences_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
+    - PurchasesHybridCommon (= 16.0.2)
+  - PurchasesHybridCommon (16.0.2):
+    - RevenueCat (= 5.33.1)
+  - RevenueCat (5.33.1)
   - sign_in_with_apple (0.0.1):
     - Flutter
   - sqflite (0.0.3):
     - Flutter
     - FlutterMacOS
-  - url_launcher_ios (0.0.1):
-    - Flutter
-  - volume_controller (0.0.1):
-    - Flutter
   - wakelock_plus (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - app_links (from `.symlinks/plugins/app_links/ios`)
-  - audio_service (from `.symlinks/plugins/audio_service/ios`)
-  - audio_session (from `.symlinks/plugins/audio_session/ios`)
-  - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
-  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
-  - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - media_kit_libs_ios_video (from `.symlinks/plugins/media_kit_libs_ios_video/ios`)
-  - media_kit_native_event_loop (from `.symlinks/plugins/media_kit_native_event_loop/ios`)
   - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
-  - screen_brightness_ios (from `.symlinks/plugins/screen_brightness_ios/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-  - volume_controller (from `.symlinks/plugins/volume_controller/ios`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 SPEC REPOS:
@@ -75,69 +33,30 @@ SPEC REPOS:
     - RevenueCat
 
 EXTERNAL SOURCES:
-  app_links:
-    :path: ".symlinks/plugins/app_links/ios"
-  audio_service:
-    :path: ".symlinks/plugins/audio_service/ios"
-  audio_session:
-    :path: ".symlinks/plugins/audio_session/ios"
-  file_picker:
-    :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
-  flutter_native_splash:
-    :path: ".symlinks/plugins/flutter_native_splash/ios"
-  just_audio:
-    :path: ".symlinks/plugins/just_audio/darwin"
   media_kit_libs_ios_video:
     :path: ".symlinks/plugins/media_kit_libs_ios_video/ios"
-  media_kit_native_event_loop:
-    :path: ".symlinks/plugins/media_kit_native_event_loop/ios"
   media_kit_video:
     :path: ".symlinks/plugins/media_kit_video/ios"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   purchases_flutter:
     :path: ".symlinks/plugins/purchases_flutter/ios"
-  screen_brightness_ios:
-    :path: ".symlinks/plugins/screen_brightness_ios/ios"
-  shared_preferences_foundation:
-    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sign_in_with_apple:
     :path: ".symlinks/plugins/sign_in_with_apple/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/darwin"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
-  volume_controller:
-    :path: ".symlinks/plugins/volume_controller/ios"
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
-  app_links: 76b66b60cc809390ca1ad69bfd66b998d2387ac7
-  audio_service: 2023a4a1bdb2fd1443e7b00bdbdb1baa321525db
-  audio_session: 94075f61f538dbe8f90f0cee58af3f1837ba7d2b
-  file_picker: fb04e739ae6239a76ce1f571863a196a922c87d4
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
-  just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
-  media_kit_native_event_loop: 5fba1a849a6c87a34985f1e178a0de5bd444a0cf
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
-  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  purchases_flutter: da84b1c99daa6c94f77c4e812b5a096ea8eb9916
-  PurchasesHybridCommon: f27e7fe57a9934319373b10c260db5d6c10bbb64
-  RevenueCat: 4be87c151dff652d2a5b7af46073db11f01ad93f
-  screen_brightness_ios: 5ed898fa50fa82a26171c086ca5e28228f932576
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  purchases_flutter: 818eabac676b9037ac7692d4bc48a52a10b276be
+  PurchasesHybridCommon: ae7a0a6e105ecdde3e8816a004e57f0a2a7b9261
+  RevenueCat: b0ed01125b05a45b8264a2951ad68acb61942038
   sign_in_with_apple: c5dcc141574c8c54d5ac99dd2163c0c72ad22418
   sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
-  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
-  volume_controller: ca1cde542ee70fad77d388f82e9616488110942b
   wakelock_plus: fd58c82b1388f4afe3fe8aa2c856503a262a5b03
 
 PODFILE CHECKSUM: a35dde46ea09af570b675187a949f5fa3bc82280

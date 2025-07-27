@@ -91,12 +91,12 @@ void main() async {
 class FeedDeckScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-        PointerDeviceKind.stylus,
-        PointerDeviceKind.unknown,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+    PointerDeviceKind.unknown,
+  };
 }
 
 /// [onGenerateRoute] is used in `onGenerateRoute` and `onGenerateInitialRoutes`
@@ -119,15 +119,11 @@ Route onGenerateRoute(RouteSettings settings) {
           ),
         );
       case '/reset-password':
-        return MaterialPageRoute(
-          builder: (_) => const ResetPassword(),
-        );
+        return MaterialPageRoute(builder: (_) => const ResetPassword());
     }
   }
 
-  return MaterialPageRoute(
-    builder: (_) => const Home(),
-  );
+  return MaterialPageRoute(builder: (_) => const Home());
 }
 
 /// The [FeedDeckApp] is the root widget of the app. The widget is used to
@@ -171,23 +167,17 @@ class FeedDeckApp extends StatelessWidget {
             ),
             snackBarTheme: const SnackBarThemeData(
               backgroundColor: Constants.secondary,
-              contentTextStyle: TextStyle(
-                color: Constants.onSurface,
-              ),
+              contentTextStyle: TextStyle(color: Constants.onSurface),
             ),
-            dialogTheme: const DialogTheme(
+            dialogTheme: const DialogThemeData(
               backgroundColor: Constants.surface,
               surfaceTintColor: Constants.surface,
-              contentTextStyle: TextStyle(
-                color: Constants.onSurface,
-              ),
+              contentTextStyle: TextStyle(color: Constants.onSurface),
             ),
             popupMenuTheme: const PopupMenuThemeData(
               color: Constants.surface,
               surfaceTintColor: Constants.surface,
-              textStyle: TextStyle(
-                color: Constants.onSurface,
-              ),
+              textStyle: TextStyle(color: Constants.onSurface),
             ),
             drawerTheme: const DrawerThemeData(
               backgroundColor: Constants.surface,
@@ -208,8 +198,9 @@ class FeedDeckApp extends StatelessWidget {
             ),
           ),
           scrollBehavior: FeedDeckScrollBehavior(),
-          onGenerateInitialRoutes: (initialRoute) =>
-              [onGenerateRoute(RouteSettings(name: initialRoute))],
+          onGenerateInitialRoutes: (initialRoute) => [
+            onGenerateRoute(RouteSettings(name: initialRoute)),
+          ],
           onGenerateRoute: (RouteSettings settings) =>
               onGenerateRoute(settings),
         ),
