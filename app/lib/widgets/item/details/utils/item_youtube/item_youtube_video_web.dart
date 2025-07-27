@@ -1,4 +1,4 @@
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -53,7 +53,6 @@ class _ItemYoutubeVideoWebState extends State<ItemYoutubeVideoWeb> {
     _iframeElement.style.border = 'none';
     _iframeElement.allowFullscreen = true;
 
-    // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
       widget.videoUrl,
       (int viewId) => _iframeElement,

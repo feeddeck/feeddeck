@@ -28,6 +28,7 @@
 		33CC11132044BFA00003C045 /* MainFlutterWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CC11122044BFA00003C045 /* MainFlutterWindow.swift */; };
 		553BE2622AC0648A002EA0C0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 553BE2612AC0648A002EA0C0 /* StoreKit.framework */; };
 		FBF50439F2C4D0BF615EFED2 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27D60858A3CD81E41E2CDBF2 /* Pods_Runner.framework */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				FBF50439F2C4D0BF615EFED2 /* Pods_Runner.framework in Frameworks */,
 				553BE2622AC0648A002EA0C0 /* StoreKit.framework in Frameworks */,
 			);
@@ -180,6 +182,9 @@
 
 /* Begin PBXNativeTarget section */
 		33CC10EC2044A3C60003C045 /* Runner */ = {
+			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
+			);
 			isa = PBXNativeTarget;
 			buildConfigurationList = 33CC10FB2044A3C60003C045 /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
@@ -205,6 +210,9 @@
 
 /* Begin PBXProject section */
 		33CC10E52044A3C60003C045 /* Project object */ = {
+			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */,
+			);
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
@@ -645,6 +653,18 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin XCLocalSwiftPackageReference section */
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+/* Begin XCSwiftPackageProductDependency section */
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 33CC10E52044A3C60003C045 /* Project object */;
 }
