@@ -30,7 +30,7 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
 
   /// [_openDrawer] opens the provided [widget] in the drawer of the scaffold,
   /// by setting the [_drawer] state first and then opening the drawer.
-  _openDrawer(Widget widget) {
+  void _openDrawer(Widget widget) {
     setState(() {
       _drawer = widget;
     });
@@ -63,20 +63,12 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
             size: 32,
           ),
           label: Container(
-            padding: const EdgeInsets.only(
-              top: Constants.spacingExtraSmall,
-            ),
-            constraints: const BoxConstraints(
-              minWidth: 54,
-              maxWidth: 54,
-            ),
+            padding: const EdgeInsets.only(top: Constants.spacingExtraSmall),
+            constraints: const BoxConstraints(minWidth: 54, maxWidth: 54),
             child: Text(
-              Characters(column.name)
-                  .replaceAll(
-                    Characters(''),
-                    Characters('\u{200B}'),
-                  )
-                  .toString(),
+              Characters(
+                column.name,
+              ).replaceAll(Characters(''), Characters('\u{200B}')).toString(),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 10,
@@ -91,10 +83,7 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
     for (var i = widgets.length; i < 2; i++) {
       widgets.add(
         const NavigationRailDestination(
-          icon: Icon(
-            Icons.circle,
-            color: Colors.transparent,
-          ),
+          icon: Icon(Icons.circle, color: Colors.transparent),
           label: Text(''),
         ),
       );
@@ -119,20 +108,13 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
             child: RichText(
               textAlign: TextAlign.center,
               text: const TextSpan(
-                style: TextStyle(
-                  color: Constants.onSurface,
-                  fontSize: 14.0,
-                ),
+                style: TextStyle(color: Constants.onSurface, fontSize: 14.0),
                 children: [
                   TextSpan(
                     text: 'Add you first column by clicking on the plus icon (',
                   ),
-                  WidgetSpan(
-                    child: Icon(Icons.add, size: 14.0),
-                  ),
-                  TextSpan(
-                    text: ') in the sidebar on the left side.',
-                  ),
+                  WidgetSpan(child: Icon(Icons.add, size: 14.0)),
+                  TextSpan(text: ') in the sidebar on the left side.'),
                 ],
               ),
             ),
@@ -200,10 +182,7 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
           topRight: Radius.circular(Constants.spacingMiddle),
           bottomRight: Radius.circular(Constants.spacingMiddle),
         ),
-        child: Drawer(
-          width: Constants.columnWidth,
-          child: _drawer,
-        ),
+        child: Drawer(width: Constants.columnWidth, child: _drawer),
       ),
       body: SafeArea(
         child: Row(
@@ -211,7 +190,8 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
             SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height -
+                  minHeight:
+                      MediaQuery.of(context).size.height -
                       MediaQuery.of(context).padding.top -
                       MediaQuery.of(context).padding.bottom,
                 ),
@@ -281,9 +261,7 @@ class _DeckLayoutLargeState extends State<DeckLayoutLarge> {
                                   );
                                 },
                               ),
-                              const SizedBox(
-                                height: Constants.spacingMiddle,
-                              ),
+                              const SizedBox(height: Constants.spacingMiddle),
                             ],
                           ),
                         ),

@@ -10,11 +10,7 @@ import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [DescriptionFormat] enum defines the source and target format of a
 /// description.
-enum DescriptionFormat {
-  html,
-  markdown,
-  plain,
-}
+enum DescriptionFormat { html, markdown, plain }
 
 /// The [ItemDescription] widget displays the description of an item. The
 /// provided [itemDescription] is converted from the [sourceFormat] to the
@@ -41,9 +37,7 @@ class ItemDescription extends StatelessWidget {
   /// [_buildMarkdown] renders the provided [content] as markdown.
   Widget _buildMarkdown(String content) {
     return Container(
-      padding: const EdgeInsets.only(
-        bottom: Constants.spacingExtraSmall,
-      ),
+      padding: const EdgeInsets.only(bottom: Constants.spacingExtraSmall),
       child: MarkdownBody(
         selectable: false,
         data: content.trim(),
@@ -52,16 +46,11 @@ class ItemDescription extends StatelessWidget {
             fontFamily: getMonospaceFontFamily(),
             backgroundColor: Constants.secondary,
           ),
-          codeblockDecoration: const BoxDecoration(
-            color: Constants.secondary,
-          ),
+          codeblockDecoration: const BoxDecoration(color: Constants.secondary),
           blockquoteDecoration: const BoxDecoration(
             color: Constants.secondary,
             border: Border(
-              left: BorderSide(
-                color: Constants.primary,
-                width: 1,
-              ),
+              left: BorderSide(color: Constants.primary, width: 1),
             ),
           ),
         ),
@@ -70,11 +59,13 @@ class ItemDescription extends StatelessWidget {
             _openUrl(href);
           }
         },
+        // TODO: The "flutter_markdown" package is deprecated and we have to
+        // replace it with an alternative.
+        // See:  https://pub.dev/packages/flutter_markdown
+        // ignore: deprecated_member_use
         imageBuilder: (uri, title, alt) {
           return Container(
-            padding: const EdgeInsets.only(
-              bottom: Constants.spacingExtraSmall,
-            ),
+            padding: const EdgeInsets.only(bottom: Constants.spacingExtraSmall),
             child: CachedNetworkImage(
               width: double.infinity,
               height: 200,
@@ -100,9 +91,7 @@ class ItemDescription extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.only(
-        bottom: Constants.spacingExtraSmall,
-      ),
+      padding: const EdgeInsets.only(bottom: Constants.spacingExtraSmall),
       child: Text(
         content.trim().split('\n').where((line) => line != '').join('\n'),
         maxLines: 5,

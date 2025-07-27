@@ -24,18 +24,19 @@ class _SettingsProfileDeleteAccountState
   /// [_showDeleteDialog] creates a new dialog, which is shown before the user
   /// account is deleted. This is done to raise the awareness what it means to
   /// delete the account and to avoid accidently deletions.
-  _showDeleteDialog() {
+  void _showDeleteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           insetPadding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width >=
+            horizontal:
+                MediaQuery.of(context).size.width >=
                     (Constants.centeredFormMaxWidth +
                         2 * Constants.spacingMiddle)
                 ? (MediaQuery.of(context).size.width -
-                        Constants.centeredFormMaxWidth) /
-                    2
+                          Constants.centeredFormMaxWidth) /
+                      2
                 : Constants.spacingMiddle,
           ),
           title: const Text('Delete Account'),
@@ -94,9 +95,7 @@ class _SettingsProfileDeleteAccountState
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => const SignIn(),
-        ),
+        MaterialPageRoute(builder: (BuildContext context) => const SignIn()),
         (route) => false,
       );
     } on ApiException catch (err) {
@@ -136,9 +135,7 @@ class _SettingsProfileDeleteAccountState
         onTap: () => _showDeleteDialog(),
         child: Card(
           color: Constants.secondary,
-          margin: const EdgeInsets.only(
-            bottom: Constants.spacingSmall,
-          ),
+          margin: const EdgeInsets.only(bottom: Constants.spacingSmall),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -146,9 +143,7 @@ class _SettingsProfileDeleteAccountState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.all(
-                  Constants.spacingMiddle,
-                ),
+                padding: const EdgeInsets.all(Constants.spacingMiddle),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -172,12 +167,7 @@ class _SettingsProfileDeleteAccountState
                         ],
                       ),
                     ),
-                    buildIcon(
-                      const Icon(
-                        Icons.delete,
-                        color: Constants.error,
-                      ),
-                    ),
+                    buildIcon(const Icon(Icons.delete, color: Constants.error)),
                   ],
                 ),
               ),

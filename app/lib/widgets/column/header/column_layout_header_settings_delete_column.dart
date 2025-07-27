@@ -31,23 +31,22 @@ class _ColumnLayoutHeaderSettingsDeleteColumnState
   /// [_showDeleteDialog] creates a new dialog, which is shown before the column
   /// can be deleted. This is done to raise the awareness that the column,
   /// sources and items which belongs to the column will also be deleted.
-  _showDeleteDialog() {
+  void _showDeleteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           insetPadding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width >=
+            horizontal:
+                MediaQuery.of(context).size.width >=
                     (Constants.centeredFormMaxWidth +
                         2 * Constants.spacingMiddle)
                 ? (MediaQuery.of(context).size.width -
-                        Constants.centeredFormMaxWidth) /
-                    2
+                          Constants.centeredFormMaxWidth) /
+                      2
                 : Constants.spacingMiddle,
           ),
-          title: const Text(
-            'Delete Column',
-          ),
+          title: const Text('Delete Column'),
           content: const Text(
             'Do you really want to delete this column? This can not be undone and will also delete all sources, items and bookmarks related to this column.',
           ),
@@ -88,8 +87,10 @@ class _ColumnLayoutHeaderSettingsDeleteColumnState
     });
 
     try {
-      await Provider.of<AppRepository>(context, listen: false)
-          .deleteColumn(widget.column.id);
+      await Provider.of<AppRepository>(
+        context,
+        listen: false,
+      ).deleteColumn(widget.column.id);
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

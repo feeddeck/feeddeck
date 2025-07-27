@@ -31,12 +31,7 @@ class ItemsFilters {
 /// [ItemStateFilter] is a enum value which defines the state filter for items.
 /// The filter can be [read], [unread] or [bookmarked]. The [none] filter is
 /// used to return all items regardless if they are read, unread or bookmarked.
-enum ItemStateFilter {
-  none,
-  read,
-  unread,
-  bookmarked,
-}
+enum ItemStateFilter { none, read, unread, bookmarked }
 
 /// The [ToString] extension defines a [toShortString] function, which returns a
 /// `String` which can be safely passed within a database query for the specifed
@@ -53,11 +48,7 @@ extension ToString on ItemStateFilter {
 ///   - [loading] during the time when the items are retrieved from our database
 ///   - [loadedLast] when there are no more items which can be loaded from the
 ///     database.
-enum ItemsStatus {
-  loaded,
-  loading,
-  loadedLast,
-}
+enum ItemsStatus { loaded, loading, loadedLast }
 
 /// [now] returns the current Unix timestamp in seconds.
 int now() {
@@ -69,9 +60,7 @@ int now() {
 /// initialized we have to call the [_init] function to load the items for the
 /// provided column.
 class ItemsRepository with ChangeNotifier {
-  ItemsRepository({
-    required this.column,
-  }) {
+  ItemsRepository({required this.column}) {
     _init();
   }
 
@@ -275,7 +264,8 @@ class ItemsRepository with ChangeNotifier {
     try {
       await Supabase.instance.client
           .from('items')
-          .update({'isRead': read}).eq('id', itemId);
+          .update({'isRead': read})
+          .eq('id', itemId);
       for (var i = 0; i < _items.length; i++) {
         if (_items[i].id == itemId) {
           _items[i].isRead = read;
@@ -305,7 +295,8 @@ class ItemsRepository with ChangeNotifier {
       for (var i = 0; i < chunks.length; i++) {
         await Supabase.instance.client
             .from('items')
-            .update({'isRead': read}).inFilter('id', chunks[i]);
+            .update({'isRead': read})
+            .inFilter('id', chunks[i]);
         for (var j = 0; j < _items.length; j++) {
           if (chunks[i].contains(_items[j].id)) {
             _items[j].isRead = read;
@@ -327,7 +318,8 @@ class ItemsRepository with ChangeNotifier {
     try {
       await Supabase.instance.client
           .from('items')
-          .update({'isBookmarked': bookmarked}).eq('id', itemId);
+          .update({'isBookmarked': bookmarked})
+          .eq('id', itemId);
       for (var i = 0; i < _items.length; i++) {
         if (_items[i].id == itemId) {
           _items[i].isBookmarked = bookmarked;
@@ -391,7 +383,7 @@ class ItemsRepositoryStore {
   ///
   /// The best is to call the [set] function right before we call
   /// `notifyListeners` in the repository.
-  set(
+  ItemsRepositoryStoreState set(
     String columnId,
     ItemsStatus status,
     ItemsFilters filters,
@@ -407,7 +399,7 @@ class ItemsRepositoryStore {
   /// [clear] deletes all the stored [_itemsRepositoryStoreStates] from the
   /// store. This method can be used to clear the cache, e.g. when a user
   /// changes the active deck or signes out.
-  clear() {
+  void clear() {
     _itemsRepositoryStoreStates.clear();
   }
 }
