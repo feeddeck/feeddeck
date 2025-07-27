@@ -35,6 +35,10 @@ jobs:
         run: |
           flutter pub get
 
+      - name: Lint
+        run: |
+          dart analyze --fatal-infos
+
       - name: Test
         run: |
           flutter test

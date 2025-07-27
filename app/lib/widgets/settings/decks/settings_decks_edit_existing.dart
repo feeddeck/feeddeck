@@ -77,18 +77,19 @@ class _SettingsDecksEditExistingState extends State<SettingsDecksEditExisting> {
   /// [_showDeleteDialog] creates a new dialog, which is shown before the deck
   /// can be deleted. This is done to raise the awareness that the deck,
   /// columns, sources and items which belongs to the deck will also be deleted.
-  _showDeleteDialog() {
+  void _showDeleteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           insetPadding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width >=
+            horizontal:
+                MediaQuery.of(context).size.width >=
                     (Constants.centeredFormMaxWidth +
                         2 * Constants.spacingMiddle)
                 ? (MediaQuery.of(context).size.width -
-                        Constants.centeredFormMaxWidth) /
-                    2
+                          Constants.centeredFormMaxWidth) /
+                      2
                 : Constants.spacingMiddle,
           ),
           title: const Text('Delete Deck'),
@@ -161,12 +162,7 @@ class _SettingsDecksEditExistingState extends State<SettingsDecksEditExisting> {
           left: Constants.spacingMiddle,
           right: Constants.spacingMiddle,
         ),
-        child: Text(
-          _error,
-          style: const TextStyle(
-            color: Constants.error,
-          ),
-        ),
+        child: Text(_error, style: const TextStyle(color: Constants.error)),
       );
     }
 
@@ -177,19 +173,13 @@ class _SettingsDecksEditExistingState extends State<SettingsDecksEditExisting> {
   Widget build(BuildContext context) {
     return Card(
       color: Constants.secondary,
-      margin: const EdgeInsets.only(
-        bottom: Constants.spacingSmall,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      margin: const EdgeInsets.only(bottom: Constants.spacingSmall),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.all(
-              Constants.spacingMiddle,
-            ),
+            padding: const EdgeInsets.all(Constants.spacingMiddle),
             child: Form(
               key: _formKey,
               child: Row(

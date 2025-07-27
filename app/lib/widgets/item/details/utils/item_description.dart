@@ -10,11 +10,7 @@ import 'package:feeddeck/widgets/utils/cached_network_image.dart';
 
 /// The [DescriptionFormat] enum defines the source and target format of a
 /// description.
-enum DescriptionFormat {
-  html,
-  markdown,
-  plain,
-}
+enum DescriptionFormat { html, markdown, plain }
 
 /// The [ItemDescription] widget displays the description of an item. The
 /// provided [itemDescription] is converted from the [sourceFormat] to the
@@ -51,17 +47,10 @@ class ItemDescription extends StatelessWidget {
           fontFamily: getMonospaceFontFamily(),
           backgroundColor: Constants.secondary,
         ),
-        codeblockDecoration: const BoxDecoration(
-          color: Constants.secondary,
-        ),
+        codeblockDecoration: const BoxDecoration(color: Constants.secondary),
         blockquoteDecoration: const BoxDecoration(
           color: Constants.secondary,
-          border: Border(
-            left: BorderSide(
-              color: Constants.primary,
-              width: 1,
-            ),
-          ),
+          border: Border(left: BorderSide(color: Constants.primary, width: 1)),
         ),
       ),
       onTapLink: (text, href, title) {
@@ -69,15 +58,17 @@ class ItemDescription extends StatelessWidget {
           _openUrl(href);
         }
       },
+      // TODO: The "flutter_markdown" package is deprecated and we have to
+      // replace it with an alternative.
+      // See:  https://pub.dev/packages/flutter_markdown
+      // ignore: deprecated_member_use
       imageBuilder: (uri, title, alt) {
         if (disableImages == true) {
           return Container();
         }
 
         return Container(
-          padding: const EdgeInsets.only(
-            bottom: Constants.spacingMiddle,
-          ),
+          padding: const EdgeInsets.only(bottom: Constants.spacingMiddle),
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
@@ -88,9 +79,7 @@ class ItemDescription extends StatelessWidget {
                   isDismissible: true,
                   useSafeArea: true,
                   backgroundColor: Colors.black,
-                  constraints: const BoxConstraints(
-                    maxWidth: double.infinity,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: double.infinity),
                   builder: (BuildContext context) {
                     return Scaffold(
                       backgroundColor: Colors.black,
@@ -108,9 +97,7 @@ class ItemDescription extends StatelessWidget {
                             top: Constants.spacingExtraSmall,
                             right: Constants.spacingExtraSmall,
                             child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                              ),
+                              icon: const Icon(Icons.close),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -141,10 +128,7 @@ class ItemDescription extends StatelessWidget {
     return SelectableText(
       content.trim(),
       textAlign: TextAlign.left,
-      style: const TextStyle(
-        fontWeight: FontWeight.normal,
-        fontSize: 14,
-      ),
+      style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
     );
   }
 

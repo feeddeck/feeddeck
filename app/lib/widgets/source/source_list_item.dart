@@ -31,7 +31,7 @@ class _SourceListItemState extends State<SourceListItem> {
   /// [_showDeleteDialog] creates a new dialog, which is shown before the column
   /// can be deleted. This is done to raise the awareness that the column,
   /// sources and items which belongs to the column will also be deleted.
-  _showDeleteDialog() {
+  void _showDeleteDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -39,12 +39,12 @@ class _SourceListItemState extends State<SourceListItem> {
           insetPadding: EdgeInsets.symmetric(
             horizontal:
                 MediaQuery.of(context).size.width >=
-                        (Constants.centeredFormMaxWidth +
-                            2 * Constants.spacingMiddle)
-                    ? (MediaQuery.of(context).size.width -
-                            Constants.centeredFormMaxWidth) /
-                        2
-                    : Constants.spacingMiddle,
+                    (Constants.centeredFormMaxWidth +
+                        2 * Constants.spacingMiddle)
+                ? (MediaQuery.of(context).size.width -
+                          Constants.centeredFormMaxWidth) /
+                      2
+                : Constants.spacingMiddle,
           ),
           title: const Text('Delete Source'),
           content: const Text(
@@ -62,13 +62,12 @@ class _SourceListItemState extends State<SourceListItem> {
             ),
             TextButton(
               onPressed: _isLoading ? null : () => _deleteSource(),
-              child:
-                  _isLoading
-                      ? const ElevatedButtonProgressIndicator()
-                      : const Text(
-                        'Delete',
-                        style: TextStyle(color: Constants.error),
-                      ),
+              child: _isLoading
+                  ? const ElevatedButtonProgressIndicator()
+                  : const Text(
+                      'Delete',
+                      style: TextStyle(color: Constants.error),
+                    ),
             ),
           ],
         );
@@ -158,10 +157,9 @@ class _SourceListItemState extends State<SourceListItem> {
                   ),
                   IconButton(
                     onPressed: () => _showDeleteDialog(),
-                    icon:
-                        _isLoading
-                            ? const ElevatedButtonProgressIndicator()
-                            : const Icon(Icons.delete),
+                    icon: _isLoading
+                        ? const ElevatedButtonProgressIndicator()
+                        : const Icon(Icons.delete),
                   ),
                 ],
               ),
